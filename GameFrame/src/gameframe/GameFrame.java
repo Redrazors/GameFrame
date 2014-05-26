@@ -27,6 +27,8 @@ public class GameFrame extends JFrame {
         
         MasterClass masterClass = new MasterClass (this, bs);
         
+        masterClass.gameInit();
+        
     }
 
     /**
