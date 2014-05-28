@@ -8,7 +8,6 @@ package gameframe;
 
 import java.awt.image.BufferStrategy;
 import javax.swing.JFrame;
-// test to see
 /**
  *
  * @author David
