@@ -10,5 +10,13 @@
             <file>file:/C:/Users/david/Documents/GitHub/GameFrame/GameFrame/src/gameframe/GameObjects.java</file>
             <file>file:/C:/Users/david/Documents/GitHub/GameFrame/GameFrame/src/gameframe/Renderer.java</file>
         </group>
+        <group name="GitHub">
+            <file>file:/C:/Users/david/Documents/GitHub/GameFrame/GameFrame/src/gameframe/MasterClass.java</file>
+            <file>file:/C:/Users/david/Documents/GitHub/GameFrame/GameFrame/src/gameframe/GameFrame.java</file>
+            <file>file:/C:/Users/david/Documents/GitHub/GameFrame/GameFrame/src/gameframe/PathingObstacles.java</file>
+            <file>file:/C:/Users/david/Documents/GitHub/GameFrame/GameFrame/src/gameframe/MoveableObject.java</file>
+            <file>file:/C:/Users/david/Documents/GitHub/GameFrame/GameFrame/src/gameframe/Renderer.java</file>
+            <file>file:/C:/Users/david/Documents/GitHub/GameFrame/GameFrame/src/gameframe/GameObjects.java</file>
+        </group>
     </open-files>
 </project-private>
