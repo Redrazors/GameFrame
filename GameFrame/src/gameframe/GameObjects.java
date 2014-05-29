@@ -6,7 +6,6 @@
 
 package gameframe;
 
-import java.awt.Shape;
 import java.util.ArrayList;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.dynamics.BodyFixture;
@@ -14,6 +13,7 @@ import org.dyn4j.dynamics.World;
 import org.dyn4j.geometry.Circle;
 import org.dyn4j.geometry.Mass;
 import org.dyn4j.geometry.Rectangle;
+import straightedge.geom.path.PathBlockingObstacle;
 
 /**
  *
@@ -23,8 +23,11 @@ public class GameObjects {
     private World world;
     private MoveableObject testObject[];
     private ArrayList<MoveableObject> gameObjectsList;
+    private PathingObstacles pathingObstacles;
     
     public GameObjects (World world){
+        pathingObstacles = new PathingObstacles();
+        
         this.world = world;
         testObject = new MoveableObject[8];
         gameObjectsList = new ArrayList();
@@ -61,17 +64,20 @@ public class GameObjects {
         Rectangle hitRect = new Rectangle (80, 80);
         
         for (int i =0; i<8; i++){
-            testObject[i] = new MoveableObject(hitCircle);
+            // random positions
+            int xPos = (int)(Math.random()*500);
+            int yPos = (int)(Math.random()*500);
+            
+            testObject[i] = new MoveableObject(hitCircle, pathingObstacles, xPos, yPos);
             //testObject[i].addFixture(hitCircle);
             testObject[i].setMass();
             world.addBody(testObject[i]);
             
-            int xPos = (int)(Math.random()*500);
-            int yPos = (int)(Math.random()*500);
+            
             int directionX = (int)(Math.round(Math.random())*2-1);
             int directionY = (int)(Math.round(Math.random())*2-1);
             
-            testObject[i].translate(xPos, yPos); // these are on screen coords 
+             
             testObject[i].getLinearVelocity().set(900.0*directionX, 900.0*directionY);
             
             
@@ -82,6 +88,33 @@ public class GameObjects {
     
     public ArrayList<MoveableObject> getGameObjects(){
         return gameObjectsList;
+    }
+    
+    // update where the moveable objects are in the game obstacles array
+    public void updateMoveableObjectObstaclePosition(){
+        // loop for all of the pathing obstacles, in case number of game objects is different
+        for (int i=0; i<gameObjectsList.size(); i++){
+            
+            
+            
+            // get the current position of the game object
+            int x = (int)gameObjectsList.get(i).getTransform().getTranslationX();
+            int y = (int)gameObjectsList.get(i).getTransform().getTranslationY();
+            
+            int index = gameObjectsList.get(i).getPathListIndex();
+            
+            int diffX = x-(int)pathingObstacles.getPathingObstacles().get(index).getPolygon().center.x;
+            int diffY = y-(int)pathingObstacles.getPathingObstacles().get(index).getPolygon().center.y;
+            
+            
+            
+            // translate the pathing obstacle by the required amount
+            pathingObstacles.getPathingObstacles().get(i).getInnerPolygon().translate(diffX, diffY);
+        }
+    }
+    
+    public PathingObstacles getPathingObstacles(){
+        return pathingObstacles;
     }
     
    
