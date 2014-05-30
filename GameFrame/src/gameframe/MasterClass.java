@@ -63,8 +63,7 @@ public class MasterClass implements Runnable {
         double elapsedTime = (double)diff / NANO_TO_BASE;// update the world with the elapsed time
         this.world.update(elapsedTime);//<-- tell world to update with new positions of objects
         
-        // update the pathing obstacles with the new game object positions
-        gameObjects.updateMoveableObjectObstaclePosition();
+        
     }
 
     @Override
@@ -73,7 +72,7 @@ public class MasterClass implements Runnable {
             updateWorld();
  
             try {
-                Thread.sleep(10);
+                mainThread.sleep(20);
             } catch (InterruptedException e) { }
         }
     }

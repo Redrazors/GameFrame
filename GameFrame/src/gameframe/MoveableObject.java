@@ -17,11 +17,7 @@ import java.util.ArrayList;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.geometry.Circle;
 import org.dyn4j.geometry.Rectangle;
-import straightedge.geom.KPoint;
-import straightedge.geom.KPolygon;
-import static straightedge.geom.KPolygon.createRect;
-import straightedge.geom.path.PathBlockingObstacle;
-import straightedge.geom.path.PathBlockingObstacleImpl;
+
 
 /**
  *
@@ -32,7 +28,7 @@ public class MoveableObject extends Body {
     private Shape objectShape;
     private int pathListIndex;
     
-    public MoveableObject(Circle hitCircle, PathingObstacles pathingObstacles, int xPos, int yPos){
+    public MoveableObject(Circle hitCircle, int xPos, int yPos){
         
         // create the render drawing shape
         int circleRad = (int)hitCircle.getRadius();
@@ -44,21 +40,12 @@ public class MoveableObject extends Body {
         this.addFixture(hitCircle); 
         this.translate(xPos, yPos);
         
-        // add object to path blocking obstacles
-        Rectangle2D br = objectShape.getBounds();
-        KPolygon pathingShape = new KPolygon(createRect(-circleRad, -circleRad, circleRad, circleRad));
-        pathingShape.translate(xPos, yPos);
-        //System.out.println(pathingShape);
-        PathBlockingObstacle pathBlockingObstacle = PathBlockingObstacleImpl.createObstacleFromInnerPolygon(pathingShape);
-        pathingObstacles.getPathingObstacles().add(pathBlockingObstacle);
-        pathListIndex = pathingObstacles.getPathingObstacles().size()-1; // take off 1 to start from array value of 0
-        
-        
+
         
         
     }
     
-    public MoveableObject(Rectangle hitRect, PathingObstacles pathingObstacles, int xPos, int yPos){
+    public MoveableObject(Rectangle hitRect, int xPos, int yPos){
         
         // create the render drawing shape
         double rectHeight = hitRect.getHeight();
@@ -70,13 +57,6 @@ public class MoveableObject extends Body {
         this.setLinearDamping(LINEAR_DAMPING);
         this.addFixture(hitRect);    
         
-        // add object to path blocking obstacles
-        KPolygon pathingShape = new KPolygon(createRect(0, 0, rectWidth, rectHeight));
-        pathingShape.translate(xPos, yPos);
-        //System.out.println(pathingShape);
-        PathBlockingObstacle pathBlockingObstacle = PathBlockingObstacleImpl.createObstacleFromInnerPolygon(pathingShape);
-        pathingObstacles.getPathingObstacles().add(pathBlockingObstacle);
-        pathListIndex = pathingObstacles.getPathingObstacles().size();
     }
     
 

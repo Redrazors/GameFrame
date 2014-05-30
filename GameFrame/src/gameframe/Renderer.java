@@ -59,12 +59,7 @@ public class Renderer extends JPanel implements Runnable {
             g2d.translate(-xPos1, -yPos1);
         }
         
-        // test draw the obstacles to compare
-        size = gameObjects.getPathingObstacles().getPathingObstacles().size();
-        for (int i =0; i<size; i++){
-            g2d.setColor(Color.blue);
-            g2d.draw(gameObjects.getPathingObstacles().getPathingObstacles().get(i).getInnerPolygon());
-        }
+
         
  
     }
@@ -85,7 +80,7 @@ public class Renderer extends JPanel implements Runnable {
            catch (IllegalStateException e) { e.printStackTrace();}
  
             try {
-                Thread.sleep(10);
+                renderLoop.sleep(10);
             } catch (InterruptedException e) { }
         }
         
