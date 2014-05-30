@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package gameframe;
+package gameframe.gameobjects;
 
 import java.util.ArrayList;
 
@@ -24,6 +24,10 @@ public class StationaryObject {
     public void addCompoundShape(BaseShape baseShape){
         shapeList.add(baseShape);
         
+    }
+    
+    public ArrayList<BaseShape> getStationaryObjectArray(){
+        return shapeList;
     }
     
 }

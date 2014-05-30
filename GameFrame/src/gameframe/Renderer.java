@@ -6,6 +6,7 @@
 
 package gameframe;
 
+import gameframe.gameobjects.GameObjects;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -80,7 +81,7 @@ public class Renderer extends JPanel implements Runnable {
            catch (IllegalStateException e) { e.printStackTrace();}
  
             try {
-                renderLoop.sleep(10);
+                renderLoop.sleep(1);
             } catch (InterruptedException e) { }
         }
         

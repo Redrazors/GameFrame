@@ -4,14 +4,13 @@
  * and open the template in the editor.
  */
 
-package gameframe;
+package gameframe.gameobjects;
 
 
 import static gameframe.StaticFields.ANGULAR_DAMPING;
 import static gameframe.StaticFields.LINEAR_DAMPING;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import org.dyn4j.dynamics.Body;
@@ -62,7 +61,7 @@ public class MoveableObject extends Body {
 
     
     public Shape getObjectShape(){
-        return (Shape)objectShape;
+        return objectShape;
     }
     
     public int getPathListIndex(){

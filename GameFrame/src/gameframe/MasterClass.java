@@ -6,6 +6,7 @@
 
 package gameframe;
 
+import gameframe.gameobjects.GameObjects;
 import static gameframe.StaticFields.NANO_TO_BASE;
 import java.awt.image.BufferStrategy;
 import javax.swing.JFrame;

@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package gameframe;
+package gameframe.gameobjects;
 
 import java.util.ArrayList;
 import org.dyn4j.dynamics.Body;
@@ -63,10 +63,10 @@ public final class GameObjects {
         
         
 
-        Circle hitCircle = new Circle (40);
+        Circle hitCircle = new Circle (20);
         Rectangle hitRect = new Rectangle (80, 80);
         
-        for (int i =0; i<20; i++){
+        for (int i =0; i<10; i++){
             // random positions
             int xPos = (int)(Math.random()*500);
             int yPos = (int)(Math.random()*500);

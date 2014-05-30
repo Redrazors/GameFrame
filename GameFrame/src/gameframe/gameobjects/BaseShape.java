@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package gameframe;
+package gameframe.gameobjects;
 
 import java.awt.Shape;
 
