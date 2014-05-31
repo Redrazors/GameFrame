@@ -50,14 +50,21 @@ public class Renderer extends JPanel implements Runnable {
         
         // test
         int size = gameObjects.getGameObjects().size();
+        
         for (int i =0; i<size; i++){
             g2d.setColor(Color.red);
             int xPos1 = (int)gameObjects.getGameObjects().get(i).getTransform().getTranslationX();
             int yPos1 = (int)gameObjects.getGameObjects().get(i).getTransform().getTranslationY();
             g2d.translate(xPos1, yPos1);
-            g2d.fill(gameObjects.getGameObjects().get(i).getObjectShape());
+
+            for (int j =0; j<gameObjects.getGameObjects().get(i).getObjectShapes().size(); j++){
+                g2d.draw(gameObjects.getGameObjects().get(i).getObjectShapes().get(j));
+                g2d.drawOval(-5, -5, 10, 10);
+            }
             //g2d.fillOval(xPos1-30, yPos1-30, 60, 60);
             g2d.translate(-xPos1, -yPos1);
+            
+            System.out.println(gameObjects.getGameObjects().get(i).getTransform().getTranslation());
         }
         
 

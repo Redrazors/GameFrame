@@ -7,17 +7,24 @@
 package gameframe.gameobjects;
 
 import java.util.ArrayList;
+import org.dyn4j.dynamics.Body;
 
 /**
  *
  * @author David
  */
-public class StationaryObject {
+public class StationaryObject extends Body{
+    
     private ArrayList<BaseShape> shapeList;
     
     public StationaryObject(BaseShape baseShape){
         shapeList = new ArrayList();
         shapeList.add(baseShape);
+        
+        //convert to dyn4j shape and add to fixture
+        
+        
+        // convert to kpolygon and add to straightedge collision
         
     }
     
