@@ -12,7 +12,6 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferStrategy;
 import javax.swing.JPanel;
-import org.dyn4j.geometry.Circle;
 
 /**
  *
@@ -47,6 +46,14 @@ public class Renderer extends JPanel implements Runnable {
         g2d.setColor(Color.white);
         g2d.fillRect(0, 0, 500, 500);
         
+        // test grid
+        g2d.setColor(Color.gray.brighter());
+        for (int i=0; i<5; i++){
+      
+            g2d.drawLine(i*100, 0, i*100, 500);
+            g2d.drawLine(0, i*100, 500, i*100);
+        }
+        
         
         // test
         int size = gameObjects.getGameObjects().size();
@@ -61,15 +68,15 @@ public class Renderer extends JPanel implements Runnable {
                 g2d.draw(gameObjects.getGameObjects().get(i).getObjectShapes().get(j));
                 g2d.drawOval(-5, -5, 10, 10);
             }
-            //g2d.fillOval(xPos1-30, yPos1-30, 60, 60);
-            g2d.translate(-xPos1, -yPos1);
             
-            System.out.println(gameObjects.getGameObjects().get(i).getTransform().getTranslation());
+            g2d.translate(-xPos1, -yPos1);
+
         }
         
-
+        // test find the rect fix
         
- 
+        int yPos1 = (int)gameObjects.getGameObjects().get(0).getTransform().getTranslationY();
+        
     }
 
     @Override

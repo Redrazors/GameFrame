@@ -15,7 +15,9 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.dynamics.BodyFixture;
+import org.dyn4j.dynamics.World;
 import org.dyn4j.geometry.Circle;
+import org.dyn4j.geometry.Ellipse;
 import org.dyn4j.geometry.Rectangle;
 
 
@@ -47,27 +49,33 @@ public class MoveableObject extends Body {
     
     
     public void addFixture(Shape shape, int offsetX, int offsetY){
+        BodyFixture collFix;
+        
         switch (shape.getClass().getCanonicalName()){
             case "java.awt.geom.Rectangle2D.Double":
                 // create and add fixture
                 Rectangle2D.Double newRect = (Rectangle2D.Double)shape;
                 Rectangle collisionRect = new Rectangle(newRect.width, newRect.height);
                 collisionRect.translate(offsetX, offsetY);
-                this.addFixture(collisionRect); 
+                collFix = new BodyFixture(collisionRect);
+                collFix.setDensity(1);
+                this.addFixture(collFix); 
                 
                 //offset shape and add to drawing ahape list
                 newRect.x+=offsetX;
                 newRect.y+=offsetY;
                 shapeList.add(newRect);
-                
+                //System.out.println(this.getFixtureCount());
                 break;
             case "java.awt.geom.Ellipse2D.Double":
                 
                 Ellipse2D.Double newEllipse = (Ellipse2D.Double)shape;
-                Circle collisionCirc = new Circle(newEllipse.width/2);
-                //BodyFixture circFix = new BodyFixture(collisionCirc);
-                collisionCirc.translate(offsetX, offsetY);
-                this.addFixture(collisionCirc);
+                Ellipse collisionEllipse = new Ellipse(newEllipse.width, newEllipse.height);
+                collFix = new BodyFixture(collisionEllipse);
+                collisionEllipse.translate(offsetX, offsetY);
+                collFix.setDensity(1);
+                this.addFixture(collFix);
+                //this.addFixture(collisionEllipse);
                 
                 //offset shape and add to drawing ahape list
                 newEllipse.x+=offsetX;
@@ -75,6 +83,7 @@ public class MoveableObject extends Body {
                 shapeList.add(newEllipse);
                 break;           
         }
+        
     }
     
     public void addCentredFixture(Shape shape){
