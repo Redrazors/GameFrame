@@ -54,6 +54,10 @@ public class MasterClass implements Runnable {
         mainThread.start();
     }
     
+    private void moveObjects(){
+        gameObjects.getMoveableObjectsList().get(0).applyImpulse(new Vector2(1000.0, 100.0));
+    }
+    
 
     
     private void updateWorld(){
@@ -70,7 +74,9 @@ public class MasterClass implements Runnable {
     @Override
     public void run() {
         while (true){
+            moveObjects();
             updateWorld();
+            
  
             try {
                 mainThread.sleep(20);

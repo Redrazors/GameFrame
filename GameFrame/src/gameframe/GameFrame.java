@@ -20,6 +20,9 @@ public class GameFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(500,500);
         setResizable(false);
+        
+        this.setUndecorated(true);
+        
         setVisible(true);
         createBufferStrategy(2);
         BufferStrategy bs = getBufferStrategy();

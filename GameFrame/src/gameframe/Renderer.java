@@ -10,6 +10,7 @@ import gameframe.gameobjects.GameObjects;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferStrategy;
 import javax.swing.JPanel;
 
@@ -54,28 +55,77 @@ public class Renderer extends JPanel implements Runnable {
             g2d.drawLine(0, i*100, 500, i*100);
         }
         
+        // draw stationary objects
         
-        // test
-        int size = gameObjects.getGameObjects().size();
-        
-        for (int i =0; i<size; i++){
-            g2d.setColor(Color.red);
-            int xPos1 = (int)gameObjects.getGameObjects().get(i).getTransform().getTranslationX();
-            int yPos1 = (int)gameObjects.getGameObjects().get(i).getTransform().getTranslationY();
-            g2d.translate(xPos1, yPos1);
-
-            for (int j =0; j<gameObjects.getGameObjects().get(i).getObjectShapes().size(); j++){
-                g2d.draw(gameObjects.getGameObjects().get(i).getObjectShapes().get(j));
-                g2d.drawOval(-5, -5, 10, 10);
-            }
+        for (int i=0; i< gameObjects.getStationaryObjectsList().size(); i++){
+            // grab original transform
+            AffineTransform ot = g2d.getTransform();
             
-            g2d.translate(-xPos1, -yPos1);
+            //get object transform
+            AffineTransform lt = new AffineTransform();
+            lt.translate(gameObjects.getStationaryObjectsList().get(i).getTransform().getTranslationX(), 
+                     gameObjects.getStationaryObjectsList().get(i).getTransform().getTranslationY());
+            lt.rotate(gameObjects.getStationaryObjectsList().get(i).getTransform().getRotation());
+            g2d.transform(lt);
+           
+            g2d.setColor(gameObjects.getStationaryObjectsList().get(i).getPaintColor());
+            
+            switch(gameObjects.getStationaryObjectsList().get(i).getPaintType()){
+                case (0):
+                    for (int j =0; j<gameObjects.getStationaryObjectsList().get(i).getObjectShapes().size(); j++){
+                        g2d.draw(gameObjects.getStationaryObjectsList().get(i).getObjectShapes().get(j));
+                    }
+                    break;
+                case(1):
+                    for (int j =0; j<gameObjects.getStationaryObjectsList().get(i).getObjectShapes().size(); j++){
+                        g2d.fill(gameObjects.getStationaryObjectsList().get(i).getObjectShapes().get(j));
+                    }
+                    break;
+                        
+            }           
+            g2d.setTransform(ot);
+            
+        }
+        
+        
+        // draw movable objects
+        
+        for (int i =0; i<gameObjects.getMoveableObjectsList().size(); i++){
+            // grab original transform
+            AffineTransform ot = g2d.getTransform();
+            
+            //get object transform
+            AffineTransform lt = new AffineTransform();
+            lt.translate(gameObjects.getMoveableObjectsList().get(i).getTransform().getTranslationX(), 
+                     gameObjects.getMoveableObjectsList().get(i).getTransform().getTranslationY());
+            lt.rotate(gameObjects.getMoveableObjectsList().get(i).getTransform().getRotation());
+            g2d.transform(lt);
+           
+            g2d.setColor(gameObjects.getMoveableObjectsList().get(i).getPaintColor());
+            
+            switch(gameObjects.getMoveableObjectsList().get(i).getPaintType()){
+                case (0):
+                    for (int j =0; j<gameObjects.getMoveableObjectsList().get(i).getObjectShapes().size(); j++){
+                        g2d.draw(gameObjects.getMoveableObjectsList().get(i).getObjectShapes().get(j));
+                    }
+                    break;
+                case(1):
+                    for (int j =0; j<gameObjects.getMoveableObjectsList().get(i).getObjectShapes().size(); j++){
+                        g2d.fill(gameObjects.getMoveableObjectsList().get(i).getObjectShapes().get(j));
+                    }
+                    break;
+                        
+            }
+
+            
+            
+            g2d.setTransform(ot);
 
         }
         
         // test find the rect fix
         
-        int yPos1 = (int)gameObjects.getGameObjects().get(0).getTransform().getTranslationY();
+        int yPos1 = (int)gameObjects.getMoveableObjectsList().get(0).getTransform().getTranslationY();
         
     }
 

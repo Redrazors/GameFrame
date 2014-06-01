@@ -9,14 +9,13 @@ package gameframe.gameobjects;
 
 import static gameframe.StaticFields.ANGULAR_DAMPING;
 import static gameframe.StaticFields.LINEAR_DAMPING;
+import java.awt.Color;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.dynamics.BodyFixture;
-import org.dyn4j.dynamics.World;
-import org.dyn4j.geometry.Circle;
 import org.dyn4j.geometry.Ellipse;
 import org.dyn4j.geometry.Rectangle;
 
@@ -27,23 +26,22 @@ import org.dyn4j.geometry.Rectangle;
  */
 public class MoveableObject extends Body {
     
-    private int pathListIndex;
-    
     private ArrayList<Shape> shapeList;
+    private int paintType;
+    private Color paintColor;
     
-    public MoveableObject(Shape shape, int xPos, int yPos){
+    public MoveableObject(Shape shape, int xPos, int yPos, Color paintColor, int paintType){
         shapeList = new ArrayList();       
+        this.paintColor = paintColor;
+        this.paintType = paintType;
         
-        //convert to dyn4j shape and add to fixture
-       
+        //convert to dyn4j shape and add to fixture       
         addFixture(shape, 0, 0);
-
-        this.translate(xPos, yPos); 
-        
+        this.translate(xPos, yPos);         
         this.setAngularDamping(ANGULAR_DAMPING);
         this.setLinearDamping(LINEAR_DAMPING);
+        this.setMass();
 
-        // convert to kpolygon and add to straightedge collision
         
     }
     
@@ -56,8 +54,8 @@ public class MoveableObject extends Body {
                 // create and add fixture
                 Rectangle2D.Double newRect = (Rectangle2D.Double)shape;
                 Rectangle collisionRect = new Rectangle(newRect.width, newRect.height);
-                collisionRect.translate(offsetX, offsetY);
                 collFix = new BodyFixture(collisionRect);
+                collisionRect.translate(offsetX, offsetY); 
                 collFix.setDensity(1);
                 this.addFixture(collFix); 
                 
@@ -65,7 +63,6 @@ public class MoveableObject extends Body {
                 newRect.x+=offsetX;
                 newRect.y+=offsetY;
                 shapeList.add(newRect);
-                //System.out.println(this.getFixtureCount());
                 break;
             case "java.awt.geom.Ellipse2D.Double":
                 
@@ -75,8 +72,7 @@ public class MoveableObject extends Body {
                 collisionEllipse.translate(offsetX, offsetY);
                 collFix.setDensity(1);
                 this.addFixture(collFix);
-                //this.addFixture(collisionEllipse);
-                
+               
                 //offset shape and add to drawing ahape list
                 newEllipse.x+=offsetX;
                 newEllipse.y+=offsetY;
@@ -85,19 +81,22 @@ public class MoveableObject extends Body {
         }
         
     }
-    
-    public void addCentredFixture(Shape shape){
-        int x = (int)this.getTransform().getTranslation().x;
-    }
+
     
     public ArrayList<Shape> getObjectShapes(){
         return shapeList;
     }
     
     
-    public int getPathListIndex(){
-        return pathListIndex;
+    public int getPaintType(){
+        return paintType;
     }
+    
+    public Color getPaintColor(){
+        return paintColor;
+    }
+            
+
     
 
     
