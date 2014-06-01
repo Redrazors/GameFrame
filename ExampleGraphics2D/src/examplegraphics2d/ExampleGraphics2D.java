@@ -73,7 +73,7 @@ public class ExampleGraphics2D extends JFrame {
         private static final long serialVersionUID = 5663760293144882635L;
         
         /** The scale 45 pixels per meter */
-        public static final double SCALE = 45.0;
+        public static final double SCALE = 1.0;
         
         /** The conversion factor from nano to base */
         public static final double NANO_TO_BASE = 1.0e9;
@@ -203,41 +203,34 @@ public class ExampleGraphics2D extends JFrame {
                 // create all your bodies/joints
                 
                 // create the floor
-                Rectangle floorRect = new Rectangle(15.0, 1.0);
+                Rectangle floorRect = new Rectangle(200.0, 10.0);
                 GameObject floor = new GameObject();
                 floor.addFixture(new BodyFixture(floorRect));
                 floor.setMass(Mass.Type.INFINITE);
                 // move the floor down a bit
-                floor.translate(0.0, -4.0);
+                floor.translate(0.0, -200.0);
                 this.world.addBody(floor);
                 
                 
                 
                 // try a compound object
-                Circle c1 = new Circle(0.5);
+                Circle c1 = new Circle(50);
                 BodyFixture c1Fixture = new BodyFixture(c1);
                 c1Fixture.setDensity(0.5);
-                Circle c2 = new Circle(0.5);
-                BodyFixture c2Fixture = new BodyFixture(c2);
-                c2Fixture.setDensity(0.5);
-                Rectangle rm = new Rectangle(2.0, 1.0);
+                Rectangle rm = new Rectangle(100.0, 30.0);
                 // translate the circles in local coordinates
-                c1.translate(-1.0, 0.0);
-                c2.translate(1.0, 0.0);
+                rm.translate(0.0, -50.0);
                 capsule = new GameObject();
                 capsule.addFixture(c1Fixture);
-                capsule.addFixture(c2Fixture);
                 capsule.addFixture(rm);
                 capsule.setMass();
-                capsule.translate(0.0, 4.0);
+                capsule.translate(-100.0, 0.0);
                 this.world.addBody(capsule);
                 
                 capsule2 = new GameObject();
                 capsule2.addFixture(c1Fixture);
-                capsule2.addFixture(c2Fixture);
-                capsule2.addFixture(rm);
                 capsule2.setMass();
-                capsule2.translate(3.0, 5.0);
+                capsule2.translate(100.0, 0.0);
                 this.world.addBody(capsule2);
                 
                 
@@ -312,7 +305,7 @@ public class ExampleGraphics2D extends JFrame {
         Toolkit.getDefaultToolkit().sync();
         
         // update the World
-        capsule.applyImpulse(new Vector2(0.1, 0.1));
+        capsule.applyImpulse(new Vector2(1000, 1));
         // get the current time
         long time = System.nanoTime();
         // get the elapsed time from the last iteration
