@@ -22,6 +22,7 @@ import org.dyn4j.geometry.Vector2;
 public class MasterClass implements Runnable {
     
     private Renderer renderer;
+    private PathControl pathControl;
     protected World world;
     private GameObjects gameObjects;
     /** The time stamp for the last iteration */
@@ -33,18 +34,17 @@ public class MasterClass implements Runnable {
     public MasterClass (JFrame gameFrame, BufferStrategy bs){
         world = new World();
         world.setGravity(new Vector2(0,0));
+         
         
         mainThread = new Thread (this);
         
         gameObjects = new GameObjects(world);
+        pathControl=new PathControl(gameObjects);
         
-        
-        renderer = new Renderer(bs, gameObjects);
+        renderer = new Renderer(bs, gameObjects, pathControl);
         renderer.setIgnoreRepaint(true);
         gameFrame.add(renderer);
         renderer.rendererStart();
-        
-        
         
         
         

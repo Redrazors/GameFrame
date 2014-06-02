@@ -37,7 +37,7 @@ public class StationaryObject extends Body {
     
     private ArrayList<PathBlockingObstacle> stationaryObstacles;
     
-    public StationaryObject(Shape shape, int xPos, int yPos, Color paintColor, int paintType, ArrayList<PathBlockingObstacle> stationaryOb){
+    public StationaryObject(int xPos, int yPos, Color paintColor, int paintType, ArrayList<PathBlockingObstacle> stationaryOb){
         shapeList = new ArrayList();       
         this.paintColor = paintColor;
         this.paintType = paintType;
@@ -46,16 +46,13 @@ public class StationaryObject extends Body {
         
         this.stationaryObstacles = stationaryOb;
         
-        //convert to dyn4j shape and add to fixture       
-        addFixture(shape, 0, 0);
+    }
+    
+    public void initObject(){
         this.translate(xPos, yPos);         
         this.setAngularDamping(ANGULAR_DAMPING);
         this.setLinearDamping(LINEAR_DAMPING);
         this.setMass(Mass.Type.INFINITE);
-        
-        
-
-        
     }
     
     public void addFixture(Shape shape, int offsetX, int offsetY){
@@ -80,12 +77,13 @@ public class StationaryObject extends Body {
                 shapeList.add(newRect);
                 
                 // add to obstacle list
+                // do not add offsset again as it is added directly to x and y above
                 double x1 = newRect.x;
                 double y1 = newRect.y;
                 double x2 = newRect.x+newRect.width;
                 double y2 = newRect.y+newRect.height;
                 pathPoly = new KPolygon(createRect(x1, y1, x2, y2));
-                pathPoly.translate(xPos+offsetX, yPos+offsetY);
+                pathPoly.translate(xPos, yPos);
                 pathBlockingObstacle = PathBlockingObstacleImpl.createObstacleFromInnerPolygon(pathPoly);
                 stationaryObstacles.add(pathBlockingObstacle);
                 

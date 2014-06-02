@@ -12,9 +12,12 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
 import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
 import javax.swing.JPanel;
+import straightedge.geom.KPoint;
 import straightedge.geom.KPolygon;
 
 /**
@@ -27,13 +30,14 @@ public class Renderer extends JPanel implements Runnable {
     private BufferStrategy bs;
     
     private GameObjects gameObjects;
-    
+    private PathControl pathControl;
    
     
-    public Renderer (BufferStrategy bs, GameObjects gameObjects){
+    public Renderer (BufferStrategy bs, GameObjects gameObjects, PathControl pathControl){
         this.bs = bs;
         renderLoop = new Thread(this);
         this.gameObjects = gameObjects;
+        this.pathControl = pathControl;
        
         
     }
@@ -107,15 +111,35 @@ public class Renderer extends JPanel implements Runnable {
         }
         
         // test draw the stationary obstacles for pathing
+        // stationary obstacles kpolygons are drawn in absolute space 0,0 top left
         int size = gameObjects.getStationaryObstacles().size();
         for (int i =0; i<size; i++){           
             // test draw the stationary obstacles
+            
+            
             g2d.setColor(Color.black);
-            KPolygon drawKPolygon = gameObjects.getStationaryObstacles().get(i).getOuterPolygon();
+            KPolygon drawKPolygon = gameObjects.getStationaryObstacles().get(i).getPolygon();
             g2d.draw(drawKPolygon);
+            
         }
-
         
+        //test draw path from testObject[0] to 350, 350
+        KPoint startPoint = new KPoint(gameObjects.getMoveableObjectsList().get(0).getTransform().getTranslationX(),
+        gameObjects.getMoveableObjectsList().get(0).getTransform().getTranslationY());
+        
+        KPoint endPoint = new KPoint(350, 350);
+        ArrayList<KPoint> pathPoints = pathControl.getPathPoints(startPoint, endPoint);
+        if (pathPoints.size() > 0){
+            KPoint p = pathPoints.get(0);
+            for (int i = 1; i < pathPoints.size(); i++) {
+                KPoint p2 = pathPoints.get(i);
+                //p2 = pathControl.avoidClippingCorners(p2, 64);
+                g2d.draw(new Line2D.Double(p.x, p.y, p2.x, p2.y));
+                float d = 5f;
+                g2d.fill(new Ellipse2D.Double(p2.x - d / 2f, p2.y - d / 2f, d, d));
+                p = p2;
+            }
+        }      
     }
 
     

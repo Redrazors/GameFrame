@@ -29,20 +29,25 @@ public class MoveableObject extends Body {
     private ArrayList<Shape> shapeList;
     private int paintType;
     private Color paintColor;
+    private int xPos, yPos;
     
-    public MoveableObject(Shape shape, int xPos, int yPos, Color paintColor, int paintType){
+    public MoveableObject(int xPos, int yPos, Color paintColor, int paintType){
         shapeList = new ArrayList();       
         this.paintColor = paintColor;
         this.paintType = paintType;
+        this.xPos = xPos;
+        this.yPos = yPos;
         
         //convert to dyn4j shape and add to fixture       
-        addFixture(shape, 0, 0);
+        //addFixture(shape, 0, 0);
+                
+    }
+    
+    public void initObject(){
         this.translate(xPos, yPos);         
         this.setAngularDamping(ANGULAR_DAMPING);
         this.setLinearDamping(LINEAR_DAMPING);
         this.setMass();
-
-        
     }
     
     
