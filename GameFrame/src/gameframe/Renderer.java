@@ -10,9 +10,12 @@ import gameframe.gameobjects.GameObjects;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferStrategy;
+import java.util.ArrayList;
 import javax.swing.JPanel;
+import straightedge.geom.KPolygon;
 
 /**
  *
@@ -70,19 +73,11 @@ public class Renderer extends JPanel implements Runnable {
            
             g2d.setColor(gameObjects.getStationaryObjectsList().get(i).getPaintColor());
             
-            switch(gameObjects.getStationaryObjectsList().get(i).getPaintType()){
-                case (0):
-                    for (int j =0; j<gameObjects.getStationaryObjectsList().get(i).getObjectShapes().size(); j++){
-                        g2d.draw(gameObjects.getStationaryObjectsList().get(i).getObjectShapes().get(j));
-                    }
-                    break;
-                case(1):
-                    for (int j =0; j<gameObjects.getStationaryObjectsList().get(i).getObjectShapes().size(); j++){
-                        g2d.fill(gameObjects.getStationaryObjectsList().get(i).getObjectShapes().get(j));
-                    }
-                    break;
-                        
-            }           
+            int type = gameObjects.getStationaryObjectsList().get(i).getPaintType();
+            ArrayList<Shape> shapeList = gameObjects.getStationaryObjectsList().get(i).getObjectShapes();
+            paintShapeByType(g2d, type, shapeList);
+            
+                      
             g2d.setTransform(ot);
             
         }
@@ -103,30 +98,40 @@ public class Renderer extends JPanel implements Runnable {
            
             g2d.setColor(gameObjects.getMoveableObjectsList().get(i).getPaintColor());
             
-            switch(gameObjects.getMoveableObjectsList().get(i).getPaintType()){
-                case (0):
-                    for (int j =0; j<gameObjects.getMoveableObjectsList().get(i).getObjectShapes().size(); j++){
-                        g2d.draw(gameObjects.getMoveableObjectsList().get(i).getObjectShapes().get(j));
-                    }
-                    break;
-                case(1):
-                    for (int j =0; j<gameObjects.getMoveableObjectsList().get(i).getObjectShapes().size(); j++){
-                        g2d.fill(gameObjects.getMoveableObjectsList().get(i).getObjectShapes().get(j));
-                    }
-                    break;
-                        
-            }
-
-            
-            
+            int type = gameObjects.getMoveableObjectsList().get(i).getPaintType();
+            ArrayList<Shape> shapeList = gameObjects.getMoveableObjectsList().get(i).getObjectShapes();
+            paintShapeByType(g2d, type, shapeList);
+         
             g2d.setTransform(ot);
 
         }
         
-        // test find the rect fix
+        // test draw the stationary obstacles for pathing
+        int size = gameObjects.getStationaryObstacles().size();
+        for (int i =0; i<size; i++){           
+            // test draw the stationary obstacles
+            g2d.setColor(Color.black);
+            KPolygon drawKPolygon = gameObjects.getStationaryObstacles().get(i).getOuterPolygon();
+            g2d.draw(drawKPolygon);
+        }
+
         
-        int yPos1 = (int)gameObjects.getMoveableObjectsList().get(0).getTransform().getTranslationY();
-        
+    }
+
+    
+    private void paintShapeByType(Graphics2D g2d, int type, ArrayList<Shape> shapeList){
+        switch(type){
+                case (0):
+                    for (Shape shapeList1 : shapeList) {
+                        g2d.draw(shapeList1);
+                    }
+                    break;
+                case(1):
+                    for (Shape shapeList1 : shapeList) {
+                        g2d.fill(shapeList1);
+                    }
+                    break;     
+            }
     }
 
     @Override
@@ -145,7 +150,7 @@ public class Renderer extends JPanel implements Runnable {
            catch (IllegalStateException e) { e.printStackTrace();}
  
             try {
-                renderLoop.sleep(1);
+                Thread.sleep(1);
             } catch (InterruptedException e) { }
         }
         

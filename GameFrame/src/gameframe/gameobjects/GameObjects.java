@@ -17,6 +17,7 @@ import org.dyn4j.geometry.Circle;
 import org.dyn4j.geometry.Mass;
 import org.dyn4j.geometry.Rectangle;
 import org.dyn4j.geometry.Vector2;
+import straightedge.geom.path.PathBlockingObstacle;
 
 
 /**
@@ -28,6 +29,7 @@ public final class GameObjects {
     private MoveableObject testObject[];
     private ArrayList<MoveableObject> moveableObjectsList;
     private ArrayList<StationaryObject> stationaryObjectsList;
+    private ArrayList<PathBlockingObstacle> stationaryObstacles;
     
     
     
@@ -36,6 +38,7 @@ public final class GameObjects {
         testObject = new MoveableObject[20];
         moveableObjectsList = new ArrayList();
         stationaryObjectsList = new ArrayList();
+        stationaryObstacles = new ArrayList();
         initTestObjects();
         
         
@@ -49,7 +52,7 @@ public final class GameObjects {
         Rectangle2D.Double rv1 = new Rectangle2D.Double(-10,-250, 20, 500);
         Rectangle2D.Double rv2 = new Rectangle2D.Double(-10,-250, 20, 500);
         
-        StationaryObject boundingWalls = new StationaryObject(rh1, 250, 10, Color.GREEN, 1);
+        StationaryObject boundingWalls = new StationaryObject(rh1, 250, 10, Color.GREEN, 1, stationaryObstacles);
         boundingWalls.addFixture(rh2, 0, 480);
         boundingWalls.addFixture(rv1, -240, 250);
         boundingWalls.addFixture(rv2, 240, 250);
@@ -59,7 +62,7 @@ public final class GameObjects {
 
         // home obstacle
         Rectangle2D.Double homeRec = new Rectangle2D.Double(-50,-30, 100, 60);
-        StationaryObject home = new StationaryObject(homeRec, 250, 250, Color.BLACK, 1);
+        StationaryObject home = new StationaryObject(homeRec, 250, 250, Color.gray, 1, stationaryObstacles);
         this.world.addBody(home);
         stationaryObjectsList.add(home);
         
@@ -88,6 +91,10 @@ public final class GameObjects {
     
     public ArrayList<StationaryObject> getStationaryObjectsList(){
         return stationaryObjectsList;
+    }
+    
+    public ArrayList<PathBlockingObstacle> getStationaryObstacles(){
+        return stationaryObstacles;
     }
     
     
