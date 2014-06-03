@@ -18,6 +18,7 @@ import org.dyn4j.dynamics.Body;
 import org.dyn4j.dynamics.BodyFixture;
 import org.dyn4j.geometry.Ellipse;
 import org.dyn4j.geometry.Rectangle;
+import straightedge.geom.KPoint;
 
 
 /**
@@ -30,6 +31,9 @@ public class MoveableObject extends Body {
     private int paintType;
     private Color paintColor;
     private int xPos, yPos;
+    private KPoint pathDestination;
+    
+    private double speed=1.0;
     
     public MoveableObject(int xPos, int yPos, Color paintColor, int paintType){
         shapeList = new ArrayList();       
@@ -100,6 +104,30 @@ public class MoveableObject extends Body {
     public Color getPaintColor(){
         return paintColor;
     }
+    
+    public void setPathDestination(KPoint target){
+       pathDestination = target;
+   }
+   
+   public KPoint getPathDestination(){
+       return pathDestination;
+   } 
+   
+   public void clearPathFindingTarget(){
+       pathDestination=null;
+   }
+   
+   public KPoint getPathLocation(){
+       return new KPoint(this.getTransform().getTranslationX(),this.getTransform().getTranslationY());
+   }
+   
+   public double getSpeed(){
+       return speed;
+   }
+   
+   public void setSpeed(double speed){
+       this.speed = speed;
+   }
             
 
     

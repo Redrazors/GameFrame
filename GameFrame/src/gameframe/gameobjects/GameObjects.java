@@ -17,6 +17,7 @@ import org.dyn4j.geometry.Circle;
 import org.dyn4j.geometry.Mass;
 import org.dyn4j.geometry.Rectangle;
 import org.dyn4j.geometry.Vector2;
+import straightedge.geom.KPoint;
 import straightedge.geom.path.NodeConnector;
 import straightedge.geom.path.PathBlockingObstacle;
 
@@ -80,23 +81,25 @@ public final class GameObjects {
         
         // annother obstalce
         Rectangle2D.Double smallRec = new Rectangle2D.Double(-30,-10, 60, 20);
-        StationaryObject smallRecStat = new StationaryObject(300, 280, Color.gray, 1, stationaryObstacles);
+        StationaryObject smallRecStat = new StationaryObject(200, 310, Color.gray, 1, stationaryObstacles);
         smallRecStat.addFixture(smallRec, 0, 0);
         smallRecStat.initObject();
         this.world.addBody(smallRecStat);
         stationaryObjectsList.add(smallRecStat);
         
         Ellipse2D.Double hitCircle = new Ellipse2D.Double(-30,-30, 60, 60);
-        testObject[0] = new MoveableObject(50, 200, Color.red, 1); 
+        testObject[0] = new MoveableObject(100, 200, Color.red, 1); 
         testObject[0].addFixture(hitCircle, 0, 0);
         Rectangle2D.Double hitRect = new Rectangle2D.Double(-15, -30, 30, 60);
-        testObject[0].addFixture(hitRect, 30, 0);
+        testObject[0].addFixture(hitRect, -30, 0);
         testObject[0].initObject();
         //add to world and game object list
         this.world.addBody(testObject[0]);
         moveableObjectsList.add(testObject[0]);
         //set test speed
         //testObject[0].getLinearVelocity().set(9000.0, 0);
+        //set test destination
+        testObject[0].setPathDestination(new KPoint(450, 450));
              
         testObject[1] = new MoveableObject(400, 180, Color.BLUE, 1);
         testObject[1].addFixture(hitCircle, 0, 0);

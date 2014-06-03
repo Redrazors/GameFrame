@@ -6,16 +6,19 @@
 
 package gameframe;
 
+import static gameframe.StaticFields.CLIP_CLEARANCE;
+import static gameframe.StaticFields.ROTATION_SPEED;
+import static gameframe.StaticFields.FORCE_AMOUNT;
 import gameframe.gameobjects.GameObjects;
+import gameframe.gameobjects.MoveableObject;
 import java.util.ArrayList;
+import org.dyn4j.geometry.Vector2;
 import straightedge.geom.KPoint;
 import straightedge.geom.KPolygon;
 import straightedge.geom.path.NodeConnector;
 import straightedge.geom.path.PathBlockingObstacle;
 import straightedge.geom.path.PathData;
 import straightedge.geom.path.PathFinder;
-
-import static gameframe.StaticFields.CLIP_CLEARANCE;
 
 /**
  *
@@ -53,11 +56,14 @@ public class PathControl {
         double maxConnectionDistanceFromStartAndEndPointsToObstacles = maxConnectionDistanceBetweenObstacles;
         PathData pathData= pathFinder.calc(startPoint, endPoint, maxConnectionDistanceFromStartAndEndPointsToObstacles, nodeConnector, stationaryObstacles);
         
-        // change all points to avoid clipping corners
-        for(int i =0; i<pathData.points.size(); i++){
-            KPoint adjustedPoint = avoidClippingCorners(pathData.points.get(i));
-            pathData.points.get(i).setCoords(adjustedPoint);
+        // moove the kpoints the clip clearance away from the object
+        for (KPoint point : pathData.points) {
+            KPoint adjustedPoint = avoidClippingCorners(point);
+            point.setCoords(adjustedPoint);
         }
+        
+        // now need to check that these points are not within the clip clearance of another object
+        // but would that check that the lines leading to those points didn't clip another object?
         
         return pathData.points;
     }
@@ -65,7 +71,6 @@ public class PathControl {
     public KPoint avoidClippingCorners(KPoint nextPoint){
         KPoint unClipped = nextPoint;
         //System.out.println(nextPoint);
-        // nextPoint is a map Coord
         for (int x=-1; x<2; x++){
             for (int y=-1; y<2; y++){
                 KPoint testPoint = new KPoint();
@@ -83,4 +88,44 @@ public class PathControl {
         }
         return unClipped;
     }
+    
+    public void moveObjects(){
+        //repeat for each moveable object
+        for (int i=0; i<gameObjects.getMoveableObjectsList().size(); i++){
+            
+            MoveableObject movingOb = gameObjects.getMoveableObjectsList().get(i);
+            
+            if (movingOb.getPathDestination()!=null){
+                
+                KPoint start = movingOb.getPathLocation();
+                KPoint destination = movingOb.getPathDestination();
+            
+                ArrayList<KPoint> pathPoints = getPathPoints(start, destination);
+            
+                // find the angle the moveable object needs to rotate to by comparing start with the next path point
+                KPoint nextPoint=pathPoints.get(1);
+                double targetAngle = Math.atan2(nextPoint.y-start.y, nextPoint.x-start.x );
+                double angleRemaining = movingOb.getTransform().getRotation() - targetAngle;
+            
+                // fix for beyond pi range
+                if (angleRemaining>Math.PI)angleRemaining -=2*Math.PI;
+                if (angleRemaining<-Math.PI)angleRemaining +=2*Math.PI;
+            
+                if (angleRemaining > 0.05){                    
+                    movingOb.rotateAboutCenter(-ROTATION_SPEED*movingOb.getSpeed());
+                } else if (angleRemaining <-0.05){
+                    movingOb.rotateAboutCenter(ROTATION_SPEED*movingOb.getSpeed());
+
+                } else {
+                    double angle = movingOb.getTransform().getRotation();
+                    int xAdjust = (int)Math.ceil(Math.cos(angle)*FORCE_AMOUNT*movingOb.getSpeed());
+                    int yAdjust = (int)Math.ceil(Math.sin(angle)*FORCE_AMOUNT*movingOb.getSpeed());
+                    movingOb.applyForce(new Vector2(xAdjust,yAdjust));
+                }
+            }
+            
+        }
+    }
+    
+   
 }

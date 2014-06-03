@@ -55,7 +55,8 @@ public class MasterClass implements Runnable {
     }
     
     private void moveObjects(){
-        gameObjects.getMoveableObjectsList().get(0).applyImpulse(new Vector2(1000.0, 100.0));
+        //gameObjects.getMoveableObjectsList().get(0).applyImpulse(new Vector2(9000.0, 100.0));
+        pathControl.moveObjects();
     }
     
 
