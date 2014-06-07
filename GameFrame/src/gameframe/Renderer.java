@@ -123,7 +123,24 @@ public class Renderer extends JPanel implements Runnable {
             
         }
         
+      //test draw path from testObject[0] to 350, 350
+        KPoint startPoint = new KPoint(gameObjects.getMoveableObjectsList().get(0).getTransform().getTranslationX(),
+        gameObjects.getMoveableObjectsList().get(0).getTransform().getTranslationY());
         
+        if (gameObjects.getMoveableObjectsList().get(0).getCurrentPath()!=null){
+            ArrayList<KPoint> pathPoints = gameObjects.getMoveableObjectsList().get(0).getCurrentPath();
+            if (pathPoints.size() > 0){
+                KPoint p = pathPoints.get(0);
+                for (int i = 1; i < pathPoints.size(); i++) {
+                    KPoint p2 = pathPoints.get(i);
+                    //p2 = pathControl.avoidClippingCorners(p2, 64);
+                    g2d.draw(new Line2D.Double(p.x, p.y, p2.x, p2.y));
+                    float d = 5f;
+                    g2d.fill(new Ellipse2D.Double(p2.x - d / 2f, p2.y - d / 2f, d, d));
+                    p = p2;
+                }
+            }
+        }  
               
     }
 

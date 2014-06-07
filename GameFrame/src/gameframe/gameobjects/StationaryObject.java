@@ -8,6 +8,7 @@ package gameframe.gameobjects;
 
 import static gameframe.StaticFields.ANGULAR_DAMPING;
 import static gameframe.StaticFields.LINEAR_DAMPING;
+import static gameframe.StaticFields.CLIP_CLEARANCE;
 import java.awt.Color;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
@@ -83,6 +84,7 @@ public class StationaryObject extends Body {
                 double x2 = newRect.x+newRect.width;
                 double y2 = newRect.y+newRect.height;
                 pathPoly = new KPolygon(createRect(x1, y1, x2, y2));
+                
                 pathPoly.translate(xPos, yPos);
                 pathBlockingObstacle = PathBlockingObstacleImpl.createObstacleFromInnerPolygon(pathPoly);
                 stationaryObstacles.add(pathBlockingObstacle);

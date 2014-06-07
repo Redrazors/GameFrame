@@ -29,6 +29,9 @@ public class MasterClass implements Runnable {
     protected long last;
     private Thread mainThread;
     
+    private double rotateTest=0.04;
+    private int spiralCounter =0;
+    
     
     
     public MasterClass (JFrame gameFrame, BufferStrategy bs){
@@ -55,8 +58,17 @@ public class MasterClass implements Runnable {
     }
     
     private void moveObjects(){
-        //gameObjects.getMoveableObjectsList().get(0).applyImpulse(new Vector2(9000.0, 100.0));
-        pathControl.moveObjects();
+        //gameObjects.getMoveableObjectsList().get(0).applyImpulse(new Vector2(1000.0, 100.0));
+        gameObjects.getMoveableObjectsList().get(0).rotateAboutCenter(rotateTest);
+        pathControl.moveObjectForward(gameObjects.getMoveableObjectsList().get(0), 100);
+        spiralCounter+=1;
+        if (spiralCounter==100){
+            rotateTest-=rotateTest/10;
+            spiralCounter=0;
+            System.out.println(rotateTest);
+        }
+        
+        //pathControl.moveObjects();
     }
     
 

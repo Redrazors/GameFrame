@@ -33,6 +33,8 @@ public class MoveableObject extends Body {
     private int xPos, yPos;
     private KPoint pathDestination;
     
+    private ArrayList<KPoint> currentPath;
+    
     private double speed=1.0;
     
     public MoveableObject(int xPos, int yPos, Color paintColor, int paintType){
@@ -42,8 +44,7 @@ public class MoveableObject extends Body {
         this.xPos = xPos;
         this.yPos = yPos;
         
-        //convert to dyn4j shape and add to fixture       
-        //addFixture(shape, 0, 0);
+        currentPath=new ArrayList();
                 
     }
     
@@ -128,6 +129,16 @@ public class MoveableObject extends Body {
    public void setSpeed(double speed){
        this.speed = speed;
    }
+   
+   // only for test drawing of path
+   // can probably delete after testing
+   public void setCurrentPathTest(ArrayList<KPoint> list){
+       currentPath=list;
+   }
+   public ArrayList<KPoint> getCurrentPath(){
+       return currentPath;
+   }
+   
             
 
     
