@@ -8,6 +8,7 @@ package gameframe;
 
 import gameframe.gameobjects.GameObjects;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
@@ -24,20 +25,23 @@ import straightedge.geom.KPolygon;
  *
  * @author David
  */
-public class Renderer extends JPanel implements Runnable {
+public class Renderer implements Runnable {
     
     private Thread renderLoop;
     private BufferStrategy bs;
     
     private GameObjects gameObjects;
     private PathControl pathControl;
+    
+    private Dimension screenSize;
    
     
-    public Renderer (BufferStrategy bs, GameObjects gameObjects, PathControl pathControl){
+    public Renderer (BufferStrategy bs, GameObjects gameObjects, PathControl pathControl, Dimension screenSize){
         this.bs = bs;
         renderLoop = new Thread(this);
         this.gameObjects = gameObjects;
         this.pathControl = pathControl;
+        this.screenSize = screenSize;
        
         
     }
@@ -51,16 +55,25 @@ public class Renderer extends JPanel implements Runnable {
         RenderingHints rh = g2d.getRenderingHints(); rh.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setRenderingHints (rh);
         
+        // screen background
         g2d.setColor(Color.white);
-        g2d.fillRect(0, 0, 500, 500);
+        g2d.fillRect(0, 0, screenSize.width, screenSize.height);
         
         // test grid
         g2d.setColor(Color.gray.brighter());
-        for (int i=0; i<5; i++){
+        for (int i=0; i<15; i++){
       
-            g2d.drawLine(i*100, 0, i*100, 500);
-            g2d.drawLine(0, i*100, 500, i*100);
+            g2d.drawLine(i*100, 0, i*100, screenSize.height);
+            g2d.drawLine(0, i*100, screenSize.width, i*100);
         }
+        
+        AffineTransform preCentred = g2d.getTransform();
+        
+        // centre 0,0 in the middle of user screen
+        AffineTransform centred = new AffineTransform();
+        centred.translate(screenSize.width/2, screenSize.height/2);
+        g2d.transform(centred);
+
         
         // draw stationary objects
         
@@ -141,7 +154,10 @@ public class Renderer extends JPanel implements Runnable {
                 }
             }
         }  
-              
+        
+        
+        // set transform back to precentred
+        g2d.setTransform(preCentred);
     }
 
     

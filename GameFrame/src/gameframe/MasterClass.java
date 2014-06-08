@@ -6,9 +6,11 @@
 
 package gameframe;
 
-import gameframe.gameobjects.GameObjects;
 import static gameframe.StaticFields.NANO_TO_BASE;
+import gameframe.gameobjects.GameObjects;
+import java.awt.Dimension;
 import java.awt.image.BufferStrategy;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import org.dyn4j.dynamics.World;
 import org.dyn4j.geometry.Circle;
@@ -31,22 +33,28 @@ public class MasterClass implements Runnable {
     
     private double rotateTest=0.04;
     private int spiralCounter =0;
+    private Dimension screenSize;
     
     
     
-    public MasterClass (JFrame gameFrame, BufferStrategy bs){
+    public MasterClass (JFrame gameFrame, BufferStrategy bs, Dimension screenSize, JComponent drawPanel){
+        this.screenSize = screenSize;
         world = new World();
         world.setGravity(new Vector2(0,0));
          
+        ActionControl actionControl = new ActionControl(drawPanel);
+        MouseControl mouseControl = new MouseControl();
+        drawPanel.addMouseListener(mouseControl);
+        drawPanel.addMouseMotionListener(mouseControl);
         
         mainThread = new Thread (this);
         
-        gameObjects = new GameObjects(world);
+        gameObjects = new GameObjects(world, screenSize);
         pathControl=new PathControl(gameObjects);
         
-        renderer = new Renderer(bs, gameObjects, pathControl);
-        renderer.setIgnoreRepaint(true);
-        gameFrame.add(renderer);
+        renderer = new Renderer(bs, gameObjects, pathControl, screenSize);
+        //renderer.setIgnoreRepaint(true);
+        //gameFrame.add(renderer);
         renderer.rendererStart();
         
         
@@ -55,6 +63,8 @@ public class MasterClass implements Runnable {
     
     public void gameInit(){
         mainThread.start();
+        
+        //world.shiftCoordinates(new Vector2(screenSize.width/2, screenSize.height/2));
     }
     
     private void moveObjects(){
@@ -65,7 +75,7 @@ public class MasterClass implements Runnable {
         if (spiralCounter==100){
             rotateTest-=rotateTest/10;
             spiralCounter=0;
-            System.out.println(rotateTest);
+            //System.out.println(rotateTest);
         }
         
         //pathControl.moveObjects();

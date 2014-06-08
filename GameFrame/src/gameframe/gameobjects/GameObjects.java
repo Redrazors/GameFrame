@@ -7,6 +7,7 @@
 package gameframe.gameobjects;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -33,11 +34,12 @@ public final class GameObjects {
     private ArrayList<StationaryObject> stationaryObjectsList;//list of my stationary object 
     
     private ArrayList<PathBlockingObstacle> stationaryObstacles;
+    private Dimension screenSize;
     
     
-    
-    public GameObjects (World world){
+    public GameObjects (World world, Dimension screenSize){
         this.world = world;
+        this.screenSize = screenSize;
         testObject = new MoveableObject[20];
         moveableObjectsList = new ArrayList();
         stationaryObjectsList = new ArrayList();
@@ -58,16 +60,16 @@ public final class GameObjects {
     private void initTestObjects(){
         
         // add walls
-        Rectangle2D.Double rh1 = new Rectangle2D.Double(-250,-10, 500, 20);
-        Rectangle2D.Double rh2 = new Rectangle2D.Double(-250,-10, 500, 20);
-        Rectangle2D.Double rv1 = new Rectangle2D.Double(-10,-250, 20, 500);
-        Rectangle2D.Double rv2 = new Rectangle2D.Double(-10,-250, 20, 500);
+        Rectangle2D.Double rh1 = new Rectangle2D.Double(-screenSize.width/2,-10, screenSize.width, 20);
+        Rectangle2D.Double rh2 = new Rectangle2D.Double(-screenSize.width/2,-10, screenSize.width, 20);
+        Rectangle2D.Double rv1 = new Rectangle2D.Double(-10,-screenSize.height/2, 20, screenSize.height);
+        Rectangle2D.Double rv2 = new Rectangle2D.Double(-10,-screenSize.height/2, 20, screenSize.height);
         
-        StationaryObject boundingWalls = new StationaryObject(250, 250, Color.GREEN, 1, stationaryObstacles);
-        boundingWalls.addFixture(rh1, 0, -250);
-        boundingWalls.addFixture(rh2, 0, 250);
-        boundingWalls.addFixture(rv1, -250, 0);
-        boundingWalls.addFixture(rv2, 250, 0);
+        StationaryObject boundingWalls = new StationaryObject(0, 0, Color.GREEN, 1, stationaryObstacles);
+        boundingWalls.addFixture(rh1, 0, -screenSize.height/2);
+        boundingWalls.addFixture(rh2, 0, screenSize.height/2);
+        boundingWalls.addFixture(rv1, -screenSize.width/2, 0);
+        boundingWalls.addFixture(rv2, screenSize.width/2, 0);
         boundingWalls.initObject();
         this.world.addBody(boundingWalls);
         stationaryObjectsList.add(boundingWalls);
@@ -89,7 +91,7 @@ public final class GameObjects {
         //stationaryObjectsList.add(smallRecStat);
         
         Ellipse2D.Double hitCircle = new Ellipse2D.Double(-5,-5, 10, 10);
-        testObject[0] = new MoveableObject(250, 250, Color.red, 1); 
+        testObject[0] = new MoveableObject(0, 0, Color.red, 1); 
         testObject[0].addFixture(hitCircle, 0, 0);
         //Rectangle2D.Double hitRect = new Rectangle2D.Double(-15, -30, 30, 60);
         //testObject[0].addFixture(hitRect, -30, 0);

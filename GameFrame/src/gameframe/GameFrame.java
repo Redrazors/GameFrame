@@ -6,8 +6,13 @@
 
 package gameframe;
 
+import java.awt.Dimension;
+import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.image.BufferStrategy;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 /**
  *
  * @author David
@@ -18,7 +23,18 @@ public class GameFrame extends JFrame {
         setIgnoreRepaint(true);
         setTitle("Game Framework");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(500,500);
+        
+        //size of the screen
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        //height of the task bar
+        Insets scnMax = Toolkit.getDefaultToolkit().getScreenInsets(getGraphicsConfiguration());
+        int taskBarSize = scnMax.bottom;
+
+        screenSize.height-=taskBarSize;
+
+        
+        setSize(screenSize);
         setResizable(false);
         
         this.setUndecorated(true);
@@ -27,7 +43,13 @@ public class GameFrame extends JFrame {
         createBufferStrategy(2);
         BufferStrategy bs = getBufferStrategy();
         
-        MasterClass masterClass = new MasterClass (this, bs);
+        JComponent drawPanel = new JComponent() {};
+        drawPanel.setIgnoreRepaint(true);
+        this.add(drawPanel);
+        
+        MasterClass masterClass = new MasterClass (this, bs, screenSize, drawPanel);
+        
+        
         
         masterClass.gameInit();
         
