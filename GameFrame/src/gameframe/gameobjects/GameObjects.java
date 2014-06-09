@@ -75,41 +75,41 @@ public final class GameObjects {
         stationaryObjectsList.add(boundingWalls);
 
         // home obstacle
-        //Rectangle2D.Double homeRec = new Rectangle2D.Double(-50,-30, 100, 60);
-        //StationaryObject home = new StationaryObject(250, 250, Color.gray, 1, stationaryObstacles);
-        //home.addFixture(homeRec, 0, 0);
-        //home.initObject();
-        //this.world.addBody(home);
-        //stationaryObjectsList.add(home);
+        Rectangle2D.Double homeRec = new Rectangle2D.Double(-50,-30, 100, 60);
+        StationaryObject home = new StationaryObject(0, -50, Color.gray, 1, stationaryObstacles);
+        home.addFixture(homeRec, 0, 0);
+        home.initObject();
+        this.world.addBody(home);
+        stationaryObjectsList.add(home);
         
         // annother obstalce
-        //Rectangle2D.Double smallRec = new Rectangle2D.Double(-30,-10, 60, 20);
-        //StationaryObject smallRecStat = new StationaryObject(200, 310, Color.gray, 1, stationaryObstacles);
-        //smallRecStat.addFixture(smallRec, 0, 0);
-        //smallRecStat.initObject();
-        //this.world.addBody(smallRecStat);
-        //stationaryObjectsList.add(smallRecStat);
+        Rectangle2D.Double smallRec = new Rectangle2D.Double(-30,-10, 60, 20);
+        StationaryObject smallRecStat = new StationaryObject(0, 80, Color.gray, 1, stationaryObstacles);
+        smallRecStat.addFixture(smallRec, 0, -50);
+        smallRecStat.initObject();
+        this.world.addBody(smallRecStat);
+        stationaryObjectsList.add(smallRecStat);
         
-        Ellipse2D.Double hitCircle = new Ellipse2D.Double(-5,-5, 10, 10);
-        testObject[0] = new MoveableObject(0, 0, Color.red, 1); 
-        testObject[0].addFixture(hitCircle, 0, 0);
+        Ellipse2D.Double testBigCirc = new Ellipse2D.Double(-30,-30, 60, 60);
+        testObject[0] = new MoveableObject(-200, 0, Color.red, 1, 15); 
+        testObject[0].addFixture(testBigCirc, 0, 0);
         //Rectangle2D.Double hitRect = new Rectangle2D.Double(-15, -30, 30, 60);
         //testObject[0].addFixture(hitRect, -30, 0);
         testObject[0].initObject();
         //add to world and game object list
         this.world.addBody(testObject[0]);
         moveableObjectsList.add(testObject[0]);
-        //set test speed
-        //testObject[0].getLinearVelocity().set(9000.0, 0);
         //set test destination
-        testObject[0].setPathDestination(new KPoint(400, 450));
-             
-        testObject[1] = new MoveableObject(400, 180, Color.BLUE, 1);
-        testObject[1].addFixture(hitCircle, 0, 0);
-        testObject[1].initObject();
+        testObject[0].setPathDestination(new KPoint(200, 0));
+        
+        Ellipse2D.Double testSmallCirc = new Ellipse2D.Double(-15,-15, 30, 30);
+        //testObject[1] = new MoveableObject(-200, 0, Color.BLUE, 1,15);
+        //testObject[1].addFixture(testSmallCirc, 0, 0);
+        //testObject[1].initObject();
         //add to world and game object list
-        this.world.addBody(testObject[1]);
-        moveableObjectsList.add(testObject[1]);
+        //this.world.addBody(testObject[1]);
+        //moveableObjectsList.add(testObject[1]);
+        //testObject[1].setPathDestination(new KPoint(200, 0));
         //set test speed
         //testObject[1].getLinearVelocity().set(-9000.0, 0);
               

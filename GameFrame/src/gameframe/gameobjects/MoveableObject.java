@@ -35,14 +35,17 @@ public class MoveableObject extends Body {
     
     private ArrayList<KPoint> currentPath;
     
+    private int objectRadius=0;
+    
     private double speed=1.0;
     
-    public MoveableObject(int xPos, int yPos, Color paintColor, int paintType){
+    public MoveableObject(int xPos, int yPos, Color paintColor, int paintType, int objectRadius){
         shapeList = new ArrayList();       
         this.paintColor = paintColor;
         this.paintType = paintType;
         this.xPos = xPos;
         this.yPos = yPos;
+        this.objectRadius = objectRadius;
         
         currentPath=new ArrayList();
                 
@@ -137,6 +140,11 @@ public class MoveableObject extends Body {
    }
    public ArrayList<KPoint> getCurrentPath(){
        return currentPath;
+   }
+   
+   // test
+   public int getObjectRadius(){
+       return objectRadius;
    }
    
             

@@ -12,6 +12,8 @@ import java.awt.Dimension;
 import java.awt.image.BufferStrategy;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import kuusisto.tinysound.Music;
+import kuusisto.tinysound.TinySound;
 import org.dyn4j.dynamics.World;
 import org.dyn4j.geometry.Circle;
 import org.dyn4j.geometry.Rectangle;
@@ -57,6 +59,8 @@ public class MasterClass implements Runnable {
         //gameFrame.add(renderer);
         renderer.rendererStart();
         
+        Music song1 = TinySound.loadMusic("music/music1.wav");
+        song1.play(true);
         
         
     }
@@ -69,16 +73,16 @@ public class MasterClass implements Runnable {
     
     private void moveObjects(){
         //gameObjects.getMoveableObjectsList().get(0).applyImpulse(new Vector2(1000.0, 100.0));
-        gameObjects.getMoveableObjectsList().get(0).rotateAboutCenter(rotateTest);
-        pathControl.moveObjectForward(gameObjects.getMoveableObjectsList().get(0), 100);
-        spiralCounter+=1;
-        if (spiralCounter==100){
-            rotateTest-=rotateTest/10;
-            spiralCounter=0;
+        //gameObjects.getMoveableObjectsList().get(0).rotateAboutCenter(rotateTest);
+        //pathControl.moveObjectForward(gameObjects.getMoveableObjectsList().get(0), 100);
+        //spiralCounter+=1;
+        //if (spiralCounter==100){
+            //rotateTest-=rotateTest/10;
+            //spiralCounter=0;
             //System.out.println(rotateTest);
-        }
+        //}
         
-        //pathControl.moveObjects();
+        pathControl.moveObjectsAlongPath();
     }
     
 

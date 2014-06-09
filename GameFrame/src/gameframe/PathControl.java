@@ -6,12 +6,12 @@
 
 package gameframe;
 
-import static gameframe.StaticFields.CLIP_CLEARANCE;
 import static gameframe.StaticFields.FORCE_AMOUNT;
 import static gameframe.StaticFields.ROTATION_SPEED;
 import gameframe.gameobjects.GameObjects;
 import gameframe.gameobjects.MoveableObject;
 import java.util.ArrayList;
+import java.util.HashMap;
 import org.dyn4j.geometry.Vector2;
 import straightedge.geom.KPoint;
 import straightedge.geom.KPolygon;
@@ -29,54 +29,63 @@ public class PathControl {
     
     private GameObjects gameObjects;
     private ArrayList<PathBlockingObstacle> stationaryObstacles;
-    private ArrayList<PathBlockingObstacle> bufferedStationaryObstacles;
-    
+    private ArrayList<PathBlockingObstacle> bufferedStationaryObstacles; 
     private NodeConnector nodeConnector;
-    private NodeConnector bufferedNodeConnector;
+    private NodeConnector bufferedNodeConnector;  
+    private HashMap nodeMap, obstaclesMap;   
     private PathFinder pathFinder;
     private double maxConnectionDistanceBetweenObstacles;
     private PolygonBufferer bufferer;
     
     public PathControl(GameObjects gameObjects){
-        this.gameObjects = gameObjects;
-        
-        stationaryObstacles = gameObjects.getStationaryObstacles();
-        bufferedStationaryObstacles = new ArrayList();
- 
-        
-        nodeConnector  = new NodeConnector();
-        bufferedNodeConnector = new NodeConnector();
-        
+        this.gameObjects = gameObjects;  
+        stationaryObstacles = gameObjects.getStationaryObstacles(); 
+        nodeConnector  = new NodeConnector();   
+        nodeMap = new HashMap();
+        obstaclesMap = new HashMap(); 
         maxConnectionDistanceBetweenObstacles = 1000;
-        
-        // complete the nodes for straightedge
-        for (int k = 0; k < stationaryObstacles.size(); k++){
-            nodeConnector.addObstacle(stationaryObstacles.get(k), stationaryObstacles, maxConnectionDistanceBetweenObstacles);
-        }
         pathFinder = new PathFinder();
-        bufferer = new PolygonBufferer ();
+        bufferer = new PolygonBufferer ();     
         
-        bufferObstacles();      
-        
-       
+       setNodeConnectors();
     }
     
-    private void bufferObstacles(){
-        for (PathBlockingObstacle stationaryObstacle : stationaryObstacles) {
-            KPolygon buffered = bufferer.buffer(stationaryObstacle.getPolygon(), CLIP_CLEARANCE, PathBlockingObstacleImpl.NUM_POINTS_IN_A_QUADRANT);
-            bufferedStationaryObstacles.add(PathBlockingObstacleImpl.createObstacleFromInnerPolygon(buffered));
+
+    
+    private void setNodeConnectors(){
+        // go through each moveable object
+        for (MoveableObject moveableObject : gameObjects.getMoveableObjectsList()) {
+            // if the hashmap doesn't contain that radius then make the nodes
+             if (!nodeMap.containsKey(moveableObject.getObjectRadius())){
+                 bufferedStationaryObstacles = new ArrayList();
+                 bufferedNodeConnector = new NodeConnector();
+                // go through each obstace and buffer it by the object radius -0.5
+                for (PathBlockingObstacle stationaryObstacle : stationaryObstacles) {
+                    KPolygon buffered1 = bufferer.buffer(stationaryObstacle.getPolygon(), moveableObject.getObjectRadius()-0.5, PathBlockingObstacleImpl.NUM_POINTS_IN_A_QUADRANT);
+                    bufferedStationaryObstacles.add(PathBlockingObstacleImpl.createObstacleFromInnerPolygon(buffered1));
+                }
+                // add these obstacles to a buffered node list
+                for (PathBlockingObstacle bufferedStationaryObstacle : bufferedStationaryObstacles) {
+                    bufferedNodeConnector.addObstacle(bufferedStationaryObstacle, bufferedStationaryObstacles, maxConnectionDistanceBetweenObstacles);
+                }
+                // add this node list to the hashmap with the radius as key
+                nodeMap.put(moveableObject.getObjectRadius(), bufferedNodeConnector);
+                obstaclesMap.put(moveableObject.getObjectRadius(), bufferedStationaryObstacles);
+             }
+            
+            
         }
-        for (PathBlockingObstacle bufferedStationaryObstacle : bufferedStationaryObstacles) {
-            bufferedNodeConnector.addObstacle(bufferedStationaryObstacle, bufferedStationaryObstacles, maxConnectionDistanceBetweenObstacles);
-        }
+        
     }
     
-    public ArrayList<KPoint> getPathPoints(KPoint startPoint, KPoint endPoint){
+    public ArrayList<KPoint> getPathPoints(KPoint startPoint, KPoint endPoint, int objectRadius){
+        // go through the hashmap and get the appropriate nodeConnector
         double maxConnectionDistanceFromStartAndEndPointsToObstacles = maxConnectionDistanceBetweenObstacles;
+        NodeConnector node = (NodeConnector) nodeMap.get(objectRadius);
+        ArrayList<PathBlockingObstacle> obstacles = (ArrayList)obstaclesMap.get(objectRadius);
         
-     
-        return pathFinder.calc(startPoint, endPoint, maxConnectionDistanceFromStartAndEndPointsToObstacles, 
-                bufferedNodeConnector, bufferedStationaryObstacles).points;
+        return  pathFinder.calc(startPoint, endPoint, maxConnectionDistanceFromStartAndEndPointsToObstacles, 
+                node, obstacles).points;
     }
     
    
@@ -92,15 +101,13 @@ public class PathControl {
                 
                 KPoint start = movingOb.getPathLocation();
                 KPoint destination = movingOb.getPathDestination();
-            
-                ArrayList<KPoint> pathPoints = getPathPoints(start, destination);
+                
+                ArrayList<KPoint> pathPoints = getPathPoints(start, destination, movingOb.getObjectRadius());
                 movingOb.setCurrentPathTest(pathPoints);
-                //System.out.println("got path " + pathPoints.size() + " * " + start + " * " + destination );
          
             }
             
             if(movingOb.getCurrentPath().size()>0){
-                //System.out.println("got path");
                 // find the angle the moveable object needs to rotate to by comparing start with the next path point
                 KPoint start = movingOb.getPathLocation();
                 KPoint nextPoint=movingOb.getCurrentPath().get(1);
@@ -138,5 +145,10 @@ public class PathControl {
         
     }
     
+    //test for drawing the obstacles
+    public ArrayList<PathBlockingObstacle> getStationaryObstacles(){
+        ArrayList<PathBlockingObstacle> obstacles = (ArrayList)obstaclesMap.get(gameObjects.getMoveableObjectsList().get(0).getObjectRadius());
+        return obstacles;
+    }
    
 }

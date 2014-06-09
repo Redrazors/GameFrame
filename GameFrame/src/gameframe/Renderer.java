@@ -125,27 +125,29 @@ public class Renderer implements Runnable {
         
         // test draw the stationary obstacles for pathing
         // stationary obstacles kpolygons are drawn in absolute space 0,0 top left
-        int size = gameObjects.getStationaryObstacles().size();
+        int size = pathControl.getStationaryObstacles().size();
         for (int i =0; i<size; i++){           
             // test draw the stationary obstacles
             
             
             g2d.setColor(Color.black);
-            KPolygon drawKPolygon = gameObjects.getStationaryObstacles().get(i).getPolygon();
+            KPolygon drawKPolygon = pathControl.getStationaryObstacles().get(i).getPolygon();
             g2d.draw(drawKPolygon);
             
         }
         
-      //test draw path from testObject[0] to 350, 350
-        KPoint startPoint = new KPoint(gameObjects.getMoveableObjectsList().get(0).getTransform().getTranslationX(),
-        gameObjects.getMoveableObjectsList().get(0).getTransform().getTranslationY());
         
-        if (gameObjects.getMoveableObjectsList().get(0).getCurrentPath()!=null){
-            ArrayList<KPoint> pathPoints = gameObjects.getMoveableObjectsList().get(0).getCurrentPath();
+        
+      for (int i=0; i<gameObjects.getMoveableObjectsList().size(); i++){
+          KPoint startPoint = new KPoint(gameObjects.getMoveableObjectsList().get(i).getTransform().getTranslationX(),
+        gameObjects.getMoveableObjectsList().get(i).getTransform().getTranslationY());
+        
+        if (gameObjects.getMoveableObjectsList().get(i).getCurrentPath()!=null){
+            ArrayList<KPoint> pathPoints = gameObjects.getMoveableObjectsList().get(i).getCurrentPath();
             if (pathPoints.size() > 0){
                 KPoint p = pathPoints.get(0);
-                for (int i = 1; i < pathPoints.size(); i++) {
-                    KPoint p2 = pathPoints.get(i);
+                for (int j = 1; j < pathPoints.size(); j++) {
+                    KPoint p2 = pathPoints.get(j);
                     //p2 = pathControl.avoidClippingCorners(p2, 64);
                     g2d.draw(new Line2D.Double(p.x, p.y, p2.x, p2.y));
                     float d = 5f;
@@ -153,7 +155,10 @@ public class Renderer implements Runnable {
                     p = p2;
                 }
             }
-        }  
+        }
+      }
+      //test draw path from testObject[0] to 350, 350
+          
         
         
         // set transform back to precentred

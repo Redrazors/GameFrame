@@ -13,6 +13,7 @@ import java.awt.image.BufferStrategy;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import kuusisto.tinysound.TinySound;
 /**
  *
  * @author David
@@ -22,6 +23,7 @@ public class GameFrame extends JFrame {
     public GameFrame(){
         setIgnoreRepaint(true);
         setTitle("Game Framework");
+        TinySound.init();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         //size of the screen
