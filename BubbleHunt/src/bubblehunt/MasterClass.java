@@ -15,8 +15,6 @@ import javax.swing.JFrame;
 import kuusisto.tinysound.Music;
 import kuusisto.tinysound.TinySound;
 import org.dyn4j.dynamics.World;
-import org.dyn4j.geometry.Circle;
-import org.dyn4j.geometry.Rectangle;
 import org.dyn4j.geometry.Vector2;
 
 /**
@@ -83,6 +81,7 @@ public class MasterClass implements Runnable {
         //}
         
         pathControl.moveObjectsAlongPath();
+        pathControl.setActiveTiles();
     }
     
 
@@ -106,7 +105,7 @@ public class MasterClass implements Runnable {
             
  
             try {
-                mainThread.sleep(40);
+                mainThread.sleep(10);
             } catch (InterruptedException e) { }
         }
     }

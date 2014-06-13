@@ -8,6 +8,10 @@ package bubblehunt;
 
 import static bubblehunt.StaticFields.FORCE_AMOUNT;
 import static bubblehunt.StaticFields.ROTATION_SPEED;
+import static bubblehunt.StaticFields.TILESIZE;
+import static bubblehunt.StaticFields.PITCHSIZE;
+
+import bubblehunt.gameobjects.BubbleTile;
 import bubblehunt.gameobjects.GameObjects;
 import bubblehunt.gameobjects.MoveableObject;
 import java.util.ArrayList;
@@ -126,10 +130,15 @@ public class PathControl {
                     movingOb.rotateAboutCenter(ROTATION_SPEED*movingOb.getSpeed());
 
                 } else {
+                    double distance = start.distance(nextPoint);
+                    double distMult = 1;
+                    if (distance<=100){
+                        distMult = distance/100;
+                    }
                     double angle = movingOb.getTransform().getRotation();
-                    int xAdjust = (int)Math.ceil(Math.cos(angle)*FORCE_AMOUNT*movingOb.getSpeed());
-                    int yAdjust = (int)Math.ceil(Math.sin(angle)*FORCE_AMOUNT*movingOb.getSpeed());
-                    movingOb.applyForce(new Vector2(xAdjust,yAdjust));
+                    int xAdjust = (int)Math.ceil(Math.cos(angle)*FORCE_AMOUNT*movingOb.getSpeed()*distMult);
+                    int yAdjust = (int)Math.ceil(Math.sin(angle)*FORCE_AMOUNT*movingOb.getSpeed()*distMult);
+                    movingOb.setLinearVelocity(new Vector2(xAdjust,yAdjust));
                 }
             }
             
@@ -141,14 +150,42 @@ public class PathControl {
         int xAdjust = (int)Math.ceil(Math.cos(angle)*forceAmount*movingOb.getSpeed());
         int yAdjust = (int)Math.ceil(Math.sin(angle)*forceAmount*movingOb.getSpeed());
         //movingOb.applyForce(new Vector2(xAdjust,yAdjust));
-        movingOb.setLinearVelocity(new Vector2(xAdjust, yAdjust));
-        
+        movingOb.setLinearVelocity(new Vector2(xAdjust, yAdjust));     
     }
     
     //test for drawing the obstacles
     public ArrayList<PathBlockingObstacle> getStationaryObstacles(){
         ArrayList<PathBlockingObstacle> obstacles = (ArrayList)obstaclesMap.get(gameObjects.getMoveableObjectsList().get(0).getObjectRadius());
         return obstacles;
+    }
+    
+    public void setActiveTiles(){
+        BubbleTile[][] bubbleTile = gameObjects.getBubbleTile();
+        
+        for (MoveableObject movingOb: gameObjects.getMoveableObjectsList()){
+            // go through each moveable object and set its tile as active
+            int x = (int)movingOb.getTransform().getTranslationX();
+            int y = (int)movingOb.getTransform().getTranslationY();
+            
+            int tileX = (int)Math.floor((PITCHSIZE/2+x)/TILESIZE);
+            int tileY = (int)Math.floor((PITCHSIZE/2+y)/TILESIZE);
+            
+            // set the block of 9 tiles active
+            for (int i=-1; i<2; i++){
+                for (int j=-1; j<2; j++){
+                    bubbleTile[tileX+i][tileY+j].setActive(true);
+                }
+            }
+            
+            KPoint currentTile = new KPoint (tileX, tileY);
+            // if the stored current tile isn't the same as the tile it is actually on
+            // then ???
+            if (movingOb.getCurrentTile()!=currentTile){
+                // need to work out the direction of travel then deselect based on that
+                
+            }
+            
+        }
     }
    
 }

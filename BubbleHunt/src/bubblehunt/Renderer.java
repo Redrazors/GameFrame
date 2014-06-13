@@ -6,12 +6,14 @@
 
 package bubblehunt;
 
+import static bubblehunt.StaticFields.TILESIZE;
+import static bubblehunt.StaticFields.PITCHSIZE;
+
 import bubblehunt.gameobjects.Bubble;
+import bubblehunt.gameobjects.BubbleTile;
 import bubblehunt.gameobjects.GameObjects;
-import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
@@ -40,8 +42,6 @@ public class Renderer implements Runnable {
     
     private Dimension screenSize;
     
-    private BufferedImage circImg = getImageSuppressExceptions("img/circler15.png");
-    BufferedImage combinedBubbles;
     
     private BufferedImage getImageSuppressExceptions(String pathOnClasspath) {
         try {
@@ -55,33 +55,14 @@ public class Renderer implements Runnable {
         this.gameObjects = gameObjects;
         this.pathControl = pathControl;
         this.screenSize = screenSize;
-       
-        
-        combinedBubbles = new BufferedImage(screenSize.width, screenSize.height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d =     combinedBubbles.createGraphics();
-        RenderingHints rh = g2d.getRenderingHints(); rh.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2d.setRenderingHints (rh);
-        AffineTransform normal = g2d.getTransform();
-        g2d.setColor(Color.red);
-        for (Bubble bubble: gameObjects.getBubbleList()){
-            int radius = bubble.getRadius();
-            double x = bubble.getBubblePoint().x;
-            double y= bubble.getBubblePoint().y;
-            Ellipse2D.Double bubbleShape = new Ellipse2D.Double(-radius, -radius, radius*2, radius*2);
-            AffineTransform bubblePoint = new AffineTransform();
-            bubblePoint.translate(x, y);
-            g2d.transform(bubblePoint);
-            g2d.draw(bubbleShape);
-            g2d.setTransform(normal);
-                    //drawImage(circImg, (int)bubble.getBubblePoint().x, (int)bubble.getBubblePoint().y, null);
-        }
-        g2d.dispose();
-        
+    
     }
     
     public void rendererStart(){
         renderLoop.start();
     }
+    
+    
     
     private void render(Graphics2D g2d){
         
@@ -104,24 +85,42 @@ public class Renderer implements Runnable {
         
         AffineTransform preCentred = g2d.getTransform();
         
+        
         // centre 0,0 in the middle of user screen
         AffineTransform centred = new AffineTransform();
         centred.translate(screenSize.width/2, screenSize.height/2);
         g2d.transform(centred);
-        g2d.drawImage(combinedBubbles, -screenSize.width/2, -screenSize.height/2, null);
-        // draw bubbles 
-        //for (int i=0; i< gameObjects.getBubbleList().size(); i++){
-            //int radius = gameObjects.getBubbleList().get(i).getRadius();
-            //double x = gameObjects.getBubbleList().get(i).getBubblePoint().x;
-            //double y= gameObjects.getBubbleList().get(i).getBubblePoint().y;
-            //AffineTransform bubblePoint = new AffineTransform();
-            //bubblePoint.translate(x, y);
-            //g2d.transform(bubblePoint);
-            //Ellipse2D.Double bubble = new Ellipse2D.Double(-radius, -radius, radius*2, radius*2);
-            //g2d.draw(bubble);
-            
-            //g2d.setTransform(centred);
-        //}
+        
+        g2d.setColor(Color.red);
+        BubbleTile[][] bubbleTile = gameObjects.getBubbleTile();
+        int tileCount = gameObjects.getTileCount();
+        for (int x =0; x<tileCount; x++){
+            for (int y=0; y<tileCount; y++){
+                // if the tile is inactive just draw the image
+                if (!bubbleTile[x][y].getActive()){
+                    g2d.drawImage(bubbleTile[x][y].getTileImage(), -PITCHSIZE/2+x*TILESIZE-15, -PITCHSIZE/2+y*TILESIZE-15, null);
+                } else{
+                    // draw the bubbles on that tile
+                    for (Bubble bubble: bubbleTile[x][y].getBubble()){
+                        int radius = bubble.getRadius();
+                        int bubbleX = (int)bubble.getBubblePoint().x;
+                        int bubbleY = (int)bubble.getBubblePoint().y;
+                        Ellipse2D.Double bubbleShape = new Ellipse2D.Double(-radius, -radius, radius*2, radius*2);
+                        AffineTransform bubblePoint = new AffineTransform();
+                        // decide which bubbleImage to use based on x,y coords
+                        bubblePoint.translate(bubbleX, bubbleY);
+                        g2d.transform(bubblePoint);
+                        g2d.draw(bubbleShape);
+                        g2d.setTransform(centred);
+                        
+                    }
+                }
+                
+            }
+        }
+        
+        
+        
         
         // draw stationary objects
         

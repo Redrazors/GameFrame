@@ -23,5 +23,8 @@ public class StaticFields {
     public static final double SCALE = 1.0;
     public static final double FORCE_AMOUNT = 50000*SCALE;
     
+    public static final int TILESIZE = 100;
+    public static final int PITCHSIZE = 2000;
+    
     
 }

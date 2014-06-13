@@ -32,6 +32,7 @@ public class MoveableObject extends Body {
     private Color paintColor;
     private int xPos, yPos;
     private KPoint pathDestination;
+    private KPoint currentTile;
     
     private ArrayList<KPoint> currentPath;
     
@@ -48,7 +49,7 @@ public class MoveableObject extends Body {
         this.objectRadius = objectRadius;
         
         currentPath=new ArrayList();
-                
+        currentTile = new KPoint();        
     }
     
     public void initObject(){
@@ -145,6 +146,13 @@ public class MoveableObject extends Body {
    // test
    public int getObjectRadius(){
        return objectRadius;
+   }
+   
+   public KPoint getCurrentTile(){
+       return currentTile;
+   }
+   public void setCurrentTile(KPoint current){
+       currentTile = current;
    }
    
             

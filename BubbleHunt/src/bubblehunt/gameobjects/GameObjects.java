@@ -8,13 +8,19 @@ package bubblehunt.gameobjects;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.dyn4j.dynamics.World;
 import straightedge.geom.KPoint;
 import straightedge.geom.path.PathBlockingObstacle;
+import static bubblehunt.StaticFields.TILESIZE;
+import static bubblehunt.StaticFields.PITCHSIZE;
 
 
 /**
@@ -32,7 +38,10 @@ public final class GameObjects {
     
     private ArrayList<PathBlockingObstacle> stationaryObstacles;
     private Dimension screenSize;
+    private BufferedImage bubbleImages[][];
     
+    private BubbleTile bubbleTile[][];
+    private int tileCount;
     
     public GameObjects (World world, Dimension screenSize){
         this.world = world;
@@ -43,9 +52,12 @@ public final class GameObjects {
         stationaryObstacles = new ArrayList();
         
         bubbleList = new ArrayList();
-  
+        tileCount = PITCHSIZE/TILESIZE+1;
+        bubbleTile = new BubbleTile[tileCount][tileCount];
         // create bubbles
         initBubbles();
+        createBubbleTiles();
+        //createBubbleImages();
         
         // init all the objects here
         initTestObjects();
@@ -53,13 +65,15 @@ public final class GameObjects {
     }
     
     private void initBubbles(){
-        int bubbleCount = 600;
+        int bubbleCount = 4500;
         
         
         for (int i=0; i< bubbleCount; i++){
-            int radius = 10+(int)(Math.random()*10);
-            KPoint bubblePoint = new KPoint((int)Math.round(Math.random()*screenSize.width), (int)Math.round(Math.random()*screenSize.height));
-            //System.out.println(bubblePoint);
+            int radius = 10+(int)(Math.random()*5);
+            // coords for -1000,-1000 to 1000,1000
+            KPoint bubblePoint = new KPoint((int)Math.round(Math.random()*PITCHSIZE-PITCHSIZE/2), 
+                    (int)Math.round(Math.random()*PITCHSIZE-PITCHSIZE/2));
+
             boolean generateNew = true;
             
             for (Bubble bubbleList1 : bubbleList) {
@@ -84,11 +98,48 @@ public final class GameObjects {
                 //System.out.println(bubbleCount);
             }
             
-        }
-            
-        //System.out.println(bubbleList.size());    
+        }  
         
     }
+    
+    private void createBubbleTiles(){
+        
+        // init bubble tiles
+        for (int i=0; i<tileCount; i++){
+            for (int j=0; j<tileCount; j++){
+                // 15 buffer on each side for radius on drawn circle
+                KPoint topLeft = new KPoint(-PITCHSIZE/2+i*TILESIZE, -PITCHSIZE/2+j*TILESIZE);
+                bubbleTile[i][j] = new BubbleTile(topLeft);
+            }
+        }
+        
+        // add the bubble to the correct tile
+        for (Bubble bubble: bubbleList){
+            int x = (int)bubble.getBubblePoint().x;
+            int y= (int)bubble.getBubblePoint().y;
+            int bubbleTileX = (int)Math.floor((x+PITCHSIZE/2)/TILESIZE);
+            int bubbleTileY = (int)Math.floor((y+PITCHSIZE/2)/TILESIZE);
+            
+            bubbleTile[bubbleTileX][bubbleTileY].addBubble(bubble);
+        }
+        
+        //init all the bubble tile images
+        for (int i=0; i<tileCount; i++){
+            for (int j=0; j<tileCount; j++){
+                bubbleTile[i][j].initTileImage();
+            }
+        }
+    }
+    
+    public BubbleTile[][] getBubbleTile(){
+        return bubbleTile;
+    }
+    
+    public int getTileCount(){
+        return tileCount;
+    }
+    
+    
     
     private void initTestObjects(){
         
@@ -116,26 +167,26 @@ public final class GameObjects {
         stationaryObjectsList.add(home);
   
         
-        Ellipse2D.Double testBigCirc = new Ellipse2D.Double(-30,-30, 60, 60);
-        testObject[0] = new MoveableObject(-200, 0, Color.red, 1, 15); 
-        testObject[0].addFixture(testBigCirc, 0, 0);
+        //Ellipse2D.Double testBigCirc = new Ellipse2D.Double(-30,-30, 60, 60);
+        //testObject[0] = new MoveableObject(-200, 0, Color.red, 1, 15); 
+        //testObject[0].addFixture(testBigCirc, 0, 0);
         //Rectangle2D.Double hitRect = new Rectangle2D.Double(-15, -30, 30, 60);
         //testObject[0].addFixture(hitRect, -30, 0);
-        testObject[0].initObject();
+        //testObject[0].initObject();
         //add to world and game object list
-        this.world.addBody(testObject[0]);
-        moveableObjectsList.add(testObject[0]);
+        //this.world.addBody(testObject[0]);
+        //moveableObjectsList.add(testObject[0]);
         //set test destination
-        testObject[0].setPathDestination(new KPoint(200, 0));
+        //testObject[0].setPathDestination(new KPoint(200, 0));
         
         Ellipse2D.Double testSmallCirc = new Ellipse2D.Double(-15,-15, 30, 30);
-        //testObject[1] = new MoveableObject(-200, 0, Color.BLUE, 1,15);
-        //testObject[1].addFixture(testSmallCirc, 0, 0);
-        //testObject[1].initObject();
+        testObject[1] = new MoveableObject(-200, 0, Color.BLUE, 1,15);
+        testObject[1].addFixture(testSmallCirc, 0, 0);
+        testObject[1].initObject();
         //add to world and game object list
-        //this.world.addBody(testObject[1]);
-        //moveableObjectsList.add(testObject[1]);
-        //testObject[1].setPathDestination(new KPoint(200, 0));
+        this.world.addBody(testObject[1]);
+        moveableObjectsList.add(testObject[1]);
+        testObject[1].setPathDestination(new KPoint(200, 0));
         //set test speed
         //testObject[1].getLinearVelocity().set(-9000.0, 0);
               
