@@ -60,7 +60,7 @@ public class MasterClass implements Runnable {
         renderer.rendererStart();
         
         Music song1 = TinySound.loadMusic("music/music1.wav");
-        song1.play(true);
+        //song1.play(true);
         
         
     }
