@@ -40,6 +40,7 @@ public class PathControl {
     private PathFinder pathFinder;
     private double maxConnectionDistanceBetweenObstacles;
     private PolygonBufferer bufferer;
+    private ArrayList<BubbleTile> activeTiles;
     
     public PathControl(GameObjects gameObjects){
         this.gameObjects = gameObjects;  
@@ -51,6 +52,7 @@ public class PathControl {
         pathFinder = new PathFinder();
         bufferer = new PolygonBufferer ();     
         
+        activeTiles = new ArrayList();
        setNodeConnectors();
     }
     
@@ -121,7 +123,7 @@ public class PathControl {
                 // fix for beyond pi range
                 if (angleRemaining>Math.PI)angleRemaining -=2*Math.PI;
                 if (angleRemaining<-Math.PI)angleRemaining +=2*Math.PI;
-            
+                //System.out.println(angleRemaining);
                 if (angleRemaining > 0.1){ 
                     //movingOb.rotateAboutCenter(-angleRemaining);
                     movingOb.rotateAboutCenter(-ROTATION_SPEED*movingOb.getSpeed());
@@ -132,13 +134,15 @@ public class PathControl {
                 } else {
                     double distance = start.distance(nextPoint);
                     double distMult = 1;
-                    if (distance<=100){
-                        distMult = distance/100;
-                    }
+                    // distmulti code not working properly
+                    //if (distance<=100){
+                        //distMult = distance/100;
+                    //}
                     double angle = movingOb.getTransform().getRotation();
+                    //System.out.println(angle);
                     int xAdjust = (int)Math.ceil(Math.cos(angle)*FORCE_AMOUNT*movingOb.getSpeed()*distMult);
                     int yAdjust = (int)Math.ceil(Math.sin(angle)*FORCE_AMOUNT*movingOb.getSpeed()*distMult);
-                    movingOb.setLinearVelocity(new Vector2(xAdjust,yAdjust));
+                    movingOb.applyForce(new Vector2(xAdjust,yAdjust));
                 }
             }
             
@@ -173,18 +177,79 @@ public class PathControl {
             // set the block of 9 tiles active
             for (int i=-1; i<2; i++){
                 for (int j=-1; j<2; j++){
-                    bubbleTile[tileX+i][tileY+j].setActive(true);
+                    
+                    // add to list of active tiles
+                    activeTiles.add(bubbleTile[tileX+i][tileY+j]);
+                    // add self to tile if not already active
+                    if (!bubbleTile[tileX+i][tileY+j].getObjectsActivatingThis().contains(movingOb)){
+                        bubbleTile[tileX+i][tileY+j].getObjectsActivatingThis().add(movingOb);
+                    }
+                    
                 }
             }
+            
             
             KPoint currentTile = new KPoint (tileX, tileY);
             // if the stored current tile isn't the same as the tile it is actually on
             // then ???
             if (movingOb.getCurrentTile()!=currentTile){
                 // need to work out the direction of travel then deselect based on that
+                int diffX = (int)(tileX - movingOb.getCurrentTile().x);
+                int diffY = (int)(tileY - movingOb.getCurrentTile().y);
+                
+                // eg at 4,1 and move to 3,1 = -1x
+                // invert the x and double it to get 2 squares away in the previosuly moved direction
+                int invertDiffX = 0-diffX;
+                int invertDiffY = 0-diffY;
+                
+                // x first - don't do it if it is 0 as it hasn't moved along x
+                if (invertDiffX!=0){
+                    
+                    int removeX = invertDiffX-diffX+tileX;
+                    int removeY = invertDiffY+tileY;
+                    //System.out.println(removeX + " , " + removeY);
+                    for (int i=-1; i<2; i++){
+                        // check that the tile exists
+                        if (removeY+i>=0 && removeY+i<gameObjects.getTileCount() && removeX>=0 && removeX<gameObjects.getTileCount() ){
+                            if (bubbleTile[removeX][removeY+i].getObjectsActivatingThis().contains(movingOb)){
+                                bubbleTile[removeX][removeY+i].getObjectsActivatingThis().remove(movingOb);
+                            }
+                        }
+                        
+                    }
+                }
+                
+                if (invertDiffY!=0){
+                    int removeX = invertDiffX + tileX;
+                    int removeY = invertDiffY-diffY +tileY;
+                    for (int i=-1; i<2; i++){
+                        if (removeX+i>0 && removeX+i<gameObjects.getTileCount() && removeY>=0 && removeY<gameObjects.getTileCount() ){
+                            if (bubbleTile[removeX+i][removeY].getObjectsActivatingThis().contains(movingOb)){
+                                bubbleTile[removeX+i][removeY].getObjectsActivatingThis().remove(movingOb);
+                            }
+                        }   
+                        
+                    }
+                }
+                // set the current tile
+                movingOb.setCurrentTile(new KPoint(tileX, tileY));
+                // 
+                // 1) Find out which tiles it no longer needs and remove itself from tile array list
+                // 2) Go through tile array list after gameobject loop and deactivate any tiles that no have an arraylist length of 0
+                // 3) activate any tiles with an arraylength >0 bubbleTile[tileX+i][tileY+j].setActive(true);
                 
             }
             
+            
+            
+        }
+        // set the tiles active according to whether objects are listed as activating them
+        for (BubbleTile activeTile: activeTiles){
+            if (activeTile.getObjectsActivatingThis().isEmpty()){
+                activeTile.setActive(false);
+            } else {
+                activeTile.setActive(true);
+            }
         }
     }
    

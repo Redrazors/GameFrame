@@ -167,26 +167,26 @@ public final class GameObjects {
         stationaryObjectsList.add(home);
   
         
-        //Ellipse2D.Double testBigCirc = new Ellipse2D.Double(-30,-30, 60, 60);
-        //testObject[0] = new MoveableObject(-200, 0, Color.red, 1, 15); 
-        //testObject[0].addFixture(testBigCirc, 0, 0);
-        //Rectangle2D.Double hitRect = new Rectangle2D.Double(-15, -30, 30, 60);
-        //testObject[0].addFixture(hitRect, -30, 0);
-        //testObject[0].initObject();
+        Ellipse2D.Double testBigCirc = new Ellipse2D.Double(-10,-10, 20, 20);
+        testObject[0] = new MoveableObject(-200, 0, Color.red, 1, 15); 
+        testObject[0].addFixture(testBigCirc, 0, 0);
+        Rectangle2D.Double hitRect = new Rectangle2D.Double(-5, -10, 10, 20);
+        testObject[0].addFixture(hitRect, -10, 0);
+        testObject[0].initObject();
         //add to world and game object list
-        //this.world.addBody(testObject[0]);
-        //moveableObjectsList.add(testObject[0]);
+        this.world.addBody(testObject[0]);
+        moveableObjectsList.add(testObject[0]);
         //set test destination
-        //testObject[0].setPathDestination(new KPoint(200, 0));
+        testObject[0].setPathDestination(new KPoint(200, 250));
         
-        Ellipse2D.Double testSmallCirc = new Ellipse2D.Double(-15,-15, 30, 30);
-        testObject[1] = new MoveableObject(-200, 0, Color.BLUE, 1,15);
-        testObject[1].addFixture(testSmallCirc, 0, 0);
-        testObject[1].initObject();
+        //Ellipse2D.Double testSmallCirc = new Ellipse2D.Double(-15,-15, 30, 30);
+        //testObject[1] = new MoveableObject(-200, 0, Color.BLUE, 1,15);
+        //testObject[1].addFixture(testSmallCirc, 0, 0);
+        //testObject[1].initObject();
         //add to world and game object list
-        this.world.addBody(testObject[1]);
-        moveableObjectsList.add(testObject[1]);
-        testObject[1].setPathDestination(new KPoint(200, 0));
+       // this.world.addBody(testObject[1]);
+        //moveableObjectsList.add(testObject[1]);
+        //testObject[1].setPathDestination(new KPoint(200, -300));
         //set test speed
         //testObject[1].getLinearVelocity().set(-9000.0, 0);
               

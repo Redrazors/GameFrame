@@ -27,11 +27,15 @@ public class BubbleTile {
     private boolean active=false;
     private boolean noLongerRequired = false;
     
+    private ArrayList<MoveableObject> objectsActivatingThis;
+    
     public BubbleTile(KPoint topleft){
         this.topLeftPoint = topleft;
         
         tileImage = new BufferedImage(TILESIZE+30, TILESIZE+30, BufferedImage.TYPE_INT_ARGB);
         tileBubbles = new ArrayList();
+        
+        objectsActivatingThis = new ArrayList();
     }
     
     
@@ -87,6 +91,13 @@ public class BubbleTile {
             g2d.setTransform(normal);
             g2d.dispose();
         }
+    }
+    
+    public void addActivatingObject(MoveableObject movingOb){
+        objectsActivatingThis.add(movingOb);
+    }
+    public ArrayList<MoveableObject> getObjectsActivatingThis(){
+        return objectsActivatingThis;
     }
     
 }
