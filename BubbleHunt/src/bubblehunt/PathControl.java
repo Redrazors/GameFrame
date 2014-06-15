@@ -7,10 +7,10 @@
 package bubblehunt;
 
 import static bubblehunt.StaticFields.FORCE_AMOUNT;
+import static bubblehunt.StaticFields.PITCHSIZE;
 import static bubblehunt.StaticFields.ROTATION_SPEED;
 import static bubblehunt.StaticFields.TILESIZE;
-import static bubblehunt.StaticFields.PITCHSIZE;
-
+import bubblehunt.gameobjects.Bubble;
 import bubblehunt.gameobjects.BubbleTile;
 import bubblehunt.gameobjects.GameObjects;
 import bubblehunt.gameobjects.MoveableObject;
@@ -190,6 +190,7 @@ public class PathControl {
             
             
             KPoint currentTile = new KPoint (tileX, tileY);
+            
             // if the stored current tile isn't the same as the tile it is actually on
             // then ???
             if (movingOb.getCurrentTile()!=currentTile){
@@ -249,6 +250,27 @@ public class PathControl {
                 activeTile.setActive(false);
             } else {
                 activeTile.setActive(true);
+            }
+        }
+        
+        // do collision work for moving ob on its current tiles
+        
+        for (MoveableObject movingOb: gameObjects.getMoveableObjectsList()){
+            int tileX = (int)movingOb.getCurrentTile().x;
+            int tileY = (int)movingOb.getCurrentTile().y;
+            
+            // only on current tile for now split iteration and removal to avoid concurrent modification problem
+            ArrayList<Bubble> bubblesToRemove = new ArrayList();
+            for (Bubble bubble: bubbleTile[tileX][tileY].getBubble()){
+                int totalRadius = bubble.getRadius()+movingOb.getObjectRadius();
+                int distance = (int)bubble.getBubblePoint().distance(movingOb.getPathLocation());
+                if (totalRadius>=distance){
+                    bubblesToRemove.add(bubble);
+                }
+            }
+            // remove the identified bubbles
+            for (Bubble bubble: bubblesToRemove){
+                bubbleTile[tileX][tileY].getBubble().remove(bubble);
             }
         }
     }
