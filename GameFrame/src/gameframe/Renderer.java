@@ -34,6 +34,7 @@ public class Renderer implements Runnable {
     private PathControl pathControl;
     
     private Dimension screenSize;
+    private FPSCounter fpsCounter;
    
     
     public Renderer (BufferStrategy bs, GameObjects gameObjects, PathControl pathControl, Dimension screenSize){
@@ -43,7 +44,8 @@ public class Renderer implements Runnable {
         this.pathControl = pathControl;
         this.screenSize = screenSize;
        
-        
+        fpsCounter=new FPSCounter();
+        fpsCounter.start();
     }
     
     public void rendererStart(){
@@ -163,6 +165,8 @@ public class Renderer implements Runnable {
         
         // set transform back to precentred
         g2d.setTransform(preCentred);
+        
+        g2d.drawString(Double.toString(fpsCounter.fps()), 50, 50);
     }
 
     
@@ -193,6 +197,7 @@ public class Renderer implements Runnable {
                 if (!bs.contentsLost()) {
                     bs.show();
                 }
+                fpsCounter.interrupt();
            }
            catch (IllegalStateException e) { e.printStackTrace();}
  

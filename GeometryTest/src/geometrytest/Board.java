@@ -20,10 +20,12 @@ import javax.swing.JPanel;
  */
 public class Board extends JPanel implements Runnable {
     private Thread geoLoop;
+    private FPSCounter fpsCounter;
     
     public Board(){
         geoLoop = new Thread(this);
-        
+        fpsCounter=new FPSCounter();
+        fpsCounter.start();
     }
     
     public void boardInit(){
@@ -35,6 +37,7 @@ public class Board extends JPanel implements Runnable {
         g2d.setColor(Color.white);
         g2d.fillRect(0, 0, 500, 500);
         g2d.setColor(Color.red);
+        g2d.drawString(Double.toString(fpsCounter.fps()), 50, 50);
         //g2d.fillRect(0, 0, 50, 50);
         
         Rectangle2D.Double testRect = new Rectangle2D.Double(200, 170, 100, 100);
@@ -47,7 +50,7 @@ public class Board extends JPanel implements Runnable {
                 Rectangle2D.Double newRect = (Rectangle2D.Double)testShape;
                 
                 g2d.fill(newRect);
-                System.out.println(testShape.getBounds().x + testShape.getBounds().y);
+                //System.out.println(testShape.getBounds().x + testShape.getBounds().y);
                 break;
             case "java.awt.geom.Ellipse2D.Double":
                 Ellipse2D.Double newEllipse = (Ellipse2D.Double)testShape;
@@ -66,7 +69,9 @@ public class Board extends JPanel implements Runnable {
     public void run() {
         while (true){
             repaint();
+            fpsCounter.interrupt();
             try {
+                
                 geoLoop.sleep(1);
             } catch (InterruptedException e) { }
         }

@@ -106,7 +106,7 @@ public class MasterClass implements Runnable {
             
  
             try {
-                mainThread.sleep(20);
+                mainThread.sleep(1);
             } catch (InterruptedException e) { }
         }
     }
