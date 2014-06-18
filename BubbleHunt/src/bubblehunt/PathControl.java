@@ -245,12 +245,24 @@ public class PathControl {
             
         }
         // set the tiles active according to whether objects are listed as activating them
+        // 1) Tile only deactivated in renderer once image creation is complete
+        // 2) image is only refreshed if bubble count has changed
+        ArrayList<BubbleTile> tilesToRemove = new ArrayList(); 
         for (BubbleTile activeTile: activeTiles){
             if (activeTile.getObjectsActivatingThis().isEmpty()){
-                activeTile.setActive(false);
+                // only refresh if bubble count is changed
+                activeTile.setRefreshImage();
+                //activeTile.initTileImage();
+                tilesToRemove.add(activeTile);
             } else {
                 activeTile.setActive(true);
             }
+        }
+        
+        // bubbles removed here
+        // call animation and sound
+        for (BubbleTile removeBubble: tilesToRemove){
+            activeTiles.remove(removeBubble);
         }
         
         // do collision work for moving ob on its current tiles
@@ -259,20 +271,24 @@ public class PathControl {
             int tileX = (int)movingOb.getCurrentTile().x;
             int tileY = (int)movingOb.getCurrentTile().y;
             
-            // only on current tile for now split iteration and removal to avoid concurrent modification problem
-            ArrayList<Bubble> bubblesToRemove = new ArrayList();
-            for (Bubble bubble: bubbleTile[tileX][tileY].getBubble()){
-                int totalRadius = bubble.getRadius()+movingOb.getObjectRadius();
-                int distance = (int)bubble.getBubblePoint().distance(movingOb.getPathLocation());
-                if (totalRadius>=distance){
-                    bubblesToRemove.add(bubble);
-                }
-            }
-            // remove the identified bubbles
-            for (Bubble bubble: bubblesToRemove){
-                bubbleTile[tileX][tileY].getBubble().remove(bubble);
-            }
-        }
+            // only on current tile for now 
+            for (int x=-1; x<2; x++){
+                for (int y=-1; y<2; y++){
+                    for (Bubble bubble: bubbleTile[tileX+x][tileY+y].getBubble()){
+                        int totalRadius = bubble.getRadius()+movingOb.getObjectRadius();
+                        int distance = (int)bubble.getBubblePoint().distance(movingOb.getPathLocation());
+                        if (totalRadius>=distance){
+                            bubbleTile[tileX][tileY].getBubble().remove(bubble);
+                        }
+                    }   
+                    
+                    
+                }//end y
+            }// end x
+            
+        } // end tile collision for
+        
+        
     }
    
 }

@@ -6,20 +6,22 @@
 
 package bubblehunt;
 
-import static bubblehunt.StaticFields.TILESIZE;
 import static bubblehunt.StaticFields.PITCHSIZE;
-
+import static bubblehunt.StaticFields.TILESIZE;
 import bubblehunt.gameobjects.Bubble;
 import bubblehunt.gameobjects.BubbleTile;
 import bubblehunt.gameobjects.GameObjects;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.MultipleGradientPaint.CycleMethod;
+import java.awt.RadialGradientPaint;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -41,6 +43,12 @@ public class Renderer implements Runnable {
     private PathControl pathControl;
     
     private Dimension screenSize;
+    private FPSCounter fPSCounter;
+    private TileRenderer tileRenderer;
+    
+    private KPoint activeTopLeft, activeBottomRight;
+    
+    private BufferedImage testTile;
     
     
     private BufferedImage getImageSuppressExceptions(String pathOnClasspath) {
@@ -55,7 +63,16 @@ public class Renderer implements Runnable {
         this.gameObjects = gameObjects;
         this.pathControl = pathControl;
         this.screenSize = screenSize;
-    
+        
+        fPSCounter = new FPSCounter();
+        fPSCounter.start();
+        tileRenderer = new TileRenderer();
+        tileRenderer.start();
+        
+        activeTopLeft= new KPoint(0-screenSize.width/2, 0-screenSize.height/2);
+        activeBottomRight = new KPoint (screenSize.width/2, screenSize.height/2);
+        
+        testTile = getImageSuppressExceptions("img/test50tile.png");
     }
     
     public void rendererStart(){
@@ -94,26 +111,45 @@ public class Renderer implements Runnable {
         g2d.setColor(Color.red);
         BubbleTile[][] bubbleTile = gameObjects.getBubbleTile();
         int tileCount = gameObjects.getTileCount();
+        // set x and y of each tiles
         for (int x =0; x<tileCount; x++){
             for (int y=0; y<tileCount; y++){
-                // if the tile is inactive just draw the image
-                if (!bubbleTile[x][y].getActive()){
-                    g2d.drawImage(bubbleTile[x][y].getTileImage(), -PITCHSIZE/2+x*TILESIZE-15, -PITCHSIZE/2+y*TILESIZE-15, null);
-                } else{
-                    // draw the bubbles on that tile
-                    for (Bubble bubble: bubbleTile[x][y].getBubble()){
-                        int radius = bubble.getRadius();
-                        int bubbleX = (int)bubble.getBubblePoint().x;
-                        int bubbleY = (int)bubble.getBubblePoint().y;
-                        Ellipse2D.Double bubbleShape = new Ellipse2D.Double(-radius, -radius, radius*2, radius*2);
-                        AffineTransform bubblePoint = new AffineTransform();
-                        // decide which bubbleImage to use based on x,y coords
-                        bubblePoint.translate(bubbleX, bubbleY);
-                        g2d.transform(bubblePoint);
-                        g2d.draw(bubbleShape);
-                        g2d.setTransform(centred);
+                
+                // is the tile on screen?
+                
+                if (bubbleTile[x][y].getTopLeftPoint().x+TILESIZE+30>activeTopLeft.x &&
+                        bubbleTile[x][y].getTopLeftPoint().y+TILESIZE+30>activeTopLeft.y &&
+                        bubbleTile[x][y].getTopLeftPoint().x<activeBottomRight.x &&
+                        bubbleTile[x][y].getTopLeftPoint().y<activeBottomRight.y){
+                    //System.out.println("drawing tile" +x + " , " +y);
+                    // if the tile is inactive just draw the image
+                    if (!bubbleTile[x][y].getActive()){
+                        //g2d.drawImage(testTile, -PITCHSIZE/2+x*TILESIZE-15, -PITCHSIZE/2+y*TILESIZE-15, null);
+                        g2d.drawImage(bubbleTile[x][y].getTileImage(), -PITCHSIZE/2+x*TILESIZE-15, -PITCHSIZE/2+y*TILESIZE-15, null);
+                    } else{
+                        // draw the bubbles on that tile - use copy to prevent concurrent
+                        for (Bubble bubble: bubbleTile[x][y].getBubble()){
+                            int radius = bubble.getRadius();
+                            int bubbleX = (int)bubble.getBubblePoint().x;
+                            int bubbleY = (int)bubble.getBubblePoint().y;
+                            Ellipse2D.Double bubbleShape = new Ellipse2D.Double(-radius, -radius, radius*2, radius*2);
+                            AffineTransform bubblePoint = new AffineTransform();
+                            // decide which bubbleImage to use based on x,y coords
+                            bubblePoint.translate(bubbleX, bubbleY);
+                            g2d.transform(bubblePoint);
+                            g2d.draw(bubbleShape);
+                            //paintBubble(g2d, bubble.getBubblePoint(), bubble.getRadius());
+                            g2d.setTransform(centred);
                         
-                    }
+                        }
+                    } // end draw active tile else
+                } //end is tile on screen if
+                
+                
+                
+                if (bubbleTile[x][y].getRefreshImage()){
+                    tileRenderer.addTileToRender(bubbleTile[x][y]);
+                    //changeTileImage(bubbleTile[x][y]);
                 }
                 
             }
@@ -170,47 +206,18 @@ public class Renderer implements Runnable {
 
         }
         
-        // test draw the stationary obstacles for pathing
-        // stationary obstacles kpolygons are drawn in absolute space 0,0 top left
-        int size = pathControl.getStationaryObstacles().size();
-        for (int i =0; i<size; i++){           
-            // test draw the stationary obstacles
-            
-            
-            g2d.setColor(Color.black);
-            KPolygon drawKPolygon = pathControl.getStationaryObstacles().get(i).getPolygon();
-            g2d.draw(drawKPolygon);
-            
-        }
         
-        
-        
-      for (int i=0; i<gameObjects.getMoveableObjectsList().size(); i++){
-          KPoint startPoint = new KPoint(gameObjects.getMoveableObjectsList().get(i).getTransform().getTranslationX(),
-        gameObjects.getMoveableObjectsList().get(i).getTransform().getTranslationY());
-        
-        if (gameObjects.getMoveableObjectsList().get(i).getCurrentPath()!=null){
-            ArrayList<KPoint> pathPoints = gameObjects.getMoveableObjectsList().get(i).getCurrentPath();
-            if (pathPoints.size() > 0){
-                KPoint p = pathPoints.get(0);
-                for (int j = 1; j < pathPoints.size(); j++) {
-                    KPoint p2 = pathPoints.get(j);
-                    //p2 = pathControl.avoidClippingCorners(p2, 64);
-                    g2d.draw(new Line2D.Double(p.x, p.y, p2.x, p2.y));
-                    float d = 5f;
-                    g2d.fill(new Ellipse2D.Double(p2.x - d / 2f, p2.y - d / 2f, d, d));
-                    p = p2;
-                }
-            }
-        }
-      }
-      //test draw path from testObject[0] to 350, 350
           
         
         
         // set transform back to precentred
         g2d.setTransform(preCentred);
+        g2d.drawString(Double.toString(fPSCounter.fps()), 50, 50);
+        
+        
     }
+    
+    
 
     
     private void paintShapeByType(Graphics2D g2d, int type, ArrayList<Shape> shapeList){
@@ -227,6 +234,18 @@ public class Renderer implements Runnable {
                     break;     
             }
     }
+    
+    private void paintBubble(Graphics2D g2d, KPoint point, int radius){
+        Color trans = new Color(0, 0, 0, 0);
+        Point2D center = new Point2D.Float(0.0f, 0.0f);
+	Point2D focus = new Point2D.Float(0.0f, 0.0f);
+	float[] dist = { 0.6f, 0.9f };
+	Color[] colors = { trans, Color.BLUE.brighter().brighter().brighter() };
+	RadialGradientPaint p = new RadialGradientPaint(center, radius, focus,
+			dist, colors, CycleMethod.NO_CYCLE);
+        g2d.setPaint(p);
+        g2d.fillOval(-radius, -radius, radius*2, radius*2);
+    }
 
     @Override
     public void run() {
@@ -236,6 +255,7 @@ public class Renderer implements Runnable {
             try{
                 g2d = (Graphics2D) bs.getDrawGraphics();
                 render(g2d);
+                fPSCounter.interrupt();
                 g2d.dispose();
                 if (!bs.contentsLost()) {
                     bs.show();

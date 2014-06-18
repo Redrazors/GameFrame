@@ -6,6 +6,9 @@
 
 package bubblehunt.gameobjects;
 
+import bubblehunt.Renderer;
+import static bubblehunt.StaticFields.PITCHSIZE;
+import static bubblehunt.StaticFields.TILESIZE;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -19,8 +22,6 @@ import java.util.HashMap;
 import org.dyn4j.dynamics.World;
 import straightedge.geom.KPoint;
 import straightedge.geom.path.PathBlockingObstacle;
-import static bubblehunt.StaticFields.TILESIZE;
-import static bubblehunt.StaticFields.PITCHSIZE;
 
 
 /**
@@ -65,7 +66,7 @@ public final class GameObjects {
     }
     
     private void initBubbles(){
-        int bubbleCount = 4500;
+        int bubbleCount = 2000;
         
         
         for (int i=0; i< bubbleCount; i++){
@@ -168,16 +169,17 @@ public final class GameObjects {
   
         
         Ellipse2D.Double testBigCirc = new Ellipse2D.Double(-10,-10, 20, 20);
-        testObject[0] = new MoveableObject(-200, 0, Color.red, 1, 15); 
+        testObject[0] = new MoveableObject(-200, 0, Color.red, 1, 10); 
         testObject[0].addFixture(testBigCirc, 0, 0);
-        Rectangle2D.Double hitRect = new Rectangle2D.Double(-5, -10, 10, 20);
-        testObject[0].addFixture(hitRect, -10, 0);
+        Rectangle2D.Double hitRect = new Rectangle2D.Double(-5, -3, 10, 6);
+        testObject[0].addFixture(hitRect, 0, 0);
         testObject[0].initObject();
         //add to world and game object list
         this.world.addBody(testObject[0]);
         moveableObjectsList.add(testObject[0]);
         //set test destination
-        testObject[0].setPathDestination(new KPoint(200, 250));
+        testObject[0].setPathDestination(new KPoint(210, 270));
+        //testObject[0].getLinearVelocity().set(9000.0, 1000.0);
         
         //Ellipse2D.Double testSmallCirc = new Ellipse2D.Double(-15,-15, 30, 30);
         //testObject[1] = new MoveableObject(-200, 0, Color.BLUE, 1,15);
