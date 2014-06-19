@@ -11,6 +11,7 @@ import static bubblehunt.StaticFields.TILESIZE;
 import bubblehunt.gameobjects.Bubble;
 import bubblehunt.gameobjects.BubbleTile;
 import bubblehunt.gameobjects.GameObjects;
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -26,6 +27,7 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 import javax.imageio.ImageIO;
 import straightedge.geom.KPoint;
 import straightedge.geom.KPolygon;
@@ -44,11 +46,12 @@ public class Renderer implements Runnable {
     
     private Dimension screenSize;
     private FPSCounter fPSCounter;
-    private TileRenderer tileRenderer;
     
     private KPoint activeTopLeft, activeBottomRight;
     
     private BufferedImage testTile;
+    
+    
     
     
     private BufferedImage getImageSuppressExceptions(String pathOnClasspath) {
@@ -66,17 +69,61 @@ public class Renderer implements Runnable {
         
         fPSCounter = new FPSCounter();
         fPSCounter.start();
-        tileRenderer = new TileRenderer();
-        tileRenderer.start();
         
         activeTopLeft= new KPoint(0-screenSize.width/2, 0-screenSize.height/2);
         activeBottomRight = new KPoint (screenSize.width/2, screenSize.height/2);
         
         testTile = getImageSuppressExceptions("img/test50tile.png");
+        
+        
     }
     
     public void rendererStart(){
         renderLoop.start();
+    }
+    
+    
+    
+    private void redrawTiles(){
+        for (BubbleTile bubbleTile: pathControl.getTilesToRedraw()){
+            changeTileImage(bubbleTile);
+            pathControl.getTilesToRedraw().remove(bubbleTile);
+
+        }
+    }
+    
+    public void changeTileImage(BubbleTile bubbleTile){
+        Graphics2D g2d = bubbleTile.getTileImage().createGraphics();
+        // set the drawing to transparent
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR));
+        AffineTransform bubblePoint = new AffineTransform();
+        RenderingHints rh = g2d.getRenderingHints(); rh.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setRenderingHints (rh);
+        AffineTransform normal = g2d.getTransform();
+        
+        for (Bubble bubble: bubbleTile.getBubblesToRemove()){
+            int radius = bubble.getRadius();
+            // eg point is -958, -940...  top left point is -1000, -1000
+            // 
+            KPoint topLeftPoint = bubbleTile.getTopLeftPoint();
+            int localX = (int)(bubble.getBubblePoint().x-topLeftPoint.x)+15;//+15 for the buffer around each image
+            int localY = (int)(bubble.getBubblePoint().y-topLeftPoint.y)+15;
+            Ellipse2D.Double bubbleShape = new Ellipse2D.Double(-radius, -radius, radius*2, radius*2);
+            
+            bubblePoint.translate(localX, localY);
+            g2d.transform(bubblePoint);
+            
+            g2d.draw(bubbleShape);
+            g2d.setTransform(normal);
+            
+            
+            // remove this from the list
+            bubbleTile.getBubblesToRemove().remove(bubble);
+            
+        }
+        
+        g2d.dispose();
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
     }
     
     
@@ -121,36 +168,11 @@ public class Renderer implements Runnable {
                         bubbleTile[x][y].getTopLeftPoint().y+TILESIZE+30>activeTopLeft.y &&
                         bubbleTile[x][y].getTopLeftPoint().x<activeBottomRight.x &&
                         bubbleTile[x][y].getTopLeftPoint().y<activeBottomRight.y){
-                    //System.out.println("drawing tile" +x + " , " +y);
-                    // if the tile is inactive just draw the image
-                    if (!bubbleTile[x][y].getActive()){
-                        //g2d.drawImage(testTile, -PITCHSIZE/2+x*TILESIZE-15, -PITCHSIZE/2+y*TILESIZE-15, null);
-                        g2d.drawImage(bubbleTile[x][y].getTileImage(), -PITCHSIZE/2+x*TILESIZE-15, -PITCHSIZE/2+y*TILESIZE-15, null);
-                    } else{
-                        // draw the bubbles on that tile - use copy to prevent concurrent
-                        for (Bubble bubble: bubbleTile[x][y].getBubble()){
-                            int radius = bubble.getRadius();
-                            int bubbleX = (int)bubble.getBubblePoint().x;
-                            int bubbleY = (int)bubble.getBubblePoint().y;
-                            Ellipse2D.Double bubbleShape = new Ellipse2D.Double(-radius, -radius, radius*2, radius*2);
-                            AffineTransform bubblePoint = new AffineTransform();
-                            // decide which bubbleImage to use based on x,y coords
-                            bubblePoint.translate(bubbleX, bubbleY);
-                            g2d.transform(bubblePoint);
-                            g2d.draw(bubbleShape);
-                            //paintBubble(g2d, bubble.getBubblePoint(), bubble.getRadius());
-                            g2d.setTransform(centred);
-                        
-                        }
-                    } // end draw active tile else
+
+                            g2d.drawImage(bubbleTile[x][y].getTileImage(), -PITCHSIZE/2+x*TILESIZE-15, -PITCHSIZE/2+y*TILESIZE-15, null);
+
                 } //end is tile on screen if
-                
-                
-                
-                if (bubbleTile[x][y].getRefreshImage()){
-                    tileRenderer.addTileToRender(bubbleTile[x][y]);
-                    //changeTileImage(bubbleTile[x][y]);
-                }
+
                 
             }
         }
@@ -255,6 +277,7 @@ public class Renderer implements Runnable {
             try{
                 g2d = (Graphics2D) bs.getDrawGraphics();
                 render(g2d);
+                redrawTiles();
                 fPSCounter.interrupt();
                 g2d.dispose();
                 if (!bs.contentsLost()) {

@@ -35,6 +35,8 @@ public class BubbleTile {
     private boolean refreshImage = false;
     private int bubbleCount;
     
+    private CopyOnWriteArrayList<Bubble> bubblesToRemove;
+    
     private ArrayList<MoveableObject> objectsActivatingThis;
     private BufferedImage testTile;
     
@@ -49,6 +51,7 @@ public class BubbleTile {
         
         
         tileBubbles = new CopyOnWriteArrayList();
+        bubblesToRemove = new CopyOnWriteArrayList();
         
         objectsActivatingThis = new ArrayList();
         testTile = getImageSuppressExceptions("img/test50tile.png");
@@ -59,11 +62,17 @@ public class BubbleTile {
         return topLeftPoint;
     }
     
+    public void addBubbleToRemove(Bubble bubble){
+        bubblesToRemove.add(bubble);
+    }
+    public CopyOnWriteArrayList<Bubble> getBubblesToRemove(){
+        return bubblesToRemove;
+    }
     
     public BufferedImage getTileImage(){
         //return testTile;
-        readyTileImage = tileImage;
-        return readyTileImage;
+        //readyTileImage = tileImage;
+        return tileImage;
     }
     
     public void addBubble (Bubble bubble){
@@ -75,19 +84,6 @@ public class BubbleTile {
     }
     
     
-    public void setActive (boolean bool){
-        active=bool;
-    }
-    
-    public boolean getActive(){
-        return active;
-    }
-    public boolean getNoLongerRequired(){
-        return noLongerRequired;
-    }
-    public void setNoLongerRequired(boolean bool){
-        noLongerRequired = bool;
-    }
     
     
     public void initTileImage(){
@@ -124,26 +120,8 @@ public class BubbleTile {
     public boolean getRefreshImage(){
         return refreshImage;
     }
-    public void setRefreshImage(){
-        int bubbleActual = tileBubbles.size();
-        if (bubbleCount!= bubbleActual){
-            refreshImage = true;
-            bubbleCount = bubbleActual;
-        } else {
-            active=false;
-            //refreshImage=false;
-        }
-        
-    }
-    
-    
-    
-    public void addActivatingObject(MoveableObject movingOb){
-        objectsActivatingThis.add(movingOb);
-    }
-    public ArrayList<MoveableObject> getObjectsActivatingThis(){
-        return objectsActivatingThis;
-    }
+
+
     
     
 }

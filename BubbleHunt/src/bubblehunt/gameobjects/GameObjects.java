@@ -66,7 +66,7 @@ public final class GameObjects {
     }
     
     private void initBubbles(){
-        int bubbleCount = 2000;
+        int bubbleCount = 3000;
         
         
         for (int i=0; i< bubbleCount; i++){
@@ -82,7 +82,7 @@ public final class GameObjects {
                 //
                 //System.out.println(bubbleList.size() + " i= " + i);
                 // if the combined radius is less than the distance
-                if (radius + bubbleList1.getRadius() > distance) {
+                if (radius + bubbleList1.getRadius()+3 > distance) {
                     generateNew = false;
                     break;
                 } 

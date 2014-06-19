@@ -16,6 +16,7 @@ import bubblehunt.gameobjects.GameObjects;
 import bubblehunt.gameobjects.MoveableObject;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.dyn4j.geometry.Vector2;
 import straightedge.geom.KPoint;
 import straightedge.geom.KPolygon;
@@ -42,6 +43,8 @@ public class PathControl {
     private PolygonBufferer bufferer;
     private ArrayList<BubbleTile> activeTiles;
     
+    private CopyOnWriteArrayList<BubbleTile> tilesToRedraw;
+    
     public PathControl(GameObjects gameObjects){
         this.gameObjects = gameObjects;  
         stationaryObstacles = gameObjects.getStationaryObstacles(); 
@@ -54,6 +57,8 @@ public class PathControl {
         
         activeTiles = new ArrayList();
        setNodeConnectors();
+       
+       tilesToRedraw = new CopyOnWriteArrayList();
     }
     
 
@@ -174,113 +179,41 @@ public class PathControl {
             int tileX = (int)Math.floor((PITCHSIZE/2+x)/TILESIZE);
             int tileY = (int)Math.floor((PITCHSIZE/2+y)/TILESIZE);
             
-            // set the block of 9 tiles active
-            for (int i=-1; i<2; i++){
-                for (int j=-1; j<2; j++){
-                    
-                    // add to list of active tiles
-                    activeTiles.add(bubbleTile[tileX+i][tileY+j]);
-                    // add self to tile if not already active
-                    if (!bubbleTile[tileX+i][tileY+j].getObjectsActivatingThis().contains(movingOb)){
-                        bubbleTile[tileX+i][tileY+j].getObjectsActivatingThis().add(movingOb);
-                    }
-                    
-                }
-            }
-            
-            
-            KPoint currentTile = new KPoint (tileX, tileY);
-            
-            // if the stored current tile isn't the same as the tile it is actually on
-            // then ???
-            if (movingOb.getCurrentTile()!=currentTile){
-                // need to work out the direction of travel then deselect based on that
-                int diffX = (int)(tileX - movingOb.getCurrentTile().x);
-                int diffY = (int)(tileY - movingOb.getCurrentTile().y);
-                
-                // eg at 4,1 and move to 3,1 = -1x
-                // invert the x and double it to get 2 squares away in the previosuly moved direction
-                int invertDiffX = 0-diffX;
-                int invertDiffY = 0-diffY;
-                
-                // x first - don't do it if it is 0 as it hasn't moved along x
-                if (invertDiffX!=0){
-                    
-                    int removeX = invertDiffX-diffX+tileX;
-                    int removeY = invertDiffY+tileY;
-                    //System.out.println(removeX + " , " + removeY);
-                    for (int i=-1; i<2; i++){
-                        // check that the tile exists
-                        if (removeY+i>=0 && removeY+i<gameObjects.getTileCount() && removeX>=0 && removeX<gameObjects.getTileCount() ){
-                            if (bubbleTile[removeX][removeY+i].getObjectsActivatingThis().contains(movingOb)){
-                                bubbleTile[removeX][removeY+i].getObjectsActivatingThis().remove(movingOb);
-                            }
-                        }
-                        
-                    }
-                }
-                
-                if (invertDiffY!=0){
-                    int removeX = invertDiffX + tileX;
-                    int removeY = invertDiffY-diffY +tileY;
-                    for (int i=-1; i<2; i++){
-                        if (removeX+i>0 && removeX+i<gameObjects.getTileCount() && removeY>=0 && removeY<gameObjects.getTileCount() ){
-                            if (bubbleTile[removeX+i][removeY].getObjectsActivatingThis().contains(movingOb)){
-                                bubbleTile[removeX+i][removeY].getObjectsActivatingThis().remove(movingOb);
-                            }
-                        }   
-                        
-                    }
-                }
-                // set the current tile
-                movingOb.setCurrentTile(new KPoint(tileX, tileY));
-                // 
-                // 1) Find out which tiles it no longer needs and remove itself from tile array list
-                // 2) Go through tile array list after gameobject loop and deactivate any tiles that no have an arraylist length of 0
-                // 3) activate any tiles with an arraylength >0 bubbleTile[tileX+i][tileY+j].setActive(true);
-                
-            }
-            
-            
-            
-        }
-        // set the tiles active according to whether objects are listed as activating them
-        // 1) Tile only deactivated in renderer once image creation is complete
-        // 2) image is only refreshed if bubble count has changed
-        ArrayList<BubbleTile> tilesToRemove = new ArrayList(); 
-        for (BubbleTile activeTile: activeTiles){
-            if (activeTile.getObjectsActivatingThis().isEmpty()){
-                // only refresh if bubble count is changed
-                activeTile.setRefreshImage();
-                //activeTile.initTileImage();
-                tilesToRemove.add(activeTile);
-            } else {
-                activeTile.setActive(true);
-            }
+            movingOb.setCurrentTile(new KPoint(tileX, tileY));
         }
         
-        // bubbles removed here
-        // call animation and sound
-        for (BubbleTile removeBubble: tilesToRemove){
-            activeTiles.remove(removeBubble);
-        }
+ 
         
         // do collision work for moving ob on its current tiles
         
         for (MoveableObject movingOb: gameObjects.getMoveableObjectsList()){
-            int tileX = (int)movingOb.getCurrentTile().x;
-            int tileY = (int)movingOb.getCurrentTile().y;
+            int tileObX = (int)movingOb.getCurrentTile().x;
+            int tileObY = (int)movingOb.getCurrentTile().y;
             
             // only on current tile for now 
             for (int x=-1; x<2; x++){
                 for (int y=-1; y<2; y++){
-                    for (Bubble bubble: bubbleTile[tileX+x][tileY+y].getBubble()){
-                        int totalRadius = bubble.getRadius()+movingOb.getObjectRadius();
-                        int distance = (int)bubble.getBubblePoint().distance(movingOb.getPathLocation());
-                        if (totalRadius>=distance){
-                            bubbleTile[tileX][tileY].getBubble().remove(bubble);
-                        }
-                    }   
+                    int tileX = tileObX+x;
+                    int tileY = tileObY+y;
+                    if (tileX>=0 && tileX<gameObjects.getTileCount() && tileY>=0 && tileY<gameObjects.getTileCount()){
+                        for (Bubble bubble: bubbleTile[tileX][tileY].getBubble()){
+                            int totalRadius = bubble.getRadius()+movingOb.getObjectRadius();
+                            int distance = (int)bubble.getBubblePoint().distance(movingOb.getPathLocation());
+                            if (totalRadius>=distance){
+                                //bubbleTile[tileX][tileY].getBubble().remove(bubble);
+                                //add this tile to tile to redraw if it doesn't already exist
+                                if (!tilesToRedraw.contains(bubbleTile[tileX][tileY])){
+                                    tilesToRedraw.add(bubbleTile[tileX][tileY]);
+                                }
+                                // add this bubble to list of bubbles to redraw, if it has not already been done by another movingob
+                                if (!bubbleTile[tileX][tileY].getBubblesToRemove().contains(bubble)){
+                                    bubbleTile[tileX][tileY].addBubbleToRemove(bubble);
+                                }
+                                
+                            }
+                        } 
+                    }
+                      
                     
                     
                 }//end y
@@ -291,4 +224,11 @@ public class PathControl {
         
     }
    
+    public void addTileToRedraw(BubbleTile bubbleTile){
+        tilesToRedraw.add(bubbleTile);
+    }
+    
+    public CopyOnWriteArrayList<BubbleTile> getTilesToRedraw(){
+        return tilesToRedraw;
+    }
 }
