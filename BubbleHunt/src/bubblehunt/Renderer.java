@@ -51,7 +51,8 @@ public class Renderer implements Runnable {
     
     private BufferedImage testTile;
     
-    
+    private BufferedImage transOval[];
+    private SoundControl soundControl;
     
     
     private BufferedImage getImageSuppressExceptions(String pathOnClasspath) {
@@ -60,12 +61,14 @@ public class Renderer implements Runnable {
         } catch (IOException e) {return null;}}
    
     
-    public Renderer (BufferStrategy bs, GameObjects gameObjects, PathControl pathControl, Dimension screenSize){
+    public Renderer (BufferStrategy bs, GameObjects gameObjects, PathControl pathControl, Dimension screenSize, 
+            SoundControl soundControl){
         this.bs = bs;
         renderLoop = new Thread(this);
         this.gameObjects = gameObjects;
         this.pathControl = pathControl;
         this.screenSize = screenSize;
+        this.soundControl = soundControl;
         
         fPSCounter = new FPSCounter();
         fPSCounter.start();
@@ -73,13 +76,30 @@ public class Renderer implements Runnable {
         activeTopLeft= new KPoint(0-screenSize.width/2, 0-screenSize.height/2);
         activeBottomRight = new KPoint (screenSize.width/2, screenSize.height/2);
         
+        transOval = new BufferedImage[6];
+        
         testTile = getImageSuppressExceptions("img/test50tile.png");
         
-        
+        initTransOvals();
     }
     
     public void rendererStart(){
         renderLoop.start();
+    }
+    
+    private void initTransOvals(){
+        for (int i =0; i<6; i++){
+            int size = (i+10)*2;
+            int radius=10+i;
+            transOval[i]= new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
+            AffineTransform centre = new AffineTransform();
+            centre.translate(i+10, i+10);
+            Graphics2D g2d = transOval[i].createGraphics();
+            //g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR));
+            g2d.fillOval(-radius, -radius, radius*2, radius*2);
+            g2d.dispose();
+            
+        }
     }
     
     
@@ -102,28 +122,39 @@ public class Renderer implements Runnable {
         AffineTransform normal = g2d.getTransform();
         
         for (Bubble bubble: bubbleTile.getBubblesToRemove()){
+
+            
             int radius = bubble.getRadius();
             // eg point is -958, -940...  top left point is -1000, -1000
             // 
             KPoint topLeftPoint = bubbleTile.getTopLeftPoint();
             int localX = (int)(bubble.getBubblePoint().x-topLeftPoint.x)+15;//+15 for the buffer around each image
             int localY = (int)(bubble.getBubblePoint().y-topLeftPoint.y)+15;
-            Ellipse2D.Double bubbleShape = new Ellipse2D.Double(-radius, -radius, radius*2, radius*2);
+            //Ellipse2D.Double bubbleShape = new Ellipse2D.Double(-radius, -radius, radius*2, radius*2);
             
             bubblePoint.translate(localX, localY);
             g2d.transform(bubblePoint);
-            
-            g2d.draw(bubbleShape);
+            g2d.drawImage(getTransOval(radius), -radius, -radius, null);
+            //g2d.fillOval(-radius, -radius, radius*2, radius*2);
+            //g2d.draw(bubbleShape);
             g2d.setTransform(normal);
             
             
             // remove this from the list
             bubbleTile.getBubblesToRemove().remove(bubble);
             
+            
+            // play pop
+            soundControl.playPop(bubble);
         }
         
         g2d.dispose();
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
+    }
+    
+    private BufferedImage getTransOval(int radius){
+        int ref = radius-10;
+        return transOval[ref];
     }
     
     
@@ -257,17 +288,7 @@ public class Renderer implements Runnable {
             }
     }
     
-    private void paintBubble(Graphics2D g2d, KPoint point, int radius){
-        Color trans = new Color(0, 0, 0, 0);
-        Point2D center = new Point2D.Float(0.0f, 0.0f);
-	Point2D focus = new Point2D.Float(0.0f, 0.0f);
-	float[] dist = { 0.6f, 0.9f };
-	Color[] colors = { trans, Color.BLUE.brighter().brighter().brighter() };
-	RadialGradientPaint p = new RadialGradientPaint(center, radius, focus,
-			dist, colors, CycleMethod.NO_CYCLE);
-        g2d.setPaint(p);
-        g2d.fillOval(-radius, -radius, radius*2, radius*2);
-    }
+    
 
     @Override
     public void run() {

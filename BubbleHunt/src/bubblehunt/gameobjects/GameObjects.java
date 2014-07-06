@@ -66,7 +66,8 @@ public final class GameObjects {
     }
     
     private void initBubbles(){
-        int bubbleCount = 3000;
+        
+        int bubbleCount = 1000;
         
         
         for (int i=0; i< bubbleCount; i++){
@@ -104,13 +105,14 @@ public final class GameObjects {
     }
     
     private void createBubbleTiles(){
+        BubbleRenderer bubbleRenderer = new BubbleRenderer();
         
         // init bubble tiles
         for (int i=0; i<tileCount; i++){
             for (int j=0; j<tileCount; j++){
                 // 15 buffer on each side for radius on drawn circle
                 KPoint topLeft = new KPoint(-PITCHSIZE/2+i*TILESIZE, -PITCHSIZE/2+j*TILESIZE);
-                bubbleTile[i][j] = new BubbleTile(topLeft);
+                bubbleTile[i][j] = new BubbleTile(topLeft, bubbleRenderer);
             }
         }
         

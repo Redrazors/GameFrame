@@ -35,6 +35,8 @@ public class MasterClass implements Runnable {
     private int spiralCounter =0;
     private Dimension screenSize;
     
+    private SoundControl soundControl;
+    
     
     
     public MasterClass (JFrame gameFrame, BufferStrategy bs, Dimension screenSize, JComponent drawPanel){
@@ -48,16 +50,16 @@ public class MasterClass implements Runnable {
         drawPanel.addMouseMotionListener(mouseControl);
         
         mainThread = new Thread (this);
-        
+        soundControl = new SoundControl();
         gameObjects = new GameObjects(world, screenSize);
         pathControl=new PathControl(gameObjects);
         
-        renderer = new Renderer(bs, gameObjects, pathControl, screenSize);
+        renderer = new Renderer(bs, gameObjects, pathControl, screenSize, soundControl);
         //renderer.setIgnoreRepaint(true);
         //gameFrame.add(renderer);
         renderer.rendererStart();
         
-        Music song1 = TinySound.loadMusic("music/music1.wav");
+        //
         //song1.play(true);
         
         
@@ -67,6 +69,18 @@ public class MasterClass implements Runnable {
         mainThread.start();
         
         //world.shiftCoordinates(new Vector2(screenSize.width/2, screenSize.height/2));
+    }
+    
+    public Renderer getRenderer(){
+        return renderer;
+    }
+    
+    public GameObjects getGameObjects(){
+        return gameObjects;
+    }
+    
+    public PathControl getPathControl(){
+        return pathControl;
     }
     
     private void moveObjects(){
@@ -81,7 +95,7 @@ public class MasterClass implements Runnable {
         //}
         
         pathControl.moveObjectsAlongPath();
-        pathControl.setActiveTiles();
+        pathControl.bubbleCollision();
     }
     
 

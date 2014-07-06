@@ -45,8 +45,11 @@ public class PathControl {
     
     private CopyOnWriteArrayList<BubbleTile> tilesToRedraw;
     
+    
+    
     public PathControl(GameObjects gameObjects){
-        this.gameObjects = gameObjects;  
+        this.gameObjects = gameObjects;
+        
         stationaryObstacles = gameObjects.getStationaryObstacles(); 
         nodeConnector  = new NodeConnector();   
         nodeMap = new HashMap();
@@ -168,11 +171,11 @@ public class PathControl {
         return obstacles;
     }
     
-    public void setActiveTiles(){
+    public void bubbleCollision(){
         BubbleTile[][] bubbleTile = gameObjects.getBubbleTile();
         
         for (MoveableObject movingOb: gameObjects.getMoveableObjectsList()){
-            // go through each moveable object and set its tile as active
+            // set the moving ob's active tile
             int x = (int)movingOb.getTransform().getTranslationX();
             int y = (int)movingOb.getTransform().getTranslationY();
             
@@ -207,8 +210,13 @@ public class PathControl {
                                 }
                                 // add this bubble to list of bubbles to redraw, if it has not already been done by another movingob
                                 if (!bubbleTile[tileX][tileY].getBubblesToRemove().contains(bubble)){
+                                    //System.out.println("added bubbe at " + bubbleTile[x][y] + " bubble " + bubble);
+                                    
                                     bubbleTile[tileX][tileY].addBubbleToRemove(bubble);
+                                    bubbleTile[tileX][tileY].getBubble().remove(bubble);
                                 }
+                                
+                                
                                 
                             }
                         } 
