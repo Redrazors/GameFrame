@@ -12,12 +12,22 @@ package rocketbubble;
  */
 public class Order {
     private int thrust, angle, time;
+    
+    
     public Order (int thrust, int angle, int time){
         this.thrust = thrust;
         this.angle = angle;
         this.time = time;
         
+        
+        
     }
+    
+    public void adjustOrderTimer(int adjust){
+        orderTimer+=adjust;
+    }
+    
+    
     
     public int getAngle(){
         return angle;

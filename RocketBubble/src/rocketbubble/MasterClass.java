@@ -36,6 +36,9 @@ public class MasterClass implements Runnable {
     private Dimension screenSize;
     
     private SoundControl soundControl;
+    private OrderControl orderControl;
+    
+    private boolean executeOrders=false;
     
     
     
@@ -53,8 +56,8 @@ public class MasterClass implements Runnable {
         soundControl = new SoundControl();
         gameObjects = new GameObjects(world, screenSize);
         pathControl=new PathControl(gameObjects);
-        
-        renderer = new Renderer(bs, gameObjects, pathControl, screenSize, soundControl, drawPanel);
+        orderControl = new OrderControl();
+        renderer = new Renderer(bs, gameObjects, pathControl, screenSize, soundControl, drawPanel, orderControl);
         //renderer.setIgnoreRepaint(true);
         //gameFrame.add(renderer);
         renderer.rendererStart();
@@ -62,8 +65,17 @@ public class MasterClass implements Runnable {
         //
         //song1.play(true);
         
+        // test
+        //
+        testSetOrders();
+        
         
     }
+    
+    private void testSetOrders(){
+        executeOrders=true;
+    }
+    
     
     public void gameInit(){
         mainThread.start();
@@ -82,6 +94,31 @@ public class MasterClass implements Runnable {
     public PathControl getPathControl(){
         return pathControl;
     }
+    
+    
+    private void executeOrders(){
+        
+        // check timer, is there another order to execute
+        
+        if (orderControl.getOrderTimer()==0  && orderControl.getCurrentExecuteOrder()<orderControl.getOrderList().size()){
+            orderControl.adjustCurrentExecuteOrder(1);
+        } else {
+            executeOrders=false;
+            orderControl.resetCurrentExecuteOrder();
+        }
+        
+        // if there are still orders to execute, do them
+        if (executeOrders){
+            
+            
+        }
+        
+        
+        
+        
+        
+    }
+    
     
     private void moveObjects(){
         //gameObjects.getMoveableObjectsList().get(0).applyImpulse(new Vector2(1000.0, 100.0));
@@ -114,6 +151,10 @@ public class MasterClass implements Runnable {
     @Override
     public void run() {
         while (true){
+            if (executeOrders){
+               executeOrders(); 
+            }
+            
             moveObjects();
             updateWorld();
             

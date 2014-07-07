@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import static rocketbubble.StaticFields.PITCHSIZE;
 import static rocketbubble.StaticFields.TILESIZE;
 import rocketbubble.gameobjects.Bubble;
@@ -48,6 +47,7 @@ public class Renderer implements Runnable {
     
     private BufferedImage transOval[];
     private SoundControl soundControl;
+    private OrderControl orderControl;
     
     private boolean showOrders = true;
     
@@ -59,13 +59,14 @@ public class Renderer implements Runnable {
    
     
     public Renderer (BufferStrategy bs, GameObjects gameObjects, PathControl pathControl, Dimension screenSize, 
-            SoundControl soundControl, JComponent drawPanel){
+            SoundControl soundControl, JComponent drawPanel, OrderControl orderControl){
         this.bs = bs;
         renderLoop = new Thread(this);
         this.gameObjects = gameObjects;
         this.pathControl = pathControl;
         this.screenSize = screenSize;
         this.soundControl = soundControl;
+        this.orderControl = orderControl;
         
         fPSCounter = new FPSCounter();
         fPSCounter.start();
@@ -81,6 +82,19 @@ public class Renderer implements Runnable {
         
  
         
+    }
+    
+    private void renderOrdersBox(Graphics2D g2d){
+        // transform to wherever the orders box is
+        
+        // draw the box
+        g2d.setColor(Color.gray);
+        g2d.fillRect(0, 0, 200, 200);
+        
+        g2d.setColor(Color.black);
+        String current = Integer.toString(orderControl.getCurrentViewOrder()+1);
+        String total = Integer.toString(orderControl.getOrderList().size()+1);
+        g2d.drawString("Order " + current + " of " + total, 10, 10);
     }
     
     public void rendererStart(){
@@ -267,7 +281,9 @@ public class Renderer implements Runnable {
         g2d.setTransform(preCentred);
         g2d.drawString(Double.toString(fPSCounter.fps()), 50, 50);
         
-        
+        if (showOrders){
+            renderOrdersBox(g2d);
+        }
 
         
     }
