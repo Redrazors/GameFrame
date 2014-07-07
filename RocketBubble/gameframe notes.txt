@@ -1,0 +1,5 @@
+After object initially added to path blocking obstacles, they need to be updated in the game update loop
+
+if object is destroyed then the array of pathing objects needs to be reduced by 1 from the index of the destroyed item
+
+Urgent - the find out how the x and y of the shape compare to the centre of the kpoint
