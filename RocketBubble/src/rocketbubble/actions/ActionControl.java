@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package rocketbubble;
+package rocketbubble.actions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -10,6 +10,8 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
+import rocketbubble.MasterClass;
+import rocketbubble.actions.ExecuteOrders;
 
 /**
  *
@@ -113,8 +115,9 @@ public class ActionControl {
                                    }
                            };
        
-                        
-        drawPanel.getActionMap().put("UpPressed", upPressed);
+        ExecuteOrders executeOrders = new ExecuteOrders(masterClass);
+        
+        drawPanel.getActionMap().put("UpPressed", executeOrders);
         drawPanel.getActionMap().put("UpReleased", upReleased);
         drawPanel.getActionMap().put("DownPressed", downPressed);
         drawPanel.getActionMap().put("DownReleased", downReleased);

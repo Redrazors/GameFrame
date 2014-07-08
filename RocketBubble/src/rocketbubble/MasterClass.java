@@ -6,8 +6,7 @@
 
 package rocketbubble;
 
-import static rocketbubble.StaticFields.NANO_TO_BASE;
-import rocketbubble.gameobjects.GameObjects;
+import rocketbubble.buttons.GameButton;
 import java.awt.Dimension;
 import java.awt.image.BufferStrategy;
 import javax.swing.JComponent;
@@ -16,6 +15,11 @@ import kuusisto.tinysound.Music;
 import kuusisto.tinysound.TinySound;
 import org.dyn4j.dynamics.World;
 import org.dyn4j.geometry.Vector2;
+import static rocketbubble.StaticFields.NANO_TO_BASE;
+import rocketbubble.actions.ActionControl;
+import rocketbubble.actions.ExecuteOrders;
+import rocketbubble.gameobjects.GameObjects;
+import straightedge.geom.KPoint;
 
 /**
  *
@@ -68,6 +72,8 @@ public class MasterClass implements Runnable {
         // test
         //
         testSetOrders();
+        
+        
         
         
     }
