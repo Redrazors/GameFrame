@@ -7,6 +7,11 @@
 package rocketbubble;
 
 import java.util.ArrayList;
+import org.dyn4j.geometry.Vector2;
+import static rocketbubble.StaticFields.FORCE_AMOUNT;
+import static rocketbubble.StaticFields.ROTATION_SPEED;
+import rocketbubble.gameobjects.GameObjects;
+import rocketbubble.gameobjects.MoveableObject;
 
 /**
  *
@@ -14,17 +19,48 @@ import java.util.ArrayList;
  */
 public class OrderControl {
     private ArrayList<Order> orderList;
-    private int currentViewOrder=0, currentExecuteOrder=-1;
+    private int currentViewOrder=0, currentExecuteOrder=0;
     private double orderTimer;
+    private MoveableObject heroRocket;
     
-    public OrderControl(){
+    public OrderControl(GameObjects gameObjects){
+        heroRocket = gameObjects.getHero();
         orderList = new ArrayList();
         orderTimer=0;
+        
+    }
+    
+    public void executeOrders(){
+        // rotate to given angle
+        double targetAngle = orderList.get(currentExecuteOrder).getAngleRadians();
+        double angleRemaining = heroRocket.getTransform().getRotation()-targetAngle;
+        
+        // fix for beyond pi range
+        if (angleRemaining>Math.PI)angleRemaining -=2*Math.PI;
+        if (angleRemaining<-Math.PI)angleRemaining +=2*Math.PI;
+                //System.out.println(angleRemaining);
+        if (angleRemaining > 0.1){ 
+             heroRocket.rotateAboutCenter(-ROTATION_SPEED*heroRocket.getSpeed());
+        } else if (angleRemaining <-0.1){
+            heroRocket.rotateAboutCenter(ROTATION_SPEED*heroRocket.getSpeed());
+        }
+        
+        double angle = heroRocket.getTransform().getRotation();
+                    //System.out.println(angle);
+        int xAdjust = (int)Math.ceil(Math.cos(angle)*FORCE_AMOUNT*heroRocket.getSpeed());
+        int yAdjust = (int)Math.ceil(Math.sin(angle)*FORCE_AMOUNT*heroRocket.getSpeed());
+        heroRocket.applyForce(new Vector2(xAdjust,yAdjust));
+        
     }
     
     public double getOrderTimer(){
         return orderTimer;
     }
+    
+    public void adjustOrderTimer(double adjust){
+        orderTimer+=adjust;
+    }
+    
     
     public void addOrder(int thrust, int angle, int time){
         Order newOrder = new Order (thrust, angle, time);

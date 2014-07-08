@@ -7,8 +7,6 @@
 package rocketbubble.gameobjects;
 
 
-import static rocketbubble.StaticFields.ANGULAR_DAMPING;
-import static rocketbubble.StaticFields.LINEAR_DAMPING;
 import java.awt.Color;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
@@ -17,7 +15,10 @@ import java.util.ArrayList;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.dynamics.BodyFixture;
 import org.dyn4j.geometry.Ellipse;
+import org.dyn4j.geometry.Mass;
 import org.dyn4j.geometry.Rectangle;
+import static rocketbubble.StaticFields.ANGULAR_DAMPING;
+import static rocketbubble.StaticFields.LINEAR_DAMPING;
 import straightedge.geom.KPoint;
 
 
@@ -56,7 +57,7 @@ public class MoveableObject extends Body {
         this.translate(xPos, yPos);         
         this.setAngularDamping(ANGULAR_DAMPING);
         this.setLinearDamping(LINEAR_DAMPING);
-        this.setMass();
+        this.setMass(Mass.Type.NORMAL);
     }
     
     

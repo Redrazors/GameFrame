@@ -45,7 +45,7 @@ public class MasterClass implements Runnable {
     public MasterClass (JFrame gameFrame, BufferStrategy bs, Dimension screenSize, JComponent drawPanel){
         this.screenSize = screenSize;
         world = new World();
-        world.setGravity(new Vector2(0,0));
+        world.setGravity(new Vector2(0,100));
          
         ActionControl actionControl = new ActionControl(drawPanel);
         MouseControl mouseControl = new MouseControl();
@@ -56,7 +56,7 @@ public class MasterClass implements Runnable {
         soundControl = new SoundControl();
         gameObjects = new GameObjects(world, screenSize);
         pathControl=new PathControl(gameObjects);
-        orderControl = new OrderControl();
+        orderControl = new OrderControl(gameObjects);
         renderer = new Renderer(bs, gameObjects, pathControl, screenSize, soundControl, drawPanel, orderControl);
         //renderer.setIgnoreRepaint(true);
         //gameFrame.add(renderer);
@@ -74,6 +74,7 @@ public class MasterClass implements Runnable {
     
     private void testSetOrders(){
         executeOrders=true;
+        orderControl.addOrder(10000, 0, 5000);
     }
     
     
@@ -100,17 +101,20 @@ public class MasterClass implements Runnable {
         
         // check timer, is there another order to execute
         
-        if (orderControl.getOrderTimer()==0  && orderControl.getCurrentExecuteOrder()<orderControl.getOrderList().size()){
+        if (orderControl.getOrderTimer()<=0  && orderControl.getCurrentExecuteOrder()<orderControl.getOrderList().size()-1){  // take one off size to adjust to 0 count
+            //System.out.println("adjusted order count");
             orderControl.adjustCurrentExecuteOrder(1);
-        } else {
+        }  
+            
+        if (orderControl.getCurrentExecuteOrder()>orderControl.getOrderList().size()-1) {
             executeOrders=false;
             orderControl.resetCurrentExecuteOrder();
         }
-        
+        //System.out.println(executeOrders);
         // if there are still orders to execute, do them
-        if (executeOrders){
-            
-            
+        if (executeOrders && orderControl.getOrderList().size()>0 ){
+            //System.out.println("executing orders");
+            orderControl.executeOrders();           
         }
         
         
@@ -139,11 +143,22 @@ public class MasterClass implements Runnable {
     
     private void updateWorld(){
          // update the World
-        long time = System.nanoTime();// get the elapsed time from the last iteration
-        long diff = time - this.last;// set the last time
-        this.last = time;// convert from nanoseconds to seconds
-        double elapsedTime = (double)diff / NANO_TO_BASE;// update the world with the elapsed time
+        long time = System.nanoTime();
+        // get the elapsed time from the last iteration
+        long diff = time - this.last;
+        // set the last time
+        this.last = time;
+        // convert from nanoseconds to seconds
+        double elapsedTime = (double)diff / NANO_TO_BASE;
+        //System.out.println(elapsedTime);
+        // update the world with the elapsed time
         this.world.update(elapsedTime);//<-- tell world to update with new positions of objects
+        
+        // adjust order time
+        if (executeOrders){
+            
+            orderControl.adjustOrderTimer(elapsedTime);
+        }
         
         
     }

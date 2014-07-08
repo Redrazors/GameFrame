@@ -11,26 +11,26 @@ package rocketbubble;
  * @author david
  */
 public class Order {
-    private int thrust, angle, time;
+    private int thrust, time, angleDegrees;
+    private double angleRadians;
     
     
     public Order (int thrust, int angle, int time){
         this.thrust = thrust;
-        this.angle = angle;
+        this.angleDegrees = angle;
         this.time = time;
         
-        
+        // convert angle to radians
+       angleRadians = Math.toRadians(angle);
         
     }
     
-    public void adjustOrderTimer(int adjust){
-        orderTimer+=adjust;
+    
+    public double getAngleRadians(){
+        return angleRadians;
     }
-    
-    
-    
-    public int getAngle(){
-        return angle;
+    public int getAngleDegrees(){
+        return angleDegrees;
     }
     public int getThrust(){
         return thrust;

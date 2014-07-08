@@ -6,19 +6,14 @@
 
 package rocketbubble.gameobjects;
 
-import rocketbubble.Renderer;
 import static rocketbubble.StaticFields.PITCHSIZE;
 import static rocketbubble.StaticFields.TILESIZE;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.HashMap;
 import org.dyn4j.dynamics.World;
 import straightedge.geom.KPoint;
 import straightedge.geom.path.PathBlockingObstacle;
@@ -44,10 +39,14 @@ public final class GameObjects {
     private BubbleTile bubbleTile[][];
     private int tileCount;
     
+    private MoveableObject heroRocket;
+    
     public GameObjects (World world, Dimension screenSize){
         this.world = world;
         this.screenSize = screenSize;
         testObject = new MoveableObject[20];
+        
+        
         moveableObjectsList = new ArrayList();
         stationaryObjectsList = new ArrayList();
         stationaryObstacles = new ArrayList();
@@ -58,10 +57,14 @@ public final class GameObjects {
         // create bubbles
         initBubbles();
         createBubbleTiles();
-        //createBubbleImages();
+
         
-        // init all the objects here
-        initTestObjects();
+        // init hero
+        initHero();
+        
+        // init map, or platform until then
+        initMap();
+
    
     }
     
@@ -142,10 +145,27 @@ public final class GameObjects {
         return tileCount;
     }
     
-    
-    
-    private void initTestObjects(){
+    private void initHero(){
+        Ellipse2D.Double heroCirc = new Ellipse2D.Double(-10,-10, 20, 20);
+        heroRocket = new MoveableObject(0, 280, Color.red, 1, 10); 
+        heroRocket.addFixture(heroCirc, 0, 0);
+        Rectangle2D.Double hitRect = new Rectangle2D.Double(-5, -3, 10, 6);
+        heroRocket.addFixture(hitRect, 0, 0);
+        heroRocket.initObject();
+        //add to world and game object list
+        this.world.addBody(heroRocket);
+        moveableObjectsList.add(heroRocket);
         
+        // rotate to point up
+        heroRocket.rotateAboutCenter(-Math.PI);
+ 
+    }
+    
+    public MoveableObject getHero(){
+        return heroRocket;
+    }
+    
+    private void initMap(){
         // add walls
         Rectangle2D.Double rh1 = new Rectangle2D.Double(-screenSize.width/2,-10, screenSize.width, 20);
         Rectangle2D.Double rh2 = new Rectangle2D.Double(-screenSize.width/2,-10, screenSize.width, 20);
@@ -160,41 +180,18 @@ public final class GameObjects {
         boundingWalls.initObject();
         this.world.addBody(boundingWalls);
         stationaryObjectsList.add(boundingWalls);
-
+        
         // home obstacle
-        Rectangle2D.Double homeRec = new Rectangle2D.Double(-50,-30, 100, 60);
-        StationaryObject home = new StationaryObject(0, -50, Color.gray, 1, stationaryObstacles);
+        Rectangle2D.Double homeRec = new Rectangle2D.Double(-50,-5, 100, 10);
+        StationaryObject home = new StationaryObject(0, 300, Color.gray, 1, stationaryObstacles);
         home.addFixture(homeRec, 0, 0);
         home.initObject();
         this.world.addBody(home);
         stationaryObjectsList.add(home);
-  
         
-        Ellipse2D.Double testBigCirc = new Ellipse2D.Double(-10,-10, 20, 20);
-        testObject[0] = new MoveableObject(-200, 0, Color.red, 1, 10); 
-        testObject[0].addFixture(testBigCirc, 0, 0);
-        Rectangle2D.Double hitRect = new Rectangle2D.Double(-5, -3, 10, 6);
-        testObject[0].addFixture(hitRect, 0, 0);
-        testObject[0].initObject();
-        //add to world and game object list
-        this.world.addBody(testObject[0]);
-        moveableObjectsList.add(testObject[0]);
-        //set test destination
-        testObject[0].setPathDestination(new KPoint(210, 270));
-        //testObject[0].getLinearVelocity().set(9000.0, 1000.0);
         
-        //Ellipse2D.Double testSmallCirc = new Ellipse2D.Double(-15,-15, 30, 30);
-        //testObject[1] = new MoveableObject(-200, 0, Color.BLUE, 1,15);
-        //testObject[1].addFixture(testSmallCirc, 0, 0);
-        //testObject[1].initObject();
-        //add to world and game object list
-       // this.world.addBody(testObject[1]);
-        //moveableObjectsList.add(testObject[1]);
-        //testObject[1].setPathDestination(new KPoint(200, -300));
-        //set test speed
-        //testObject[1].getLinearVelocity().set(-9000.0, 0);
-              
     }
+    
     
     public ArrayList<MoveableObject> getMoveableObjectsList(){
         return moveableObjectsList;
