@@ -93,7 +93,7 @@ public class Renderer implements Runnable {
         
         g2d.setColor(Color.black);
         String current = Integer.toString(orderControl.getCurrentViewOrder()+1);
-        String total = Integer.toString(orderControl.getOrderList().size()+1);
+        String total = Integer.toString(orderControl.getOrderList().size());
         g2d.drawString("Order " + current + " of " + total, 10, 10);
     }
     

@@ -30,6 +30,10 @@ public class OrderControl {
         
     }
     
+    public void setOrderTimer(){
+        orderTimer = orderList.get(currentExecuteOrder).getTime();
+    }
+    
     public void executeOrders(){
         // rotate to given angle
         double targetAngle = orderList.get(currentExecuteOrder).getAngleRadians();
@@ -59,6 +63,7 @@ public class OrderControl {
     
     public void adjustOrderTimer(double adjust){
         orderTimer+=adjust;
+        System.out.println(orderTimer);
     }
     
     
@@ -86,7 +91,7 @@ public class OrderControl {
         currentExecuteOrder+=adjust;
     }
     public void resetCurrentExecuteOrder(){
-        currentExecuteOrder=-1;
+        currentExecuteOrder=0;
     }
     public int getCurrentExecuteOrder(){
         return currentExecuteOrder;

@@ -16,9 +16,13 @@ import javax.swing.KeyStroke;
  * @author Dave
  */
 public class ActionControl {
+    
+    private MasterClass masterClass;
 
     
-    public ActionControl (JComponent drawPanel){
+    public ActionControl (JComponent drawPanel, final MasterClass masterClass){
+        
+        this.masterClass = masterClass;
         
         drawPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0, false), "UpPressed");// false means ! when key released
         drawPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0, true), "UpReleased");
@@ -36,7 +40,9 @@ public class ActionControl {
                                         @Override
                                   public void actionPerformed(ActionEvent e)
                                    {
-                                                                
+                                       masterClass.setInitialOrder();            
+                                       masterClass.setExecuteOrders(true);
+                                                   
                                    }
                            }; 
                         Action upReleased = new AbstractAction()
@@ -52,7 +58,7 @@ public class ActionControl {
                                         @Override
                                   public void actionPerformed(ActionEvent e)
                                    {
-                                                                
+                                                masterClass.setExecuteOrders(false);
                                    }
                            }; 
                         Action downReleased = new AbstractAction()

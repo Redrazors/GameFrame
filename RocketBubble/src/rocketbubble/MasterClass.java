@@ -47,7 +47,7 @@ public class MasterClass implements Runnable {
         world = new World();
         world.setGravity(new Vector2(0,100));
          
-        ActionControl actionControl = new ActionControl(drawPanel);
+        ActionControl actionControl = new ActionControl(drawPanel, this);
         MouseControl mouseControl = new MouseControl();
         drawPanel.addMouseListener(mouseControl);
         drawPanel.addMouseMotionListener(mouseControl);
@@ -73,8 +73,7 @@ public class MasterClass implements Runnable {
     }
     
     private void testSetOrders(){
-        executeOrders=true;
-        orderControl.addOrder(10000, 0, 5000);
+        orderControl.addOrder(1000, 0, 2);
     }
     
     
@@ -96,14 +95,19 @@ public class MasterClass implements Runnable {
         return pathControl;
     }
     
+    public void setInitialOrder(){
+        orderControl.resetCurrentExecuteOrder();
+        orderControl.setOrderTimer();
+    }
     
     private void executeOrders(){
         
         // check timer, is there another order to execute
         
-        if (orderControl.getOrderTimer()<=0  && orderControl.getCurrentExecuteOrder()<orderControl.getOrderList().size()-1){  // take one off size to adjust to 0 count
+        if (orderControl.getOrderTimer()<=0  && orderControl.getCurrentExecuteOrder()<orderControl.getOrderList().size()){  // take one off size to adjust to 0 count
             //System.out.println("adjusted order count");
             orderControl.adjustCurrentExecuteOrder(1);
+            orderControl.setOrderTimer();
         }  
             
         if (orderControl.getCurrentExecuteOrder()>orderControl.getOrderList().size()-1) {
@@ -157,10 +161,14 @@ public class MasterClass implements Runnable {
         // adjust order time
         if (executeOrders){
             
-            orderControl.adjustOrderTimer(elapsedTime);
+            orderControl.adjustOrderTimer(-elapsedTime);
         }
         
         
+    }
+    
+    public void setExecuteOrders(boolean bool){
+        executeOrders = bool;
     }
 
     @Override

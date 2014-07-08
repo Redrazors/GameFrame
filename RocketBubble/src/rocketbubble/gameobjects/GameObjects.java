@@ -70,7 +70,7 @@ public final class GameObjects {
     
     private void initBubbles(){
         
-        int bubbleCount = 1000;
+        int bubbleCount = 0;
         
         
         for (int i=0; i< bubbleCount; i++){
@@ -149,15 +149,15 @@ public final class GameObjects {
         Ellipse2D.Double heroCirc = new Ellipse2D.Double(-10,-10, 20, 20);
         heroRocket = new MoveableObject(0, 280, Color.red, 1, 10); 
         heroRocket.addFixture(heroCirc, 0, 0);
-        Rectangle2D.Double hitRect = new Rectangle2D.Double(-5, -3, 10, 6);
-        heroRocket.addFixture(hitRect, 0, 0);
+        Rectangle2D.Double hitRect = new Rectangle2D.Double(-10, -3, 20, 6);
+        heroRocket.addFixture(hitRect, 15, 0);
         heroRocket.initObject();
         //add to world and game object list
         this.world.addBody(heroRocket);
         moveableObjectsList.add(heroRocket);
         
         // rotate to point up
-        heroRocket.rotateAboutCenter(-Math.PI);
+        heroRocket.rotateAboutCenter(-Math.PI/2);
  
     }
     
