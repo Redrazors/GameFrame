@@ -6,7 +6,6 @@
 
 package rocketbubble;
 
-import rocketbubble.buttons.GameButton;
 import java.awt.Dimension;
 import java.awt.image.BufferStrategy;
 import javax.swing.JComponent;
@@ -18,6 +17,8 @@ import org.dyn4j.geometry.Vector2;
 import static rocketbubble.StaticFields.NANO_TO_BASE;
 import rocketbubble.actions.ActionControl;
 import rocketbubble.actions.ExecuteOrders;
+import rocketbubble.buttons.ButtonControl;
+import rocketbubble.buttons.GameButton;
 import rocketbubble.gameobjects.GameObjects;
 import straightedge.geom.KPoint;
 
@@ -50,18 +51,20 @@ public class MasterClass implements Runnable {
         this.screenSize = screenSize;
         world = new World();
         world.setGravity(new Vector2(0,1));
-         
+        ButtonControl buttonControl = new ButtonControl(this);
         ActionControl actionControl = new ActionControl(drawPanel, this);
-        MouseControl mouseControl = new MouseControl();
-        drawPanel.addMouseListener(mouseControl);
-        drawPanel.addMouseMotionListener(mouseControl);
+        MouseControl mouseControl = new MouseControl(buttonControl, drawPanel);
+        gameFrame.addMouseListener(mouseControl);
+        gameFrame.addMouseMotionListener(mouseControl);
         
         mainThread = new Thread (this);
         soundControl = new SoundControl();
         gameObjects = new GameObjects(world, screenSize);
         pathControl=new PathControl(gameObjects);
         orderControl = new OrderControl(gameObjects);
-        renderer = new Renderer(bs, gameObjects, pathControl, screenSize, soundControl, drawPanel, orderControl);
+        testSetOrders();
+        
+        renderer = new Renderer(bs, gameObjects, pathControl, screenSize, soundControl, drawPanel, orderControl, buttonControl);
         //renderer.setIgnoreRepaint(true);
         //gameFrame.add(renderer);
         renderer.rendererStart();
@@ -71,7 +74,7 @@ public class MasterClass implements Runnable {
         
         // test
         //
-        testSetOrders();
+        
         
         
         

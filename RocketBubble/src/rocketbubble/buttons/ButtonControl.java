@@ -20,6 +20,7 @@ import straightedge.geom.KPoint;
 public class ButtonControl {
     private MasterClass masterClass;
     private ArrayList<GameButton> buttonList;
+    
     public ButtonControl(MasterClass masterClass){
         this.masterClass = masterClass;
         buttonList = new ArrayList();
@@ -29,7 +30,7 @@ public class ButtonControl {
     
     private void initButtons(){
         ExecuteOrders executeOrdersButton = new ExecuteOrders(masterClass);
-        GameButton buttonExecute = new GameButton(new  KPoint(0,0), new Dimension(100, 20),executeOrdersButton, 
+        GameButton buttonExecute = new GameButton(new  KPoint(200,0), new Dimension(100, 30),executeOrdersButton, 
             "Execute Orders");
         buttonList.add(buttonExecute);
     }
@@ -38,6 +39,7 @@ public class ButtonControl {
  
         for (GameButton gameButton : buttonList) {
             // check if the 
+            //System.out.println("looking for button");
             int x1 = (int)gameButton.getButtonKPoint().x;
             int x2 = x1+gameButton.getButtonDimension().width;
             int y1 = (int)gameButton.getButtonKPoint().y;
@@ -46,6 +48,7 @@ public class ButtonControl {
             if (checkPoint.x>=x1 && checkPoint.x<=x2){
                 if (checkPoint.y>=y1 && checkPoint.y<=y2){
                     // button is found
+                    //System.out.println("found button");
                     gameButton.getButtonAction().actionPerformed(null);
                     break;
                 }

@@ -22,6 +22,8 @@ import javax.swing.JComponent;
 import org.dyn4j.geometry.Vector2;
 import static rocketbubble.StaticFields.PITCHSIZE;
 import static rocketbubble.StaticFields.TILESIZE;
+import rocketbubble.buttons.ButtonControl;
+import rocketbubble.buttons.GameButton;
 import rocketbubble.gameobjects.Bubble;
 import rocketbubble.gameobjects.BubbleTile;
 import rocketbubble.gameobjects.GameObjects;
@@ -49,6 +51,7 @@ public class Renderer implements Runnable {
     private BufferedImage transOval[];
     private SoundControl soundControl;
     private OrderControl orderControl;
+    private ButtonControl buttonControl;
     
     private boolean showOrders = true;
     
@@ -60,7 +63,7 @@ public class Renderer implements Runnable {
    
     
     public Renderer (BufferStrategy bs, GameObjects gameObjects, PathControl pathControl, Dimension screenSize, 
-            SoundControl soundControl, JComponent drawPanel, OrderControl orderControl){
+            SoundControl soundControl, JComponent drawPanel, OrderControl orderControl, ButtonControl buttonControl){
         this.bs = bs;
         renderLoop = new Thread(this);
         this.gameObjects = gameObjects;
@@ -68,6 +71,7 @@ public class Renderer implements Runnable {
         this.screenSize = screenSize;
         this.soundControl = soundControl;
         this.orderControl = orderControl;
+        this.buttonControl = buttonControl;
         
         fPSCounter = new FPSCounter();
         fPSCounter.start();
@@ -100,6 +104,17 @@ public class Renderer implements Runnable {
         int xVel=(int)Math.round(linVec.x * 100);
         int yVel=(int)Math.round(linVec.y * 100);
         g2d.drawString("Force:" + Integer.toString(xVel) + " , " + Integer.toString(yVel), 10, 30);
+    }
+    
+    private void renderButtons(Graphics2D g2d){
+        for (GameButton gameButton: buttonControl.getButtonList()){
+            g2d.setColor(Color.red);
+            g2d.fillRect((int)gameButton.getButtonKPoint().x, (int)gameButton.getButtonKPoint().y, 
+                    gameButton.getButtonDimension().width, gameButton.getButtonDimension().height);
+            g2d.setColor(Color.black);
+            g2d.drawString(gameButton.getButtonName(), (int)gameButton.getButtonKPoint().x+10, (int)gameButton.getButtonKPoint().y+10);
+        }
+        
     }
     
     public void rendererStart(){
@@ -289,6 +304,8 @@ public class Renderer implements Runnable {
         if (showOrders){
             renderOrdersBox(g2d);
         }
+        
+        renderButtons(g2d);
 
         
     }
