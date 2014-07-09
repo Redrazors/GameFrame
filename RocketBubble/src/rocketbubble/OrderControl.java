@@ -43,17 +43,26 @@ public class OrderControl {
         if (angleRemaining>Math.PI)angleRemaining -=2*Math.PI;
         if (angleRemaining<-Math.PI)angleRemaining +=2*Math.PI;
                 //System.out.println(angleRemaining);
-        if (angleRemaining > 0.1){ 
-             heroRocket.rotateAboutCenter(-ROTATION_SPEED*heroRocket.getSpeed());
-        } else if (angleRemaining <-0.1){
-            heroRocket.rotateAboutCenter(ROTATION_SPEED*heroRocket.getSpeed());
+        if (angleRemaining > 0.01){ 
+             heroRocket.rotateAboutCenter(-0.01);
+        } else if (angleRemaining <-0.01){
+            heroRocket.rotateAboutCenter(0.01);
+        } else if (angleRemaining>0){
+            heroRocket.rotateAboutCenter(-angleRemaining);
+        } else if (angleRemaining<0){
+            heroRocket.rotateAboutCenter(angleRemaining);
         }
-        
+        //
+        //System.out.println(angleRemaining);
         double angle = heroRocket.getTransform().getRotation();
-                    //System.out.println(angle);
-        int xAdjust = (int)Math.ceil(Math.cos(angle)*FORCE_AMOUNT*heroRocket.getSpeed());
-        int yAdjust = (int)Math.ceil(Math.sin(angle)*FORCE_AMOUNT*heroRocket.getSpeed());
+                    //
+        int thrust = orderList.get(currentExecuteOrder).getThrust();
+        //System.out.println(thrust);
+        int xAdjust = (int)Math.ceil(Math.cos(angle)*thrust*heroRocket.getSpeed());
+        int yAdjust = (int)Math.ceil(Math.sin(angle)*thrust*heroRocket.getSpeed());
         heroRocket.applyForce(new Vector2(xAdjust,yAdjust));
+        //heroRocket.getLinearVelocity().set(xAdjust, yAdjust);
+        
         
     }
     
@@ -63,7 +72,7 @@ public class OrderControl {
     
     public void adjustOrderTimer(double adjust){
         orderTimer+=adjust;
-        System.out.println(orderTimer);
+        //System.out.println(orderTimer);
     }
     
     

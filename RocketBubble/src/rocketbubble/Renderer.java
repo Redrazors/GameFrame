@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
+import org.dyn4j.geometry.Vector2;
 import static rocketbubble.StaticFields.PITCHSIZE;
 import static rocketbubble.StaticFields.TILESIZE;
 import rocketbubble.gameobjects.Bubble;
@@ -95,6 +96,10 @@ public class Renderer implements Runnable {
         String current = Integer.toString(orderControl.getCurrentViewOrder()+1);
         String total = Integer.toString(orderControl.getOrderList().size());
         g2d.drawString("Order " + current + " of " + total, 10, 10);
+        Vector2 linVec = gameObjects.getHero().getLinearVelocity();
+        int xVel=(int)Math.round(linVec.x * 100);
+        int yVel=(int)Math.round(linVec.y * 100);
+        g2d.drawString("Force:" + Integer.toString(xVel) + " , " + Integer.toString(yVel), 10, 30);
     }
     
     public void rendererStart(){

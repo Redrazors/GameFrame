@@ -45,7 +45,7 @@ public class MasterClass implements Runnable {
     public MasterClass (JFrame gameFrame, BufferStrategy bs, Dimension screenSize, JComponent drawPanel){
         this.screenSize = screenSize;
         world = new World();
-        world.setGravity(new Vector2(0,100));
+        world.setGravity(new Vector2(0,1));
          
         ActionControl actionControl = new ActionControl(drawPanel, this);
         MouseControl mouseControl = new MouseControl();
@@ -73,9 +73,11 @@ public class MasterClass implements Runnable {
     }
     
     private void testSetOrders(){
-        orderControl.addOrder(1000, 0, 2);
+        orderControl.addOrder(2000, 0, 2);
+        orderControl.addOrder(1000, 50, 6);
+        orderControl.addOrder(2000, 0, 2);
     }
-    
+   
     
     public void gameInit(){
         mainThread.start();
@@ -101,25 +103,22 @@ public class MasterClass implements Runnable {
     }
     
     private void executeOrders(){
-        
-        // check timer, is there another order to execute
-        
-        if (orderControl.getOrderTimer()<=0  && orderControl.getCurrentExecuteOrder()<orderControl.getOrderList().size()){  // take one off size to adjust to 0 count
-            //System.out.println("adjusted order count");
-            orderControl.adjustCurrentExecuteOrder(1);
-            orderControl.setOrderTimer();
-        }  
-            
-        if (orderControl.getCurrentExecuteOrder()>orderControl.getOrderList().size()-1) {
+        // if the timer is up and this is the last order in the list
+        if (orderControl.getOrderTimer()<=0 && orderControl.getCurrentExecuteOrder()+1 == orderControl.getOrderList().size()){
             executeOrders=false;
             orderControl.resetCurrentExecuteOrder();
+        } else {
+            // if there is a new order to execute
+            if (orderControl.getOrderTimer()<=0  && orderControl.getCurrentExecuteOrder()<orderControl.getOrderList().size()){  // take one off size to adjust to 0 count
+                //System.out.println("adjusted order count");
+                orderControl.adjustCurrentExecuteOrder(1);
+                orderControl.setOrderTimer();
+            }
+            // execute the orders
+            orderControl.executeOrders();
+            
         }
-        //System.out.println(executeOrders);
-        // if there are still orders to execute, do them
-        if (executeOrders && orderControl.getOrderList().size()>0 ){
-            //System.out.println("executing orders");
-            orderControl.executeOrders();           
-        }
+
         
         
         
