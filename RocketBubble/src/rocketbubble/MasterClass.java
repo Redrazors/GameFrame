@@ -16,7 +16,7 @@ import org.dyn4j.dynamics.World;
 import org.dyn4j.geometry.Vector2;
 import static rocketbubble.StaticFields.NANO_TO_BASE;
 import rocketbubble.actions.ActionControl;
-import rocketbubble.actions.ExecuteOrders;
+import rocketbubble.actions.ActionExecuteOrders;
 import rocketbubble.buttons.ButtonControl;
 import rocketbubble.buttons.GameButton;
 import rocketbubble.gameobjects.GameObjects;
@@ -109,6 +109,10 @@ public class MasterClass implements Runnable {
     public void setInitialOrder(){
         orderControl.resetCurrentExecuteOrder();
         orderControl.setOrderTimer();
+    }
+    
+    public void resetLevel(){
+        System.out.println("levle reset test");
     }
     
     private void executeOrders(){

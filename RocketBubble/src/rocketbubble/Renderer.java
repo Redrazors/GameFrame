@@ -80,6 +80,7 @@ public class Renderer implements Runnable {
         activeBottomRight = new KPoint (screenSize.width/2, screenSize.height/2);
         
         transOval = new BufferedImage[6];
+        setButtonPoints();
         
         testTile = getImageSuppressExceptions("img/test50tile.png");
         
@@ -87,6 +88,21 @@ public class Renderer implements Runnable {
         
  
         
+    }
+    
+    private void setButtonPoints(){
+        Graphics2D g2d =null;
+        try{
+                g2d = (Graphics2D) bs.getDrawGraphics();
+                for (GameButton gameButton: buttonControl.getButtonList()){
+                    gameButton.calculateTextPoint(g2d);
+                }
+                g2d.dispose();
+                if (!bs.contentsLost()) {
+                    bs.show();
+                }
+           }
+           catch (IllegalStateException e) { e.printStackTrace();}
     }
     
     private void renderOrdersBox(Graphics2D g2d){
@@ -108,11 +124,15 @@ public class Renderer implements Runnable {
     
     private void renderButtons(Graphics2D g2d){
         for (GameButton gameButton: buttonControl.getButtonList()){
-            g2d.setColor(Color.red);
-            g2d.fillRect((int)gameButton.getButtonKPoint().x, (int)gameButton.getButtonKPoint().y, 
+            g2d.setColor(Color.white);
+            g2d.setFont(gameButton.getButtonFont());
+            g2d.fillRect(gameButton.getTopLeftX(), gameButton.getTopLeftY(), 
                     gameButton.getButtonDimension().width, gameButton.getButtonDimension().height);
             g2d.setColor(Color.black);
-            g2d.drawString(gameButton.getButtonName(), (int)gameButton.getButtonKPoint().x+10, (int)gameButton.getButtonKPoint().y+10);
+            g2d.drawRect(gameButton.getTopLeftX(),gameButton.getTopLeftY(), 
+                    gameButton.getButtonDimension().width, gameButton.getButtonDimension().height);
+            g2d.drawString(gameButton.getButtonName(), gameButton.getTextPointX(), gameButton.getTextPointY());
+            //System.out.println(gameButton.getTextPointY());
         }
         
     }

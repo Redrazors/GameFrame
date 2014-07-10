@@ -11,7 +11,7 @@ import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import rocketbubble.MasterClass;
-import rocketbubble.actions.ExecuteOrders;
+import rocketbubble.actions.ActionExecuteOrders;
 
 /**
  *
@@ -115,7 +115,7 @@ public class ActionControl {
                                    }
                            };
        
-        ExecuteOrders executeOrders = new ExecuteOrders(masterClass);
+        ActionExecuteOrders executeOrders = new ActionExecuteOrders(masterClass);
         
         drawPanel.getActionMap().put("UpPressed", executeOrders);
         drawPanel.getActionMap().put("UpReleased", upReleased);
@@ -128,4 +128,6 @@ public class ActionControl {
         
         drawPanel.getActionMap().put("SystemExit", systemExit);
     }
+    
+
 }

@@ -14,18 +14,17 @@ import rocketbubble.MasterClass;
  *
  * @author David
  */
-public class ExecuteOrders extends AbstractAction {
+public class ActionResetLevel extends AbstractAction {
     
     private final MasterClass masterClass;
     
-    public ExecuteOrders(MasterClass masterClass){
+    public ActionResetLevel(MasterClass masterClass){
         this.masterClass = masterClass;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        masterClass.setInitialOrder();
-        masterClass.setExecuteOrders(true);
+
     }
     
 }

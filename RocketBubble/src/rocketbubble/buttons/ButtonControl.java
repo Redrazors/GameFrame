@@ -8,9 +8,13 @@ package rocketbubble.buttons;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
-import javax.swing.AbstractAction;
 import rocketbubble.MasterClass;
-import rocketbubble.actions.ExecuteOrders;
+import rocketbubble.actions.ActionClearOrders;
+import rocketbubble.actions.ActionExecuteOrders;
+import rocketbubble.actions.ActionGameMenu;
+import rocketbubble.actions.ActionResetLevel;
+import rocketbubble.actions.ActionSetOrders;
+import rocketbubble.actions.ActionUpgradeShip;
 import straightedge.geom.KPoint;
 
 /**
@@ -29,10 +33,34 @@ public class ButtonControl {
     }
     
     private void initButtons(){
-        ExecuteOrders executeOrdersButton = new ExecuteOrders(masterClass);
-        GameButton buttonExecute = new GameButton(new  KPoint(200,0), new Dimension(100, 30),executeOrdersButton, 
+        ActionExecuteOrders actionExecuteOrders = new ActionExecuteOrders(masterClass);
+        ActionSetOrders actionSetOrders = new ActionSetOrders(masterClass);
+        ActionClearOrders actionClearOrders = new ActionClearOrders(masterClass);
+        ActionResetLevel actionResetLevel = new ActionResetLevel(masterClass);
+        ActionGameMenu actionGameMenu = new ActionGameMenu(masterClass);
+        ActionUpgradeShip actionUpgradeShip = new ActionUpgradeShip(masterClass);
+
+        GameButton buttonExecuteOrders = new GameButton(200, 50 , new Dimension(150, 30),actionExecuteOrders, 
             "Execute Orders");
-        buttonList.add(buttonExecute);
+        GameButton buttonSetOrders = new GameButton(350, 50 , new Dimension(150, 30),actionSetOrders, 
+            "Set Orders");
+        GameButton buttonClearOrders = new GameButton(500, 50 , new Dimension(150, 30),actionClearOrders, 
+            "Clear Orders");
+        GameButton buttonResetLevel = new GameButton(650, 50 , new Dimension(150, 30),actionResetLevel, 
+            "Reset Level");
+        GameButton buttonGameMenu = new GameButton(800, 50 , new Dimension(150, 30),actionGameMenu, 
+            "Game Menu");
+        GameButton buttonUpgradeShip = new GameButton(950, 50 , new Dimension(150, 30),actionUpgradeShip, 
+            "Upgrade Ship");
+        
+        buttonList.add(buttonExecuteOrders);
+        buttonList.add(buttonSetOrders);
+        buttonList.add(buttonClearOrders);
+        buttonList.add(buttonResetLevel);
+        buttonList.add(buttonGameMenu);
+        buttonList.add(buttonUpgradeShip);
+        
+        
     }
     
     public void checkButtons (KPoint checkPoint){
@@ -40,9 +68,9 @@ public class ButtonControl {
         for (GameButton gameButton : buttonList) {
             // check if the 
             //System.out.println("looking for button");
-            int x1 = (int)gameButton.getButtonKPoint().x;
+            int x1 = gameButton.getTopLeftX();
             int x2 = x1+gameButton.getButtonDimension().width;
-            int y1 = (int)gameButton.getButtonKPoint().y;
+            int y1 = gameButton.getTopLeftY();
             int y2 = x1+gameButton.getButtonDimension().height;
             
             if (checkPoint.x>=x1 && checkPoint.x<=x2){
