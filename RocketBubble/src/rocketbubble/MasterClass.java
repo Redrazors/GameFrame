@@ -81,6 +81,10 @@ public class MasterClass implements Runnable {
         
     }
     
+    public Dimension getScreenSize(){
+        return screenSize;
+    }
+    
     private void testSetOrders(){
         orderControl.addOrder(2000, 0, 2);
         orderControl.addOrder(1000, 50, 6);

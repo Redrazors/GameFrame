@@ -33,7 +33,7 @@ public class GameButton {
         this.buttonAction = buttonAction;
         this.buttonName = buttonName;
         
-        buttonFont = new Font("Arial Black", Font.PLAIN, 12);
+        buttonFont = new Font("Lucida Console", Font.PLAIN, 12);
         
         
         

@@ -167,19 +167,19 @@ public final class GameObjects {
     
     private void initMap(){
         // add walls
-        Rectangle2D.Double rh1 = new Rectangle2D.Double(-screenSize.width/2,-10, screenSize.width, 20);
-        Rectangle2D.Double rh2 = new Rectangle2D.Double(-screenSize.width/2,-10, screenSize.width, 20);
-        Rectangle2D.Double rv1 = new Rectangle2D.Double(-10,-screenSize.height/2, 20, screenSize.height);
-        Rectangle2D.Double rv2 = new Rectangle2D.Double(-10,-screenSize.height/2, 20, screenSize.height);
+        //Rectangle2D.Double rh1 = new Rectangle2D.Double(-screenSize.width/2,-10, screenSize.width, 20);
+        //Rectangle2D.Double rh2 = new Rectangle2D.Double(-screenSize.width/2,-10, screenSize.width, 20);
+        //Rectangle2D.Double rv1 = new Rectangle2D.Double(-10,-screenSize.height/2, 20, screenSize.height);
+        //Rectangle2D.Double rv2 = new Rectangle2D.Double(-10,-screenSize.height/2, 20, screenSize.height);
         
-        StationaryObject boundingWalls = new StationaryObject(0, 0, Color.GREEN, 1, stationaryObstacles);
-        boundingWalls.addFixture(rh1, 0, -screenSize.height/2);
-        boundingWalls.addFixture(rh2, 0, screenSize.height/2);
-        boundingWalls.addFixture(rv1, -screenSize.width/2, 0);
-        boundingWalls.addFixture(rv2, screenSize.width/2, 0);
-        boundingWalls.initObject();
-        this.world.addBody(boundingWalls);
-        stationaryObjectsList.add(boundingWalls);
+        //StationaryObject boundingWalls = new StationaryObject(0, 0, Color.GREEN, 1, stationaryObstacles);
+        //boundingWalls.addFixture(rh1, 0, -screenSize.height/2);
+        //boundingWalls.addFixture(rh2, 0, screenSize.height/2);
+        //boundingWalls.addFixture(rv1, -screenSize.width/2, 0);
+        //boundingWalls.addFixture(rv2, screenSize.width/2, 0);
+        //boundingWalls.initObject();
+        //this.world.addBody(boundingWalls);
+        //stationaryObjectsList.add(boundingWalls);
         
         // home obstacle
         Rectangle2D.Double homeRec = new Rectangle2D.Double(-50,-5, 100, 10);

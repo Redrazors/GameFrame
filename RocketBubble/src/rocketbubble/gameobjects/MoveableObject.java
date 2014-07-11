@@ -37,7 +37,8 @@ public class MoveableObject extends Body {
     
     private ArrayList<KPoint> currentPath;
     
-    private int objectRadius=0;
+    private int objectRadius=0; 
+    private double fuelPercent=100, healthPercent=100;
     
     private double speed=1.0;
     
@@ -59,6 +60,7 @@ public class MoveableObject extends Body {
         this.setLinearDamping(LINEAR_DAMPING);
         this.setMass(Mass.Type.NORMAL);
     }
+    
     
     
     public void addFixture(Shape shape, int offsetX, int offsetY){
@@ -95,6 +97,21 @@ public class MoveableObject extends Body {
                 break;           
         }
         
+    }
+    
+    public double getFuelPercent(){
+        return fuelPercent;
+    }
+    public double getHealthPercent(){
+        return healthPercent;
+    }
+    public void adjustFuelPercent(int amount){
+        fuelPercent+=amount;
+        if (fuelPercent>100)fuelPercent=100;
+    }
+    public void adjustHealthPercent(int amount){
+        healthPercent+=amount;
+        if (healthPercent>100)healthPercent=100;
     }
 
     

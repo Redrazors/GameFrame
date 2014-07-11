@@ -25,6 +25,9 @@ public class ButtonControl {
     private MasterClass masterClass;
     private ArrayList<GameButton> buttonList;
     
+    private int barWidth, fuelBarStart;
+    
+    
     public ButtonControl(MasterClass masterClass){
         this.masterClass = masterClass;
         buttonList = new ArrayList();
@@ -33,6 +36,12 @@ public class ButtonControl {
     }
     
     private void initButtons(){
+        
+        
+        int buttonStartX = (masterClass.getScreenSize().width-900)/2;
+        barWidth = buttonStartX;
+        fuelBarStart = buttonStartX+900;
+        
         ActionExecuteOrders actionExecuteOrders = new ActionExecuteOrders(masterClass);
         ActionSetOrders actionSetOrders = new ActionSetOrders(masterClass);
         ActionClearOrders actionClearOrders = new ActionClearOrders(masterClass);
@@ -40,17 +49,17 @@ public class ButtonControl {
         ActionGameMenu actionGameMenu = new ActionGameMenu(masterClass);
         ActionUpgradeShip actionUpgradeShip = new ActionUpgradeShip(masterClass);
 
-        GameButton buttonExecuteOrders = new GameButton(200, 50 , new Dimension(150, 30),actionExecuteOrders, 
+        GameButton buttonExecuteOrders = new GameButton(buttonStartX, 5 , new Dimension(150, 30),actionExecuteOrders, 
             "Execute Orders");
-        GameButton buttonSetOrders = new GameButton(350, 50 , new Dimension(150, 30),actionSetOrders, 
+        GameButton buttonSetOrders = new GameButton(buttonStartX+150, 5 , new Dimension(150, 30),actionSetOrders, 
             "Set Orders");
-        GameButton buttonClearOrders = new GameButton(500, 50 , new Dimension(150, 30),actionClearOrders, 
+        GameButton buttonClearOrders = new GameButton(buttonStartX+300, 5 , new Dimension(150, 30),actionClearOrders, 
             "Clear Orders");
-        GameButton buttonResetLevel = new GameButton(650, 50 , new Dimension(150, 30),actionResetLevel, 
+        GameButton buttonResetLevel = new GameButton(buttonStartX+450, 5 , new Dimension(150, 30),actionResetLevel, 
             "Reset Level");
-        GameButton buttonGameMenu = new GameButton(800, 50 , new Dimension(150, 30),actionGameMenu, 
+        GameButton buttonGameMenu = new GameButton(buttonStartX+600, 5 , new Dimension(150, 30),actionGameMenu, 
             "Game Menu");
-        GameButton buttonUpgradeShip = new GameButton(950, 50 , new Dimension(150, 30),actionUpgradeShip, 
+        GameButton buttonUpgradeShip = new GameButton(buttonStartX+750, 5 , new Dimension(150, 30),actionUpgradeShip, 
             "Upgrade Ship");
         
         buttonList.add(buttonExecuteOrders);
@@ -61,6 +70,10 @@ public class ButtonControl {
         buttonList.add(buttonUpgradeShip);
         
         
+    }
+    
+    public int getBarWidth(){
+        return barWidth;
     }
     
     public void checkButtons (KPoint checkPoint){

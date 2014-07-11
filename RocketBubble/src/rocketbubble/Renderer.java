@@ -107,7 +107,11 @@ public class Renderer implements Runnable {
     
     private void renderOrdersBox(Graphics2D g2d){
         // transform to wherever the orders box is
+        AffineTransform original = g2d.getTransform();
         
+        AffineTransform ordersTransform = new AffineTransform();
+        ordersTransform.translate(200, 200);
+        g2d.transform(ordersTransform);
         // draw the box
         g2d.setColor(Color.gray);
         g2d.fillRect(0, 0, 200, 200);
@@ -120,21 +124,46 @@ public class Renderer implements Runnable {
         int xVel=(int)Math.round(linVec.x * 100);
         int yVel=(int)Math.round(linVec.y * 100);
         g2d.drawString("Force:" + Integer.toString(xVel) + " , " + Integer.toString(yVel), 10, 30);
+        
+        g2d.setTransform(original);
     }
     
     private void renderButtons(Graphics2D g2d){
         for (GameButton gameButton: buttonControl.getButtonList()){
+            //g2d.setColor(Color.gray);
+            //g2d.fillRect(gameButton.getTopLeftX(), gameButton.getTopLeftY(), gameButton.getButtonDimension().width, gameButton.getButtonDimension().height);
+            
             g2d.setColor(Color.white);
             g2d.setFont(gameButton.getButtonFont());
-            g2d.fillRect(gameButton.getTopLeftX(), gameButton.getTopLeftY(), 
+            g2d.fillRect(gameButton.getTopLeftX(), gameButton.getTopLeftY()+4, 
                     gameButton.getButtonDimension().width, gameButton.getButtonDimension().height);
+            
             g2d.setColor(Color.black);
             g2d.drawRect(gameButton.getTopLeftX(),gameButton.getTopLeftY(), 
                     gameButton.getButtonDimension().width, gameButton.getButtonDimension().height);
+            
             g2d.drawString(gameButton.getButtonName(), gameButton.getTextPointX(), gameButton.getTextPointY());
             //System.out.println(gameButton.getTextPointY());
         }
         
+    }
+    
+    private void renderStatusBars(Graphics2D g2d){
+        g2d.setColor(Color.black);
+        // health box
+        g2d.drawRect(0, 5, buttonControl.getBarWidth(), 30);
+
+        // fuel box
+        g2d.drawRect(buttonControl.getBarWidth()+900, 5, buttonControl.getBarWidth(), 30);
+        
+        
+        //health bar
+        g2d.setColor(Color.red);
+        int hBarW = (int)((buttonControl.getBarWidth()-6)*(gameObjects.getHero().getHealthPercent()/100));
+        g2d.fillRect(buttonControl.getBarWidth()-hBarW-3, 8, hBarW, 24);
+        //fuel bar
+        g2d.setColor(Color.blue);
+        g2d.fillRect(buttonControl.getBarWidth()+903, 8, (int)( (buttonControl.getBarWidth()-6)*(gameObjects.getHero().getFuelPercent()/100)), 24);
     }
     
     public void rendererStart(){
@@ -223,12 +252,12 @@ public class Renderer implements Runnable {
         g2d.fillRect(0, 0, screenSize.width, screenSize.height);
         
         // test grid
-        g2d.setColor(Color.gray.brighter());
-        for (int i=0; i<15; i++){
+        //g2d.setColor(Color.gray.brighter());
+        //for (int i=0; i<15; i++){
       
-            g2d.drawLine(i*100, 0, i*100, screenSize.height);
-            g2d.drawLine(0, i*100, screenSize.width, i*100);
-        }
+            //g2d.drawLine(i*100, 0, i*100, screenSize.height);
+            //g2d.drawLine(0, i*100, screenSize.width, i*100);
+        //}
         
         
         
@@ -319,13 +348,18 @@ public class Renderer implements Runnable {
         
         // set transform back to precentred
         g2d.setTransform(preCentred);
-        g2d.drawString(Double.toString(fPSCounter.fps()), 50, 50);
+        
+        
+        // FPS Counter
+        //g2d.drawString(Double.toString(fPSCounter.fps()), 50, 50);
         
         if (showOrders){
             renderOrdersBox(g2d);
         }
         
         renderButtons(g2d);
+        
+        renderStatusBars(g2d);
 
         
     }
