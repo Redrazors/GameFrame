@@ -6,6 +6,7 @@
 
 package rocketbubble;
 
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import org.dyn4j.geometry.Vector2;
 import static rocketbubble.StaticFields.FORCE_AMOUNT;
@@ -22,11 +23,16 @@ public class OrderControl {
     private int currentViewOrder=0, currentExecuteOrder=0;
     private double orderTimer;
     private MoveableObject heroRocket;
+    private AffineTransform ordersTransform;
     
     public OrderControl(GameObjects gameObjects){
         heroRocket = gameObjects.getHero();
         orderList = new ArrayList();
+        ordersTransform = new AffineTransform();
         orderTimer=0;
+        
+        
+        ordersTransform.translate(300, 300);
         
     }
     
@@ -104,6 +110,10 @@ public class OrderControl {
     }
     public int getCurrentExecuteOrder(){
         return currentExecuteOrder;
+    }
+    
+    public AffineTransform getOrdersTransform(){
+        return ordersTransform;
     }
     
 }

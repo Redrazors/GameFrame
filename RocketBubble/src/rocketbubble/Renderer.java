@@ -9,6 +9,7 @@ package rocketbubble;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
@@ -109,21 +110,37 @@ public class Renderer implements Runnable {
         // transform to wherever the orders box is
         AffineTransform original = g2d.getTransform();
         
-        AffineTransform ordersTransform = new AffineTransform();
-        ordersTransform.translate(200, 200);
-        g2d.transform(ordersTransform);
+       
+        g2d.transform(orderControl.getOrdersTransform());
         // draw the box
-        g2d.setColor(Color.gray);
+        g2d.setColor(Color.white);
         g2d.fillRect(0, 0, 200, 200);
+        g2d.setColor(Color.black);
+        g2d.drawRect(0, 0, 200, 200);
         
+        g2d.setFont(new Font("Lucida Console", Font.PLAIN, 12));
         g2d.setColor(Color.black);
         String current = Integer.toString(orderControl.getCurrentViewOrder()+1);
         String total = Integer.toString(orderControl.getOrderList().size());
-        g2d.drawString("Order " + current + " of " + total, 10, 10);
-        Vector2 linVec = gameObjects.getHero().getLinearVelocity();
-        int xVel=(int)Math.round(linVec.x * 100);
-        int yVel=(int)Math.round(linVec.y * 100);
-        g2d.drawString("Force:" + Integer.toString(xVel) + " , " + Integer.toString(yVel), 10, 30);
+        g2d.drawString("Order " + current + " of " + total, 30, 30);
+        
+        // thrust 
+        g2d.drawString("Thrust", 30, 60);
+        int thrust = orderControl.getOrderList().get(orderControl.getCurrentViewOrder()).getThrust();
+        g2d.drawString(Integer.toString(thrust), 120, 60);
+        //angle
+        g2d.drawString("Angle", 30, 120);
+        
+        // time
+        g2d.drawString("For " + " seconds.", 30, 150);
+        
+        
+        
+        
+        //Vector2 linVec = gameObjects.getHero().getLinearVelocity();
+        //int xVel=(int)Math.round(linVec.x * 100);
+        //int yVel=(int)Math.round(linVec.y * 100);
+        //g2d.drawString("Force:" + Integer.toString(xVel) + " , " + Integer.toString(yVel), 10, 30);
         
         g2d.setTransform(original);
     }
@@ -164,6 +181,10 @@ public class Renderer implements Runnable {
         //fuel bar
         g2d.setColor(Color.blue);
         g2d.fillRect(buttonControl.getBarWidth()+903, 8, (int)( (buttonControl.getBarWidth()-6)*(gameObjects.getHero().getFuelPercent()/100)), 24);
+    
+        g2d.setColor(Color.white);
+        g2d.drawString("Integrity", buttonControl.getBarWidth()-75, 24);
+        g2d.drawString("Fuel", buttonControl.getBarWidth()+910, 24);
     }
     
     public void rendererStart(){
