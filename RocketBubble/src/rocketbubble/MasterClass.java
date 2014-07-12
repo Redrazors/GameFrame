@@ -51,6 +51,8 @@ public class MasterClass implements Runnable {
         this.screenSize = screenSize;
         world = new World();
         world.setGravity(new Vector2(0,1));
+        gameObjects = new GameObjects(world, screenSize);
+        orderControl = new OrderControl(gameObjects);
         ButtonControl buttonControl = new ButtonControl(this);
         ActionControl actionControl = new ActionControl(drawPanel, this);
         MouseControl mouseControl = new MouseControl(buttonControl, drawPanel);
@@ -59,9 +61,9 @@ public class MasterClass implements Runnable {
         
         mainThread = new Thread (this);
         soundControl = new SoundControl();
-        gameObjects = new GameObjects(world, screenSize);
+        
         pathControl=new PathControl(gameObjects);
-        orderControl = new OrderControl(gameObjects);
+        
         testSetOrders();
         
         renderer = new Renderer(bs, gameObjects, pathControl, screenSize, soundControl, drawPanel, orderControl, buttonControl);
@@ -108,6 +110,10 @@ public class MasterClass implements Runnable {
     
     public PathControl getPathControl(){
         return pathControl;
+    }
+    
+    public OrderControl getOrderControl(){
+        return orderControl;
     }
     
     public void setInitialOrder(){

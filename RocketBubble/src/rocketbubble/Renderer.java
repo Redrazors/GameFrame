@@ -6,6 +6,7 @@
 
 package rocketbubble;
 
+import com.vividsolutions.jts.geom.Polygon;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -118,11 +119,27 @@ public class Renderer implements Runnable {
         g2d.setColor(Color.black);
         g2d.drawRect(0, 0, 200, 200);
         
+        AffineTransform buttons = new AffineTransform();
+        
+        g2d.translate(buttonControl.getOrderButtonList().get(0).getTopLeftX(), buttonControl.getOrderButtonList().get(0).getTopLeftY());
+        renderArrowBox(g2d, 2, 10);
+        g2d.setTransform(orderControl.getOrdersTransform());
+        g2d.translate(buttonControl.getOrderButtonList().get(1).getTopLeftX(), buttonControl.getOrderButtonList().get(1).getTopLeftY());
+        renderArrowBox(g2d, 1, 10);
+        g2d.setTransform(orderControl.getOrdersTransform());
+        g2d.translate(buttonControl.getOrderButtonList().get(2).getTopLeftX(), buttonControl.getOrderButtonList().get(2).getTopLeftY());
+        renderArrowBox(g2d, 1, 0);
+        g2d.setTransform(orderControl.getOrdersTransform());
+        g2d.translate(buttonControl.getOrderButtonList().get(3).getTopLeftX(), buttonControl.getOrderButtonList().get(3).getTopLeftY());
+        renderArrowBox(g2d, 2, 0);
+        g2d.setTransform(orderControl.getOrdersTransform());
+        
+        
         g2d.setFont(new Font("Lucida Console", Font.PLAIN, 12));
         g2d.setColor(Color.black);
         String current = Integer.toString(orderControl.getCurrentViewOrder()+1);
         String total = Integer.toString(orderControl.getOrderList().size());
-        g2d.drawString("Order " + current + " of " + total, 30, 30);
+        g2d.drawString("Order " + current + " of " + total, 60, 20);
         
         // thrust 
         g2d.drawString("Thrust", 30, 60);
@@ -145,10 +162,23 @@ public class Renderer implements Runnable {
         g2d.setTransform(original);
     }
     
+    private void renderArrowBox(Graphics2D g2d, int num, int direction){
+        g2d.drawRect(0, 0, 0+10*num, 20);
+        int[] x = new int[3];
+        int[] y = new int[3];
+        
+        for (int i=0; i<num; i++){
+            x[0]=(direction+10*i); x[1]=(direction+10*i); x[2]=(10-direction+10*i);
+            y[0]=0; y[1]=20; y[2]=10;
+            int n = 3;
+
+            g2d.fillPolygon(x, y, n);
+        }
+        
+    }
+    
     private void renderButtons(Graphics2D g2d){
         for (GameButton gameButton: buttonControl.getButtonList()){
-            //g2d.setColor(Color.gray);
-            //g2d.fillRect(gameButton.getTopLeftX(), gameButton.getTopLeftY(), gameButton.getButtonDimension().width, gameButton.getButtonDimension().height);
             
             g2d.setColor(Color.white);
             g2d.setFont(gameButton.getButtonFont());
@@ -160,7 +190,6 @@ public class Renderer implements Runnable {
                     gameButton.getButtonDimension().width, gameButton.getButtonDimension().height);
             
             g2d.drawString(gameButton.getButtonName(), gameButton.getTextPointX(), gameButton.getTextPointY());
-            //System.out.println(gameButton.getTextPointY());
         }
         
     }
