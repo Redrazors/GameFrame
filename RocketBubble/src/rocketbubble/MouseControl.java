@@ -38,6 +38,7 @@ public class MouseControl implements MouseListener, MouseMotionListener{
        
        mouseScreenPos.x= mousePos.x-panelPosition.x;
        mouseScreenPos.y= mousePos.y-panelPosition.y;
+       //System.out.println(mouseScreenPos);
        return mouseScreenPos;      
    }
 

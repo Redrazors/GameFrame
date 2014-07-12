@@ -120,48 +120,39 @@ public class ButtonControl {
     }
     
     public void checkButtons (KPoint checkPoint){
-        boolean alreadyFound=false;
-        for (GameButton gameButton : buttonList) {
-            // check if the 
-            //System.out.println("looking for button");
-            int x1 = gameButton.getTopLeftX();
-            int x2 = x1+gameButton.getButtonDimension().width;
-            int y1 = gameButton.getTopLeftY();
-            int y2 = x1+gameButton.getButtonDimension().height;
+        //boolean alreadyFound=false;
+        
+        // check if we are in the top button area
+        if (checkPoint.x >= barWidth && checkPoint.x<=barWidth+900 &&
+                checkPoint.y>=5 && checkPoint.y<=35){
             
-            if (checkPoint.x>=x1 && checkPoint.x<=x2){
-                if (checkPoint.y>=y1 && checkPoint.y<=y2){
-                    // button is found
-                    //System.out.println("found button");
-                    gameButton.getButtonAction().actionPerformed(null);
-                    alreadyFound=true;
-                    break;
-                }
+            for (GameButton gameButton : buttonList) {
+
+                int x1 = gameButton.getTopLeftX();
+                int x2 = x1+gameButton.getButtonDimension().width;
+                int y1 = gameButton.getTopLeftY();
+                int y2 = x1+gameButton.getButtonDimension().height;
+            
+                if (checkPoint.x>=x1 && checkPoint.x<=x2){
+                    if (checkPoint.y>=y1 && checkPoint.y<=y2){
+                        // button is found
+                        //System.out.println("found button");
+                        gameButton.getButtonAction().actionPerformed(null);
+                        //alreadyFound=true;
+                        break;
+                    }
                 
-            }
+                } 
             
-        }
-        
-        if (!alreadyFound){
-            int x1 = buttonOrderPanelClick.getTopLeftX();
-            int x2 = x1+buttonOrderPanelClick.getButtonDimension().width;
-            int y1 = buttonOrderPanelClick.getTopLeftY();
-            int y2 = x1+buttonOrderPanelClick.getButtonDimension().height;
-            
-            if (checkPoint.x>=x1 && checkPoint.x<=x2){
-                if (checkPoint.y>=y1 && checkPoint.y<=y2){
-                    // button is found
-                    //System.out.println("found button");
-                    //buttonOrderPanelClick.getButtonAction().actionPerformed(null);
-                    checkOrderPanelButtons(checkPoint);
-                }
-                
-            }
-        }
-        
-        
-        
-        
+            }// end button for
+            // check to find the order panel
+        } else if (checkPoint.x>buttonOrderPanelClick.getTopLeftX() &&
+                checkPoint.x <buttonOrderPanelClick.getTopLeftX()+buttonOrderPanelClick.getButtonDimension().width &&
+                checkPoint.y>buttonOrderPanelClick.getTopLeftY() &&
+                checkPoint.y<buttonOrderPanelClick.getTopLeftY()+buttonOrderPanelClick.getButtonDimension().height){
+            //System.out.println("found order panel");
+            checkOrderPanelButtons(checkPoint);
+        }      
     }
     
     private void checkOrderPanelButtons(KPoint checkPoint){

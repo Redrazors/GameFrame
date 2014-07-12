@@ -94,13 +94,16 @@ public class OrderControl {
         return currentViewOrder;
     }
     public void adjustCurrentViewOrder(int adjust){
-        currentViewOrder+=adjust;
+        if (currentViewOrder+adjust >=0 && currentViewOrder+adjust<=orderList.size()-1){
+            currentViewOrder+=adjust;
+        }
+        
     }
     public void rewindViewOrder(){
         currentViewOrder=0;
     }
     public void forwardViewOrder(){
-        currentViewOrder = orderList.size();
+        currentViewOrder = orderList.size()-1;
     }
     public void adjustCurrentExecuteOrder(int adjust){
         currentExecuteOrder+=adjust;

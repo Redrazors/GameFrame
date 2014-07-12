@@ -24,6 +24,7 @@ public class ActionOrderNext extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        //ystem.out.println("pressed");
         masterClass.getOrderControl().adjustCurrentViewOrder(1);
     }
     
