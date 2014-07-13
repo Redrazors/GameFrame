@@ -15,6 +15,8 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -119,7 +121,6 @@ public class Renderer implements Runnable {
         g2d.setColor(Color.black);
         g2d.drawRect(0, 0, 200, 200);
         
-        AffineTransform buttons = new AffineTransform();
         
         g2d.translate(buttonControl.getOrderButtonList().get(0).getTopLeftX(), buttonControl.getOrderButtonList().get(0).getTopLeftY());
         renderArrowBox(g2d, 2, 10);
@@ -142,9 +143,23 @@ public class Renderer implements Runnable {
         g2d.drawString("Order " + current + " of " + total, 60, 20);
         
         // thrust 
-        g2d.drawString("Thrust", 30, 60);
+        g2d.drawString("Thrust", 90, 60);
         int thrust = orderControl.getOrderList().get(orderControl.getCurrentViewOrder()).getThrust();
-        g2d.drawString(Integer.toString(thrust), 120, 60);
+        g2d.drawString(Integer.toString(thrust), 90, 90);
+        
+        g2d.translate(buttonControl.getOrderButtonList().get(4).getTopLeftX(), buttonControl.getOrderButtonList().get(4).getTopLeftY());
+        renderArrowBox(g2d, 2, 10);
+        g2d.setTransform(orderControl.getOrdersTransform());
+        g2d.translate(buttonControl.getOrderButtonList().get(5).getTopLeftX(), buttonControl.getOrderButtonList().get(5).getTopLeftY());
+        renderArrowBox(g2d, 1, 10);
+        g2d.setTransform(orderControl.getOrdersTransform());
+        g2d.translate(buttonControl.getOrderButtonList().get(6).getTopLeftX(), buttonControl.getOrderButtonList().get(6).getTopLeftY());
+        renderArrowBox(g2d, 1, 0);
+        g2d.setTransform(orderControl.getOrdersTransform());
+        g2d.translate(buttonControl.getOrderButtonList().get(7).getTopLeftX(), buttonControl.getOrderButtonList().get(7).getTopLeftY());
+        renderArrowBox(g2d, 2, 0);
+        g2d.setTransform(orderControl.getOrdersTransform());
+        
         //angle
         g2d.drawString("Angle", 30, 120);
         
@@ -389,10 +404,29 @@ public class Renderer implements Runnable {
             paintShapeByType(g2d, type, shapeList);
          
             g2d.setTransform(ot);
+            //System.out.println(gameObjects.getMoveableObjectsList().get(i).getTransform().getTranslationX()+","+ gameObjects.getMoveableObjectsList().get(i).getTransform().getTranslationY());
 
         }
         
+        for (int i=0; i<gameObjects.getMoveableObjectsList().size(); i++){
+          KPoint startPoint = new KPoint(gameObjects.getMoveableObjectsList().get(i).getTransform().getTranslationX(),
+        gameObjects.getMoveableObjectsList().get(i).getTransform().getTranslationY());
         
+        if (gameObjects.getMoveableObjectsList().get(i).getCurrentPath()!=null){
+            ArrayList<KPoint> pathPoints = gameObjects.getMoveableObjectsList().get(i).getCurrentPath();
+            if (pathPoints.size() > 0){
+                KPoint p = pathPoints.get(0);
+                for (int j = 1; j < pathPoints.size(); j++) {
+                    KPoint p2 = pathPoints.get(j);
+                    //p2 = pathControl.avoidClippingCorners(p2, 64);
+                    g2d.draw(new Line2D.Double(p.x, p.y, p2.x, p2.y));
+                    float d = 5f;
+                    g2d.fill(new Ellipse2D.Double(p2.x - d / 2f, p2.y - d / 2f, d, d));
+                    p = p2;
+                }
+            }
+        }
+      }
           
         
         

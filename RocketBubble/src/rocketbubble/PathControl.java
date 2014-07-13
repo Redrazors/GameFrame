@@ -132,15 +132,21 @@ public class PathControl {
                 if (angleRemaining>Math.PI)angleRemaining -=2*Math.PI;
                 if (angleRemaining<-Math.PI)angleRemaining +=2*Math.PI;
                 //System.out.println(angleRemaining);
-                if (angleRemaining > 0.1){ 
+                if (angleRemaining > 0.01){ 
                     //movingOb.rotateAboutCenter(-angleRemaining);
                     movingOb.rotateAboutCenter(-ROTATION_SPEED*movingOb.getSpeed());
-                } else if (angleRemaining <-0.1){
+                } else if (angleRemaining <-0.01){
                     //movingOb.rotateAboutCenter(-ROTATION_SPEED*movingOb.getSpeed());
                     movingOb.rotateAboutCenter(ROTATION_SPEED*movingOb.getSpeed());
 
-                } else {
-                    double distance = start.distance(nextPoint);
+                }  else if (angleRemaining>0){
+                    movingOb.rotateAboutCenter(-angleRemaining);
+                } else if (angleRemaining<0){
+                    movingOb.rotateAboutCenter(angleRemaining);
+                }
+                    
+                
+                double distance = start.distance(nextPoint);
                     double distMult = 1;
                     // distmulti code not working properly
                     //if (distance<=100){
@@ -151,7 +157,7 @@ public class PathControl {
                     int xAdjust = (int)Math.ceil(Math.cos(angle)*FORCE_AMOUNT*movingOb.getSpeed()*distMult);
                     int yAdjust = (int)Math.ceil(Math.sin(angle)*FORCE_AMOUNT*movingOb.getSpeed()*distMult);
                     movingOb.applyForce(new Vector2(xAdjust,yAdjust));
-                }
+                
             }
             
         }

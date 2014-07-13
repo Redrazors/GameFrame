@@ -35,9 +35,6 @@ public class MasterClass implements Runnable {
     /** The time stamp for the last iteration */
     protected long last;
     private Thread mainThread;
-    
-    private double rotateTest=0.04;
-    private int spiralCounter =0;
     private Dimension screenSize;
     
     private SoundControl soundControl;
@@ -67,8 +64,7 @@ public class MasterClass implements Runnable {
         testSetOrders();
         
         renderer = new Renderer(bs, gameObjects, pathControl, screenSize, soundControl, drawPanel, orderControl, buttonControl);
-        //renderer.setIgnoreRepaint(true);
-        //gameFrame.add(renderer);
+
         renderer.rendererStart();
         
         //
@@ -96,8 +92,6 @@ public class MasterClass implements Runnable {
     
     public void gameInit(){
         mainThread.start();
-        
-        //world.shiftCoordinates(new Vector2(screenSize.width/2, screenSize.height/2));
     }
     
     public Renderer getRenderer(){
@@ -140,27 +134,11 @@ public class MasterClass implements Runnable {
             // execute the orders
             orderControl.executeOrders();
             
-        }
-
-        
-        
-        
-        
-        
+        }   
     }
     
     
     private void moveObjects(){
-        //gameObjects.getMoveableObjectsList().get(0).applyImpulse(new Vector2(1000.0, 100.0));
-        //gameObjects.getMoveableObjectsList().get(0).rotateAboutCenter(rotateTest);
-        //pathControl.moveObjectForward(gameObjects.getMoveableObjectsList().get(0), 100);
-        //spiralCounter+=1;
-        //if (spiralCounter==100){
-            //rotateTest-=rotateTest/10;
-            //spiralCounter=0;
-            //System.out.println(rotateTest);
-        //}
-        
         pathControl.moveObjectsAlongPath();
         pathControl.bubbleCollision();
     }

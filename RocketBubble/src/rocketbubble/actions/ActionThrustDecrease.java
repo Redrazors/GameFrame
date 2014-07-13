@@ -14,18 +14,19 @@ import rocketbubble.MasterClass;
  *
  * @author David
  */
-public class ActionOrderLast extends AbstractAction {
+public class ActionThrustDecrease extends AbstractAction {
     
     private final MasterClass masterClass;
     
-    public ActionOrderLast(MasterClass masterClass){
+    public ActionThrustDecrease(MasterClass masterClass){
         this.masterClass = masterClass;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        //System.out.println("order last action");
-        masterClass.getOrderControl().forwardViewOrder();
+        //ystem.out.println("pressed");
+        int orderNum = masterClass.getOrderControl().getCurrentViewOrder();
+        masterClass.getOrderControl().getOrderList().get(orderNum).adjustThrust(-1);
     }
     
 }

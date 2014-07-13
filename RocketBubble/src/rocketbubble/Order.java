@@ -13,12 +13,14 @@ package rocketbubble;
 public class Order {
     private int thrust, time, angleDegrees;
     private double angleRadians;
+    private OrderControl orderControl;
     
     
-    public Order (int thrust, int angle, int time){
+    public Order (int thrust, int angle, int time, OrderControl orderControl){
         this.thrust = thrust;
         this.angleDegrees = angle;
         this.time = time;
+        this.orderControl = orderControl;
         
         // convert angle to radians
        angleRadians = Math.toRadians(angle)-Math.PI/2;
@@ -37,6 +39,18 @@ public class Order {
     }
     public int getTime(){
         return time;
+    }
+    
+    public void setThrustMin(){
+        thrust=0;
+    }
+    public void adjustThrust(int amount){
+        if (thrust+amount >=0 && thrust+amount<=orderControl.getMaxThrust()){
+            thrust+=amount;
+        }  
+    }
+    public void setThrustMax(){
+        thrust = orderControl.getMaxThrust();
     }
     
 }

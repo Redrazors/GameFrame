@@ -18,6 +18,10 @@ import rocketbubble.actions.ActionOrderNext;
 import rocketbubble.actions.ActionOrderPrevious;
 import rocketbubble.actions.ActionResetLevel;
 import rocketbubble.actions.ActionSetOrders;
+import rocketbubble.actions.ActionThrustDecrease;
+import rocketbubble.actions.ActionThrustIncrease;
+import rocketbubble.actions.ActionThrustMax;
+import rocketbubble.actions.ActionThrustMin;
 import rocketbubble.actions.ActionUpgradeShip;
 import straightedge.geom.KPoint;
 
@@ -107,6 +111,26 @@ public class ButtonControl {
         orderButtonList.add(buttonOrderNext);
         orderButtonList.add(buttonOrderLast);
         
+        // thrust buttons
+        ActionThrustMin actionThrustMin = new ActionThrustMin(masterClass);
+        ActionThrustDecrease actionThrustDecrease = new ActionThrustDecrease(masterClass);
+        ActionThrustIncrease actionThrustIncrease = new ActionThrustIncrease(masterClass);
+        ActionThrustMax actionThrustMax = new ActionThrustMax(masterClass);
+        
+        GameButton buttonThrustMin = new GameButton(5, 90 , new Dimension(20, 20),actionThrustMin, 
+            "Min");
+        GameButton buttonThrustDecrease = new GameButton(30, 90 , new Dimension(10, 20),actionThrustDecrease, 
+            "Decrease");
+        GameButton buttonThrustIncrease = new GameButton(160, 90 , new Dimension(10, 20),actionThrustIncrease, 
+            "Increase");
+        GameButton buttonThrustMax = new GameButton(175, 90 , new Dimension(20, 20),actionThrustMax, 
+            "Max");
+        
+        orderButtonList.add(buttonThrustMin);
+        orderButtonList.add(buttonThrustDecrease);
+        orderButtonList.add(buttonThrustIncrease);
+        orderButtonList.add(buttonThrustMax);
+        
         
         
     }
@@ -133,14 +157,12 @@ public class ButtonControl {
                 int y1 = gameButton.getTopLeftY();
                 int y2 = x1+gameButton.getButtonDimension().height;
             
-                if (checkPoint.x>=x1 && checkPoint.x<=x2){
-                    if (checkPoint.y>=y1 && checkPoint.y<=y2){
+                if (checkPoint.x>=x1 && checkPoint.x<=x2 && checkPoint.y>=y1 && checkPoint.y<=y2){
                         // button is found
                         //System.out.println("found button");
                         gameButton.getButtonAction().actionPerformed(null);
                         //alreadyFound=true;
                         break;
-                    }
                 
                 } 
             
@@ -160,20 +182,18 @@ public class ButtonControl {
         checkPoint.x-=masterClass.getOrderControl().getOrdersTransform().getTranslateX();
         checkPoint.y-=masterClass.getOrderControl().getOrdersTransform().getTranslateY();
         
-        //System.out.println("Order panel clicked");
+        //System.out.println("Order panel clicked "+ checkPoint);
         for (GameButton orderButton: orderButtonList){
             int x1 = orderButton.getTopLeftX();
             int x2 = x1+orderButton.getButtonDimension().width;
             int y1 = orderButton.getTopLeftY();
-            int y2 = x1+orderButton.getButtonDimension().height;
+            int y2 = y1+orderButton.getButtonDimension().height;
             
-            if (checkPoint.x>=x1 && checkPoint.x<=x2){
-                if (checkPoint.y>=y1 && checkPoint.y<=y2){
+            if (checkPoint.x>=x1 && checkPoint.x<=x2 && checkPoint.y>=y1 && checkPoint.y<=y2){
                     // button is found
-                    //System.out.println("found button");
+                    //System.out.println("found button between "+x1+","+y1+"   "  + x2+","+y2);
                     orderButton.getButtonAction().actionPerformed(null);
                     break;
-                }
                 
             }
         }
