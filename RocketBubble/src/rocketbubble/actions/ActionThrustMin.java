@@ -24,7 +24,6 @@ public class ActionThrustMin extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println("min pressed");
         int orderNum = masterClass.getOrderControl().getCurrentViewOrder();
         masterClass.getOrderControl().getOrderList().get(orderNum).setThrustMin();
     }

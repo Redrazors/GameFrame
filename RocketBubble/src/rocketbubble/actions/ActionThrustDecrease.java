@@ -26,7 +26,9 @@ public class ActionThrustDecrease extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
         //ystem.out.println("pressed");
         int orderNum = masterClass.getOrderControl().getCurrentViewOrder();
-        masterClass.getOrderControl().getOrderList().get(orderNum).adjustThrust(-1);
+        masterClass.getOrderControl().getOrderList().get(orderNum).adjustThrust(-1*masterClass.getButtonControl().getButtonIncreaseMultiplier());
+        
+        masterClass.getButtonControl().setHoldDownAction(this);
     }
     
 }

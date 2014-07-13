@@ -158,8 +158,6 @@ public final class GameObjects {
         
         // rotate to point up
         heroRocket.rotateAboutCenter(-Math.PI/2);
-        
-        heroRocket.setPathDestination(new KPoint(100, 100));
  
     }
     

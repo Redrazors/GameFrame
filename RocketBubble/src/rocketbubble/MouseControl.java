@@ -45,17 +45,17 @@ public class MouseControl implements MouseListener, MouseMotionListener{
     @Override
     public void mouseClicked(MouseEvent e) {
         //System.out.println("clicked");
-        buttonControl.checkButtons(mouseScreenPos());
+        
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        
+        buttonControl.checkButtons(mouseScreenPos());
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        
+        buttonControl.resetHoldDownTimer();
     }
 
     @Override

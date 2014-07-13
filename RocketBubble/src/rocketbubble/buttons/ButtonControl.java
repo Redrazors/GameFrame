@@ -8,6 +8,7 @@ package rocketbubble.buttons;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
+import javax.swing.AbstractAction;
 import rocketbubble.MasterClass;
 import rocketbubble.actions.ActionClearOrders;
 import rocketbubble.actions.ActionExecuteOrders;
@@ -36,6 +37,12 @@ public class ButtonControl {
     private GameButton buttonOrderPanelClick;
     
     private int barWidth, fuelBarStart;
+    
+    private double holdDownTimer=0, holdDownNextTick=0;
+    private int buttonIncreaseMultiplier=1;
+    
+    private AbstractAction holdDownAction;
+    private boolean buttonHeld=false;
     
     
     public ButtonControl(MasterClass masterClass){
@@ -155,7 +162,7 @@ public class ButtonControl {
                 int x1 = gameButton.getTopLeftX();
                 int x2 = x1+gameButton.getButtonDimension().width;
                 int y1 = gameButton.getTopLeftY();
-                int y2 = x1+gameButton.getButtonDimension().height;
+                int y2 = y1+gameButton.getButtonDimension().height;
             
                 if (checkPoint.x>=x1 && checkPoint.x<=x2 && checkPoint.y>=y1 && checkPoint.y<=y2){
                         // button is found
@@ -190,13 +197,51 @@ public class ButtonControl {
             int y2 = y1+orderButton.getButtonDimension().height;
             
             if (checkPoint.x>=x1 && checkPoint.x<=x2 && checkPoint.y>=y1 && checkPoint.y<=y2){
-                    // button is found
-                    //System.out.println("found button between "+x1+","+y1+"   "  + x2+","+y2);
+        
                     orderButton.getButtonAction().actionPerformed(null);
                     break;
                 
             }
         }
+    }
+    
+    public void adjustHoldDownTimer(double amount){
+        holdDownTimer+=amount;
+        holdDownNextTick+=amount;
+        
+        buttonIncreaseMultiplier=(int)(Math.round(holdDownTimer)+1);
+        
+        
+        if (holdDownNextTick>=0.1){
+            holdDownButtonTick();
+            holdDownNextTick=0;
+        }
+
+        
+    }
+    
+    private void holdDownButtonTick(){
+        // activate the clicked on buttons here again
+        if (holdDownAction!=null){
+            holdDownAction.actionPerformed(null);
+        }
+    }
+    
+    public void resetHoldDownTimer(){
+        holdDownTimer=0;
+        buttonHeld=false;
+    }
+    
+    public void setHoldDownAction(AbstractAction action){
+        holdDownAction=action;
+        buttonHeld=true;
+        buttonIncreaseMultiplier=0;
+    }
+    public boolean getButtonHeldBoolean(){
+        return buttonHeld;
+    }
+    public int getButtonIncreaseMultiplier(){
+        return buttonIncreaseMultiplier;
     }
     
     public ArrayList<GameButton> getButtonList(){

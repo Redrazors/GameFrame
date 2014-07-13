@@ -39,6 +39,7 @@ public class MasterClass implements Runnable {
     
     private SoundControl soundControl;
     private OrderControl orderControl;
+    private ButtonControl buttonControl;
     
     private boolean executeOrders=false;
     
@@ -50,7 +51,7 @@ public class MasterClass implements Runnable {
         world.setGravity(new Vector2(0,1));
         gameObjects = new GameObjects(world, screenSize);
         orderControl = new OrderControl(gameObjects);
-        ButtonControl buttonControl = new ButtonControl(this);
+        buttonControl = new ButtonControl(this);
         ActionControl actionControl = new ActionControl(drawPanel, this);
         MouseControl mouseControl = new MouseControl(buttonControl, drawPanel);
         gameFrame.addMouseListener(mouseControl);
@@ -109,6 +110,9 @@ public class MasterClass implements Runnable {
     public OrderControl getOrderControl(){
         return orderControl;
     }
+    public ButtonControl getButtonControl(){
+        return buttonControl;
+    }
     
     public void setInitialOrder(){
         orderControl.resetCurrentExecuteOrder();
@@ -162,7 +166,12 @@ public class MasterClass implements Runnable {
         if (executeOrders){
             
             orderControl.adjustOrderTimer(-elapsedTime);
+        } else if (buttonControl.getButtonHeldBoolean()) {
+            // give timer to buttonControl in case button is held down
+            buttonControl.adjustHoldDownTimer(elapsedTime);
         }
+        
+         
         
         
     }
