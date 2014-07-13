@@ -99,6 +99,9 @@ public class OrderControl {
     public void adjustCurrentViewOrder(int adjust){
         if (currentViewOrder+adjust >=0 && currentViewOrder+adjust<=orderList.size()-1){
             currentViewOrder+=adjust;
+        } else if(currentViewOrder+adjust==orderList.size()){
+            addOrder(0, 0, 0);
+            currentViewOrder+=1;
         }
         
     }

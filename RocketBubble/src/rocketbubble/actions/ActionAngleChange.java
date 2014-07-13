@@ -14,21 +14,18 @@ import rocketbubble.MasterClass;
  *
  * @author David
  */
-public class ActionThrustDecrease extends AbstractAction {
+public class ActionAngleChange extends AbstractAction {
     
     private final MasterClass masterClass;
     
-    public ActionThrustDecrease(MasterClass masterClass){
+    public ActionAngleChange(MasterClass masterClass){
         this.masterClass = masterClass;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        //ystem.out.println("pressed");
-        int orderNum = masterClass.getOrderControl().getCurrentViewOrder();
-        masterClass.getOrderControl().getOrderList().get(orderNum).adjustThrust(-masterClass.getButtonControl().getButtonIncreaseMultiplier());
+        System.out.println("angle box pressed");
         
-        masterClass.getButtonControl().setHoldDownAction(this);
     }
     
 }

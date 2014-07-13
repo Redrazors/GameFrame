@@ -25,7 +25,7 @@ public class ActionThrustIncrease extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         int orderNum = masterClass.getOrderControl().getCurrentViewOrder();
-        masterClass.getOrderControl().getOrderList().get(orderNum).adjustThrust(1*masterClass.getButtonControl().getButtonIncreaseMultiplier());
+        masterClass.getOrderControl().getOrderList().get(orderNum).adjustThrust(masterClass.getButtonControl().getButtonIncreaseMultiplier());
         
         masterClass.getButtonControl().setHoldDownAction(this);
     }

@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
-import org.dyn4j.geometry.Vector2;
 import static rocketbubble.StaticFields.PITCHSIZE;
 import static rocketbubble.StaticFields.TILESIZE;
 import rocketbubble.buttons.ButtonControl;
@@ -143,38 +142,55 @@ public class Renderer implements Runnable {
         g2d.drawString("Order " + current + " of " + total, 60, 20);
         
         // thrust 
-        g2d.drawString("Thrust", 90, 60);
+        g2d.drawString("Thrust", 75, 50);
         int thrust = orderControl.getOrderList().get(orderControl.getCurrentViewOrder()).getThrust();
-        g2d.drawString(Integer.toString(thrust), 90, 90);
+        g2d.drawString(Integer.toString(thrust), 80, 70);
         
         g2d.translate(buttonControl.getOrderButtonList().get(4).getTopLeftX(), buttonControl.getOrderButtonList().get(4).getTopLeftY());
-        renderArrowBox(g2d, 2, 10);
+        renderThrustControls(g2d, buttonControl.getOrderButtonList().get(4));
         g2d.setTransform(orderControl.getOrdersTransform());
+        
         g2d.translate(buttonControl.getOrderButtonList().get(5).getTopLeftX(), buttonControl.getOrderButtonList().get(5).getTopLeftY());
-        renderArrowBox(g2d, 1, 10);
+        renderThrustControls(g2d, buttonControl.getOrderButtonList().get(5));
         g2d.setTransform(orderControl.getOrdersTransform());
+        
         g2d.translate(buttonControl.getOrderButtonList().get(6).getTopLeftX(), buttonControl.getOrderButtonList().get(6).getTopLeftY());
-        renderArrowBox(g2d, 1, 0);
+        renderThrustControls(g2d, buttonControl.getOrderButtonList().get(6));
         g2d.setTransform(orderControl.getOrdersTransform());
         g2d.translate(buttonControl.getOrderButtonList().get(7).getTopLeftX(), buttonControl.getOrderButtonList().get(7).getTopLeftY());
-        renderArrowBox(g2d, 2, 0);
+        renderThrustControls(g2d, buttonControl.getOrderButtonList().get(7));
         g2d.setTransform(orderControl.getOrdersTransform());
         
         //angle
-        g2d.drawString("Angle", 30, 120);
+        String angle = Integer.toString(orderControl.getOrderList().get(orderControl.getCurrentViewOrder()).getAngleDegrees());
+        g2d.drawString("Angle: " + angle+"°", 60, 100);
+        renderAngleBox(g2d);
+        g2d.setTransform(orderControl.getOrdersTransform());
         
         // time
-        g2d.drawString("For " + " seconds.", 30, 150);
-        
-        
-        
-        
-        //Vector2 linVec = gameObjects.getHero().getLinearVelocity();
-        //int xVel=(int)Math.round(linVec.x * 100);
-        //int yVel=(int)Math.round(linVec.y * 100);
-        //g2d.drawString("Force:" + Integer.toString(xVel) + " , " + Integer.toString(yVel), 10, 30);
+        g2d.drawString("For " + " seconds.", 30, 190);
         
         g2d.setTransform(original);
+    }
+    
+    private void renderAngleBox(Graphics2D g2d){
+        GameButton angleBox = buttonControl.getOrderButtonList().get(8);
+        g2d.translate(angleBox.getTopLeftX(), angleBox.getTopLeftY());
+        g2d.drawRect(0, 0, angleBox.getButtonDimension().width, angleBox.getButtonDimension().height);
+        g2d.drawOval(10, 10, 50, 50);
+        g2d.translate(35, 35);
+        
+        // get angle of line
+        double a = orderControl.getOrderList().get(orderControl.getCurrentViewOrder()).getAngleRadians();
+        int x = (int)(Math.cos(a) * 20);
+        int y = (int)(Math.sin(a) * 20);
+                
+        g2d.drawLine(0, 0, x, y);
+    }
+    
+    private void renderThrustControls(Graphics2D g2d, GameButton button){
+        g2d.drawRect(0, 0, button.getButtonDimension().width, button.getButtonDimension().height);
+        g2d.drawString(button.getButtonName(), 5, 12);
     }
     
     private void renderArrowBox(Graphics2D g2d, int num, int direction){

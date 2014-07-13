@@ -10,6 +10,7 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import javax.swing.AbstractAction;
 import rocketbubble.MasterClass;
+import rocketbubble.actions.ActionAngleChange;
 import rocketbubble.actions.ActionClearOrders;
 import rocketbubble.actions.ActionExecuteOrders;
 import rocketbubble.actions.ActionGameMenu;
@@ -124,19 +125,24 @@ public class ButtonControl {
         ActionThrustIncrease actionThrustIncrease = new ActionThrustIncrease(masterClass);
         ActionThrustMax actionThrustMax = new ActionThrustMax(masterClass);
         
-        GameButton buttonThrustMin = new GameButton(5, 90 , new Dimension(20, 20),actionThrustMin, 
+        GameButton buttonThrustMin = new GameButton(5, 60 , new Dimension(30, 15),actionThrustMin, 
             "Min");
-        GameButton buttonThrustDecrease = new GameButton(30, 90 , new Dimension(10, 20),actionThrustDecrease, 
-            "Decrease");
-        GameButton buttonThrustIncrease = new GameButton(160, 90 , new Dimension(10, 20),actionThrustIncrease, 
-            "Increase");
-        GameButton buttonThrustMax = new GameButton(175, 90 , new Dimension(20, 20),actionThrustMax, 
+        GameButton buttonThrustDecrease = new GameButton(40, 60 , new Dimension(15, 15),actionThrustDecrease, 
+            "-");
+        GameButton buttonThrustIncrease = new GameButton(145, 60 , new Dimension(15, 15),actionThrustIncrease, 
+            "+");
+        GameButton buttonThrustMax = new GameButton(165, 60 , new Dimension(30, 15),actionThrustMax, 
             "Max");
         
         orderButtonList.add(buttonThrustMin);
         orderButtonList.add(buttonThrustDecrease);
         orderButtonList.add(buttonThrustIncrease);
         orderButtonList.add(buttonThrustMax);
+        
+        ActionAngleChange actionAngleChange = new ActionAngleChange(masterClass);
+        GameButton buttonAngleChange = new GameButton(65, 110 , new Dimension(70, 70),actionAngleChange, 
+            "Change Angle");
+        orderButtonList.add(buttonAngleChange);
         
         
         
@@ -209,10 +215,11 @@ public class ButtonControl {
         holdDownTimer+=amount;
         holdDownNextTick+=amount;
         
-        buttonIncreaseMultiplier=(int)(Math.round(holdDownTimer)+1);
+        int mult=(int)(Math.floor(holdDownTimer));
+        buttonIncreaseMultiplier = 1+mult*mult;
         
         
-        if (holdDownNextTick>=0.1){
+        if (holdDownNextTick>=0.2){
             holdDownButtonTick();
             holdDownNextTick=0;
         }
@@ -229,6 +236,7 @@ public class ButtonControl {
     
     public void resetHoldDownTimer(){
         holdDownTimer=0;
+        holdDownNextTick=0;
         buttonHeld=false;
     }
     
