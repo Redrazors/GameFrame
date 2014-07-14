@@ -116,9 +116,9 @@ public class Renderer implements Runnable {
         g2d.transform(orderControl.getOrdersTransform());
         // draw the box
         g2d.setColor(Color.white);
-        g2d.fillRect(0, 0, 200, 200);
+        g2d.fillRect(0, 0, 200, 250);
         g2d.setColor(Color.black);
-        g2d.drawRect(0, 0, 200, 200);
+        g2d.drawRect(0, 0, 200, 250);
         
         
         g2d.translate(buttonControl.getOrderButtonList().get(0).getTopLeftX(), buttonControl.getOrderButtonList().get(0).getTopLeftY());
@@ -147,28 +147,46 @@ public class Renderer implements Runnable {
         g2d.drawString(Integer.toString(thrust), 80, 70);
         
         g2d.translate(buttonControl.getOrderButtonList().get(4).getTopLeftX(), buttonControl.getOrderButtonList().get(4).getTopLeftY());
-        renderThrustControls(g2d, buttonControl.getOrderButtonList().get(4));
+        renderControlButton(g2d, buttonControl.getOrderButtonList().get(4));
         g2d.setTransform(orderControl.getOrdersTransform());
         
         g2d.translate(buttonControl.getOrderButtonList().get(5).getTopLeftX(), buttonControl.getOrderButtonList().get(5).getTopLeftY());
-        renderThrustControls(g2d, buttonControl.getOrderButtonList().get(5));
+        renderControlButton(g2d, buttonControl.getOrderButtonList().get(5));
         g2d.setTransform(orderControl.getOrdersTransform());
         
         g2d.translate(buttonControl.getOrderButtonList().get(6).getTopLeftX(), buttonControl.getOrderButtonList().get(6).getTopLeftY());
-        renderThrustControls(g2d, buttonControl.getOrderButtonList().get(6));
+        renderControlButton(g2d, buttonControl.getOrderButtonList().get(6));
         g2d.setTransform(orderControl.getOrdersTransform());
         g2d.translate(buttonControl.getOrderButtonList().get(7).getTopLeftX(), buttonControl.getOrderButtonList().get(7).getTopLeftY());
-        renderThrustControls(g2d, buttonControl.getOrderButtonList().get(7));
+        renderControlButton(g2d, buttonControl.getOrderButtonList().get(7));
         g2d.setTransform(orderControl.getOrdersTransform());
         
         //angle
         String angle = Integer.toString(orderControl.getOrderList().get(orderControl.getCurrentViewOrder()).getAngleDegrees());
-        g2d.drawString("Angle: " + angle+"°", 60, 100);
+        g2d.drawString("Angle: " + angle+"°", 70, 100);
         renderAngleBox(g2d);
         g2d.setTransform(orderControl.getOrdersTransform());
         
+        g2d.translate(buttonControl.getOrderButtonList().get(9).getTopLeftX(), buttonControl.getOrderButtonList().get(9).getTopLeftY());
+        renderControlButton(g2d, buttonControl.getOrderButtonList().get(9));
+        g2d.setTransform(orderControl.getOrdersTransform());
+        
+        g2d.translate(buttonControl.getOrderButtonList().get(10).getTopLeftX(), buttonControl.getOrderButtonList().get(10).getTopLeftY());
+        renderControlButton(g2d, buttonControl.getOrderButtonList().get(10));
+        g2d.setTransform(orderControl.getOrdersTransform());
+        
         // time
-        g2d.drawString("For " + " seconds.", 30, 190);
+        g2d.drawString("Time", 80, 210);
+        String seconds = Integer.toString(orderControl.getOrderList().get(orderControl.getCurrentViewOrder()).getTime());
+        g2d.drawString(seconds+"s", 80, 230);
+        
+        g2d.translate(buttonControl.getOrderButtonList().get(11).getTopLeftX(), buttonControl.getOrderButtonList().get(11).getTopLeftY());
+        renderControlButton(g2d, buttonControl.getOrderButtonList().get(11));
+        g2d.setTransform(orderControl.getOrdersTransform());
+        
+        g2d.translate(buttonControl.getOrderButtonList().get(12).getTopLeftX(), buttonControl.getOrderButtonList().get(12).getTopLeftY());
+        renderControlButton(g2d, buttonControl.getOrderButtonList().get(12));
+        g2d.setTransform(orderControl.getOrdersTransform());
         
         g2d.setTransform(original);
     }
@@ -188,7 +206,7 @@ public class Renderer implements Runnable {
         g2d.drawLine(0, 0, x, y);
     }
     
-    private void renderThrustControls(Graphics2D g2d, GameButton button){
+    private void renderControlButton(Graphics2D g2d, GameButton button){
         g2d.drawRect(0, 0, button.getButtonDimension().width, button.getButtonDimension().height);
         g2d.drawString(button.getButtonName(), 5, 12);
     }

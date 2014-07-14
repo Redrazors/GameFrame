@@ -56,8 +56,7 @@ public class MoveableObject extends Body {
     
     public void initObject(){
         this.translate(xPos, yPos);         
-        this.setAngularDamping(ANGULAR_DAMPING);
-        this.setLinearDamping(LINEAR_DAMPING);
+        
         this.setMass(Mass.Type.NORMAL);
     }
     

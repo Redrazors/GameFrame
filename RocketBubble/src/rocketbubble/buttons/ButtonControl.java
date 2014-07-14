@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import javax.swing.AbstractAction;
 import rocketbubble.MasterClass;
 import rocketbubble.actions.ActionAngleChange;
+import rocketbubble.actions.ActionAngleDecrease;
+import rocketbubble.actions.ActionAngleIncrease;
 import rocketbubble.actions.ActionClearOrders;
 import rocketbubble.actions.ActionExecuteOrders;
 import rocketbubble.actions.ActionGameMenu;
@@ -24,6 +26,8 @@ import rocketbubble.actions.ActionThrustDecrease;
 import rocketbubble.actions.ActionThrustIncrease;
 import rocketbubble.actions.ActionThrustMax;
 import rocketbubble.actions.ActionThrustMin;
+import rocketbubble.actions.ActionTimeDecrease;
+import rocketbubble.actions.ActionTimeIncrease;
 import rocketbubble.actions.ActionUpgradeShip;
 import straightedge.geom.KPoint;
 
@@ -94,7 +98,7 @@ public class ButtonControl {
         // order panel
         int x = (int)masterClass.getOrderControl().getOrdersTransform().getTranslateX();
         int y = (int)masterClass.getOrderControl().getOrdersTransform().getTranslateY();
-        buttonOrderPanelClick = new GameButton(x, y, new Dimension(200, 200), null, 
+        buttonOrderPanelClick = new GameButton(x, y, new Dimension(200, 250), null, 
             "Order Panel Click");
         
         
@@ -140,9 +144,30 @@ public class ButtonControl {
         orderButtonList.add(buttonThrustMax);
         
         ActionAngleChange actionAngleChange = new ActionAngleChange(masterClass);
+        ActionAngleDecrease actionAngleDecrease = new ActionAngleDecrease(masterClass);
+        ActionAngleIncrease actionAngleIncrease = new ActionAngleIncrease(masterClass);
+        
         GameButton buttonAngleChange = new GameButton(65, 110 , new Dimension(70, 70),actionAngleChange, 
             "Change Angle");
+        GameButton buttonAngleDecrease = new GameButton(15, 110 , new Dimension(20, 20),actionAngleDecrease, 
+            "-");
+        GameButton buttonAngleIncrease = new GameButton(165, 110 , new Dimension(20, 20),actionAngleIncrease, 
+            "+");
+        
         orderButtonList.add(buttonAngleChange);
+        orderButtonList.add(buttonAngleDecrease);
+        orderButtonList.add(buttonAngleIncrease);
+        
+        ActionTimeDecrease actionTimeDecrease = new ActionTimeDecrease(masterClass);
+        ActionTimeIncrease actionTimeIncrease = new ActionTimeIncrease(masterClass);
+        
+        GameButton buttonTimeDecrease = new GameButton(15, 200 , new Dimension(20, 20),actionTimeDecrease, 
+            "-");
+        GameButton buttonTimeIncrease = new GameButton(165, 200 , new Dimension(20, 20),actionTimeIncrease, 
+            "+");
+        orderButtonList.add(buttonTimeDecrease);
+        orderButtonList.add(buttonTimeIncrease);
+        
         
         
         
@@ -238,6 +263,7 @@ public class ButtonControl {
         holdDownTimer=0;
         holdDownNextTick=0;
         buttonHeld=false;
+        buttonIncreaseMultiplier=1;
     }
     
     public void setHoldDownAction(AbstractAction action){

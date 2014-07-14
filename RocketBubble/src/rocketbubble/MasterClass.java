@@ -20,6 +20,7 @@ import rocketbubble.actions.ActionExecuteOrders;
 import rocketbubble.buttons.ButtonControl;
 import rocketbubble.buttons.GameButton;
 import rocketbubble.gameobjects.GameObjects;
+import rocketbubble.levels.LevelControl;
 import straightedge.geom.KPoint;
 
 /**
@@ -37,6 +38,7 @@ public class MasterClass implements Runnable {
     private Thread mainThread;
     private Dimension screenSize;
     
+    private LevelControl levelControl;
     private SoundControl soundControl;
     private OrderControl orderControl;
     private ButtonControl buttonControl;
@@ -48,9 +50,12 @@ public class MasterClass implements Runnable {
     public MasterClass (JFrame gameFrame, BufferStrategy bs, Dimension screenSize, JComponent drawPanel){
         this.screenSize = screenSize;
         world = new World();
-        world.setGravity(new Vector2(0,1));
-        gameObjects = new GameObjects(world, screenSize);
+        world.setGravity(new Vector2(0,100));
+        
+        levelControl = new LevelControl(this);
+        gameObjects = new GameObjects(world, screenSize, this);
         orderControl = new OrderControl(gameObjects);
+        orderControl.addOrder(0, 0, 0);
         buttonControl = new ButtonControl(this);
         ActionControl actionControl = new ActionControl(drawPanel, this);
         MouseControl mouseControl = new MouseControl(buttonControl, drawPanel);
@@ -61,8 +66,7 @@ public class MasterClass implements Runnable {
         soundControl = new SoundControl();
         
         pathControl=new PathControl(gameObjects);
-        
-        testSetOrders();
+
         
         renderer = new Renderer(bs, gameObjects, pathControl, screenSize, soundControl, drawPanel, orderControl, buttonControl);
 
@@ -84,15 +88,14 @@ public class MasterClass implements Runnable {
         return screenSize;
     }
     
-    private void testSetOrders(){
-        orderControl.addOrder(2000, 0, 2);
-        orderControl.addOrder(1000, 50, 6);
-        orderControl.addOrder(2000, 0, 2);
-    }
-   
+
     
     public void gameInit(){
         mainThread.start();
+    }
+    
+    public LevelControl getLevelControl(){
+        return levelControl;
     }
     
     public Renderer getRenderer(){
@@ -120,7 +123,17 @@ public class MasterClass implements Runnable {
     }
     
     public void resetLevel(){
-        System.out.println("levle reset test");
+        //System.out.println("levle reset test");
+        executeOrders=false;
+        gameObjects.getHero().clearForce();
+        gameObjects.getHero().getLinearVelocity().set(new Vector2(0,0));
+        gameObjects.getHero().translateToOrigin();
+        
+        KPoint start = levelControl.getGameLevels().get(levelControl.getCurrentLevel()).getStartPoint();
+        gameObjects.getHero().translate(start.x, start.y);
+        double change =gameObjects.getHero().getTransform().getRotation()+Math.PI/2;
+        gameObjects.getHero().rotateAboutCenter(-change);
+        
     }
     
     private void executeOrders(){
@@ -134,6 +147,7 @@ public class MasterClass implements Runnable {
                 //System.out.println("adjusted order count");
                 orderControl.adjustCurrentExecuteOrder(1);
                 orderControl.setOrderTimer();
+                //gameObjects.getHero().getLinearVelocity().set(new Vector2(0,0));
             }
             // execute the orders
             orderControl.executeOrders();

@@ -6,8 +6,6 @@
 
 package rocketbubble.gameobjects;
 
-import static rocketbubble.StaticFields.PITCHSIZE;
-import static rocketbubble.StaticFields.TILESIZE;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.geom.Ellipse2D;
@@ -15,6 +13,11 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import org.dyn4j.dynamics.World;
+import rocketbubble.MasterClass;
+import static rocketbubble.StaticFields.ANGULAR_DAMPING;
+import static rocketbubble.StaticFields.LINEAR_DAMPING;
+import static rocketbubble.StaticFields.PITCHSIZE;
+import static rocketbubble.StaticFields.TILESIZE;
 import straightedge.geom.KPoint;
 import straightedge.geom.path.PathBlockingObstacle;
 
@@ -40,10 +43,12 @@ public final class GameObjects {
     private int tileCount;
     
     private MoveableObject heroRocket;
+    private MasterClass masterClass;
     
-    public GameObjects (World world, Dimension screenSize){
+    public GameObjects (World world, Dimension screenSize, MasterClass masterClass){
         this.world = world;
         this.screenSize = screenSize;
+        this.masterClass = masterClass;
         testObject = new MoveableObject[20];
         
         
@@ -147,13 +152,17 @@ public final class GameObjects {
     
     private void initHero(){
         Ellipse2D.Double heroCirc = new Ellipse2D.Double(-10,-10, 20, 20);
-        heroRocket = new MoveableObject(0, 280, Color.red, 1, 10); 
+        KPoint start= masterClass.getLevelControl().getGameLevels().get(masterClass.getLevelControl().getCurrentLevel()).getStartPoint();
+        heroRocket = new MoveableObject((int)start.x, (int)start.y, Color.red, 1, 10); 
         heroRocket.addFixture(heroCirc, 0, 0);
         Rectangle2D.Double hitRect = new Rectangle2D.Double(-10, -3, 20, 6);
         heroRocket.addFixture(hitRect, 15, 0);
         heroRocket.initObject();
+        
         //add to world and game object list
         this.world.addBody(heroRocket);
+        heroRocket.setAngularDamping(ANGULAR_DAMPING);
+        heroRocket.setLinearDamping(LINEAR_DAMPING);
         moveableObjectsList.add(heroRocket);
         
         // rotate to point up

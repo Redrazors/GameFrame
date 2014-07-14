@@ -52,5 +52,20 @@ public class Order {
     public void setThrustMax(){
         thrust = orderControl.getMaxThrust();
     }
+    public void adjustAngle(int adjustDegrees){
+        angleDegrees+=adjustDegrees;
+        if (angleDegrees<0){
+            angleDegrees+=360;
+        }
+        if (angleDegrees>360){
+            angleDegrees-=360;
+        }
+        // convert to radians
+        angleRadians = Math.toRadians(angleDegrees)-Math.PI/2;
+        
+    }
+    public void adjustTime(int amount){
+        if (time+amount>=0)time+=amount;
+    }
     
 }

@@ -25,15 +25,14 @@ public class OrderControl {
     private MoveableObject heroRocket;
     private AffineTransform ordersTransform;
     
-    private int maxThrust = 10000;
+    private int maxThrust = 1000;
     
     public OrderControl(GameObjects gameObjects){
         heroRocket = gameObjects.getHero();
         orderList = new ArrayList();
         ordersTransform = new AffineTransform();
         orderTimer=0;
-        
-        
+
         ordersTransform.translate(300, 300);
         
     }
@@ -66,10 +65,10 @@ public class OrderControl {
                     //
         int thrust = orderList.get(currentExecuteOrder).getThrust();
         //System.out.println(thrust);
-        int xAdjust = (int)Math.ceil(Math.cos(angle)*thrust*heroRocket.getSpeed()*1000000);
-        int yAdjust = (int)Math.ceil(Math.sin(angle)*thrust*heroRocket.getSpeed()*1000000);
+        int xAdjust = (int)Math.ceil(Math.cos(angle)*thrust*heroRocket.getSpeed());
+        int yAdjust = (int)Math.ceil(Math.sin(angle)*thrust*heroRocket.getSpeed());
         //System.out.println("applying impulse : " + xAdjust +","+yAdjust);
-        heroRocket.applyForce(new Vector2(xAdjust,yAdjust));
+        heroRocket.applyImpulse(new Vector2(xAdjust,yAdjust));
         //heroRocket.getLinearVelocity().set(5000, -5000);
         
         

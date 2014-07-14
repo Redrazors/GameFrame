@@ -14,17 +14,18 @@ import rocketbubble.MasterClass;
  *
  * @author David
  */
-public class ActionResetLevel extends AbstractAction {
+public class ActionAngleDecrease extends AbstractAction {
     
     private final MasterClass masterClass;
     
-    public ActionResetLevel(MasterClass masterClass){
+    public ActionAngleDecrease(MasterClass masterClass){
         this.masterClass = masterClass;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        masterClass.resetLevel();
+        masterClass.getOrderControl().getOrderList().get(masterClass.getOrderControl().getCurrentViewOrder()).adjustAngle(-masterClass.getButtonControl().getButtonIncreaseMultiplier());
+        masterClass.getButtonControl().setHoldDownAction(this);
     }
     
 }
