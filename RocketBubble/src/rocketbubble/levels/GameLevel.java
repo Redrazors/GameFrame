@@ -6,6 +6,8 @@
 
 package rocketbubble.levels;
 
+import java.util.ArrayList;
+import rocketbubble.gameobjects.StationaryObject;
 import straightedge.geom.KPoint;
 
 /**
@@ -15,9 +17,10 @@ import straightedge.geom.KPoint;
 public class GameLevel {
     
     private KPoint startPoint;
+    private ArrayList<StationaryObject>stationaryObjectList;
     
-    public GameLevel(KPoint startPoint){
-        
+    public GameLevel(KPoint startPoint, ArrayList<StationaryObject> stationaryObjectList){
+        this.stationaryObjectList = stationaryObjectList;
         this.startPoint = startPoint;
         
     }
