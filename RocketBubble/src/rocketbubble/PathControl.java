@@ -58,10 +58,10 @@ public class PathControl {
         pathFinder = new PathFinder();
         bufferer = new PolygonBufferer ();     
         
-        activeTiles = new ArrayList();
+        activeTiles = new ArrayList<>();
        setNodeConnectors();
        
-       tilesToRedraw = new CopyOnWriteArrayList();
+       tilesToRedraw = new CopyOnWriteArrayList<>();
     }
     
 
@@ -71,7 +71,7 @@ public class PathControl {
         for (MoveableObject moveableObject : gameObjects.getMoveableObjectsList()) {
             // if the hashmap doesn't contain that radius then make the nodes
              if (!nodeMap.containsKey(moveableObject.getObjectRadius())){
-                 bufferedStationaryObstacles = new ArrayList();
+                 bufferedStationaryObstacles = new ArrayList<>();
                  bufferedNodeConnector = new NodeConnector();
                 // go through each obstace and buffer it by the object radius -0.5
                 for (PathBlockingObstacle stationaryObstacle : stationaryObstacles) {

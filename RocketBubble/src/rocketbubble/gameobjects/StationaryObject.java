@@ -39,7 +39,7 @@ public class StationaryObject extends Body {
     private ArrayList<PathBlockingObstacle> stationaryObstacles;
     
     public StationaryObject(int xPos, int yPos, Color paintColor, int paintType, ArrayList<PathBlockingObstacle> stationaryOb){
-        shapeList = new ArrayList();       
+        shapeList = new ArrayList<>();       
         this.paintColor = paintColor;
         this.paintType = paintType;
         this.xPos = xPos;

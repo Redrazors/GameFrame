@@ -43,14 +43,14 @@ public class MoveableObject extends Body {
     private double speed=1.0;
     
     public MoveableObject(int xPos, int yPos, Color paintColor, int paintType, int objectRadius){
-        shapeList = new ArrayList();       
+        shapeList = new ArrayList<>();       
         this.paintColor = paintColor;
         this.paintType = paintType;
         this.xPos = xPos;
         this.yPos = yPos;
         this.objectRadius = objectRadius;
         
-        currentPath=new ArrayList();
+        currentPath=new ArrayList<>();
         currentTile = new KPoint();        
     }
     

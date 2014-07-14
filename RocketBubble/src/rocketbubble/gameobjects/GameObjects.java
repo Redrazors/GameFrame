@@ -52,11 +52,11 @@ public final class GameObjects {
         testObject = new MoveableObject[20];
         
         
-        moveableObjectsList = new ArrayList();
-        stationaryObjectsList = new ArrayList();
-        stationaryObstacles = new ArrayList();
+        moveableObjectsList = new ArrayList<>();
+        stationaryObjectsList = new ArrayList<>();
+        stationaryObstacles = new ArrayList<>();
         
-        bubbleList = new ArrayList();
+        bubbleList = new ArrayList<>();
         tileCount = PITCHSIZE/TILESIZE+1;
         bubbleTile = new BubbleTile[tileCount][tileCount];
         // create bubbles

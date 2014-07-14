@@ -22,7 +22,7 @@ public class LevelControl {
     
     public LevelControl(MasterClass masterClass){
         this.masterClass = masterClass;
-        levelList = new ArrayList();
+        levelList = new ArrayList<>();
         
         addLevels();
     }

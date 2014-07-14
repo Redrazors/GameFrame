@@ -21,17 +21,18 @@ import rocketbubble.gameobjects.MoveableObject;
 public class OrderControl {
     private ArrayList<Order> orderList;
     private int currentViewOrder=0, currentExecuteOrder=0;
-    private double orderTimer;
+    private double orderTimer, thrustTimer, rotateTimer;
     private MoveableObject heroRocket;
     private AffineTransform ordersTransform;
+    private boolean finishedRotating=false;
     
-    private int maxThrust = 1000;
+    private int maxThrust = 2000;
     
     public OrderControl(GameObjects gameObjects){
         heroRocket = gameObjects.getHero();
-        orderList = new ArrayList();
+        orderList = new ArrayList<>();
         ordersTransform = new AffineTransform();
-        orderTimer=0;
+        orderTimer=0; thrustTimer=1; rotateTimer=0.01;
 
         ordersTransform.translate(300, 300);
         
@@ -42,34 +43,49 @@ public class OrderControl {
     }
     
     public void executeOrders(){
-        // rotate to given angle
-        double targetAngle = orderList.get(currentExecuteOrder).getAngleRadians();
-        double angleRemaining = heroRocket.getTransform().getRotation()-targetAngle;
+        //System.out.println("thrust timer "+ thrustTimer );
+        if (rotateTimer<=0){
+            
+            // rotate to given angle
+            double targetAngle = orderList.get(currentExecuteOrder).getAngleRadians();
+            double angleRemaining = heroRocket.getTransform().getRotation()-targetAngle;
         
-        // fix for beyond pi range
-        if (angleRemaining>Math.PI)angleRemaining -=2*Math.PI;
-        if (angleRemaining<-Math.PI)angleRemaining +=2*Math.PI;
+            // fix for beyond pi range
+            if (angleRemaining>Math.PI)angleRemaining -=2*Math.PI;
+            if (angleRemaining<-Math.PI)angleRemaining +=2*Math.PI;
                 //System.out.println(angleRemaining);
-        if (angleRemaining > 0.01){ 
-             heroRocket.rotateAboutCenter(-0.01);
-        } else if (angleRemaining <-0.01){
-            heroRocket.rotateAboutCenter(0.01);
-        } else if (angleRemaining>0){
-            heroRocket.rotateAboutCenter(-angleRemaining);
-        } else if (angleRemaining<0){
-            heroRocket.rotateAboutCenter(angleRemaining);
+            if (angleRemaining > 0.01){ 
+                heroRocket.rotateAboutCenter(-0.01);
+                finishedRotating=false;
+            } else if (angleRemaining <-0.01){
+                heroRocket.rotateAboutCenter(0.01);
+                finishedRotating=false;
+            } else if (angleRemaining>0){
+                heroRocket.rotateAboutCenter(-angleRemaining);
+                finishedRotating=true;
+            } else if (angleRemaining<0){
+                heroRocket.rotateAboutCenter(angleRemaining);
+                finishedRotating=true;
+            }
+            //reset the rotate timer
+            rotateTimer=0.01;
         }
-        //
-        //System.out.println(angleRemaining);
-        double angle = heroRocket.getTransform().getRotation();
-                    //
-        int thrust = orderList.get(currentExecuteOrder).getThrust();
-        //System.out.println(thrust);
-        int xAdjust = (int)Math.ceil(Math.cos(angle)*thrust*heroRocket.getSpeed());
-        int yAdjust = (int)Math.ceil(Math.sin(angle)*thrust*heroRocket.getSpeed());
-        //System.out.println("applying impulse : " + xAdjust +","+yAdjust);
-        heroRocket.applyImpulse(new Vector2(xAdjust,yAdjust));
-        //heroRocket.getLinearVelocity().set(5000, -5000);
+        
+        if (thrustTimer<=0 && finishedRotating){
+            double angle = heroRocket.getTransform().getRotation();
+
+            int thrust = orderList.get(currentExecuteOrder).getThrust();
+            int xAdjust = (int)Math.ceil(Math.cos(angle)*thrust*heroRocket.getSpeed());
+            int yAdjust = (int)Math.ceil(Math.sin(angle)*thrust*heroRocket.getSpeed());
+            //System.out.println("applying impulse : " + xAdjust +","+yAdjust);
+            //System.out.println("hero at:" +heroRocket.getTransform().getTranslation());
+            heroRocket.applyImpulse(new Vector2(xAdjust,yAdjust));
+            
+            //reset the thrust timer
+            thrustTimer=1;
+        }
+        
+        
         
         
     }
@@ -80,6 +96,9 @@ public class OrderControl {
     
     public void adjustOrderTimer(double adjust){
         orderTimer+=adjust;
+        
+        thrustTimer+=adjust;
+        rotateTimer+=adjust;
         //System.out.println(orderTimer);
     }
     

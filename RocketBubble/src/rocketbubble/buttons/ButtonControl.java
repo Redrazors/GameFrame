@@ -52,8 +52,8 @@ public class ButtonControl {
     
     public ButtonControl(MasterClass masterClass){
         this.masterClass = masterClass;
-        buttonList = new ArrayList();
-        orderButtonList = new ArrayList();
+        buttonList = new ArrayList<>();
+        orderButtonList = new ArrayList<>();
         initButtons();
         
     }

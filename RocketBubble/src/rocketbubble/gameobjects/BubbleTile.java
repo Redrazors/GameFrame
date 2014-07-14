@@ -46,8 +46,8 @@ public class BubbleTile {
         this.topLeftPoint = topleft;
         this.bubbleRenderer = bubbleRenderer;
         
-        tileBubbles = new CopyOnWriteArrayList();
-        bubblesToRemove = new CopyOnWriteArrayList();
+        tileBubbles = new CopyOnWriteArrayList<>();
+        bubblesToRemove = new CopyOnWriteArrayList<>();
 
         testTile = getImageSuppressExceptions("img/test50tile.png");
     }

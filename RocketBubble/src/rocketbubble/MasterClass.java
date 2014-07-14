@@ -50,12 +50,13 @@ public class MasterClass implements Runnable {
     public MasterClass (JFrame gameFrame, BufferStrategy bs, Dimension screenSize, JComponent drawPanel){
         this.screenSize = screenSize;
         world = new World();
-        world.setGravity(new Vector2(0,100));
+        world.setGravity(new Vector2(0,0));
         
         levelControl = new LevelControl(this);
         gameObjects = new GameObjects(world, screenSize, this);
         orderControl = new OrderControl(gameObjects);
-        orderControl.addOrder(0, 0, 0);
+        orderControl.addOrder(2000, 60, 3);
+        orderControl.addOrder(2000, 300, 3);
         buttonControl = new ButtonControl(this);
         ActionControl actionControl = new ActionControl(drawPanel, this);
         MouseControl mouseControl = new MouseControl(buttonControl, drawPanel);
