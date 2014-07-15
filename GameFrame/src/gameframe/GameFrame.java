@@ -33,7 +33,7 @@ public class GameFrame extends JFrame {
         Insets scnMax = Toolkit.getDefaultToolkit().getScreenInsets(getGraphicsConfiguration());
         int taskBarSize = scnMax.bottom;
 
-        screenSize.height-=taskBarSize;
+        screenSize.height-=taskBarSize+100;
 
         
         setSize(screenSize);

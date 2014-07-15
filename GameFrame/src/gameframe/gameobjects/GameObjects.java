@@ -100,7 +100,8 @@ public final class GameObjects {
         this.world.addBody(testObject[0]);
         moveableObjectsList.add(testObject[0]);
         //set test destination
-        testObject[0].setPathDestination(new KPoint(200, -300));
+        //testObject[0].setPathDestination(new KPoint(200, -300));
+        testObject[0].applyImpulse(new Vector2(-100000,0));
         
         Ellipse2D.Double testSmallCirc = new Ellipse2D.Double(-15,-15, 30, 30);
         //testObject[1] = new MoveableObject(-200, 0, Color.BLUE, 1,15);

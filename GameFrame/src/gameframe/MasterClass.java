@@ -95,7 +95,7 @@ public class MasterClass implements Runnable {
         double elapsedTime = (double)diff / NANO_TO_BASE;// update the world with the elapsed time
         this.world.update(elapsedTime);//<-- tell world to update with new positions of objects
         
-        
+        System.out.println(gameObjects.getMoveableObjectsList().get(0).getLinearDamping());
     }
 
     @Override
