@@ -30,12 +30,12 @@ public final class GameObjects {
     private World world;
     private MoveableObject testObject[];
     private ArrayList<MoveableObject> moveableObjectsList;
-    private ArrayList<StationaryObject> stationaryObjectsList;//list of my stationary object 
+    
     
     private ArrayList<Bubble> bubbleList;
     
     
-    private ArrayList<PathBlockingObstacle> stationaryObstacles;
+    
     private Dimension screenSize;
     private BufferedImage bubbleImages[][];
     
@@ -53,8 +53,7 @@ public final class GameObjects {
         
         
         moveableObjectsList = new ArrayList<>();
-        stationaryObjectsList = new ArrayList<>();
-        stationaryObstacles = new ArrayList<>();
+        
         
         bubbleList = new ArrayList<>();
         tileCount = PITCHSIZE/TILESIZE+1;
@@ -191,14 +190,10 @@ public final class GameObjects {
         //stationaryObjectsList.add(boundingWalls);
         
         // home obstacle
-        Rectangle2D.Double homeRec = new Rectangle2D.Double(-50,-5, 100, 10);
-        StationaryObject home = new StationaryObject(0, 300, Color.gray, 1, stationaryObstacles);
-        home.addFixture(homeRec, 0, 0);
-        home.initObject();
-        this.world.addBody(home);
-        stationaryObjectsList.add(home);
         
-        
+        // get the floor
+        //StationaryObject floor = masterClass.getLevelControl().getGameLevels().get(masterClass.getLevelControl().getCurrentLevel()).getFloor();
+ 
     }
     
     
@@ -206,13 +201,7 @@ public final class GameObjects {
         return moveableObjectsList;
     }
     
-    public ArrayList<StationaryObject> getStationaryObjectsList(){
-        return stationaryObjectsList;
-    }
     
-    public ArrayList<PathBlockingObstacle> getStationaryObstacles(){
-        return stationaryObstacles;
-    }
     
     public ArrayList<Bubble> getBubbleList(){
         return bubbleList;

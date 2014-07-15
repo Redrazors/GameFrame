@@ -6,6 +6,10 @@
 
 package rocketbubble;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import org.dyn4j.geometry.Vector2;
 import static rocketbubble.StaticFields.FORCE_AMOUNT;
 import static rocketbubble.StaticFields.PITCHSIZE;
 import static rocketbubble.StaticFields.ROTATION_SPEED;
@@ -14,10 +18,7 @@ import rocketbubble.gameobjects.Bubble;
 import rocketbubble.gameobjects.BubbleTile;
 import rocketbubble.gameobjects.GameObjects;
 import rocketbubble.gameobjects.MoveableObject;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import org.dyn4j.geometry.Vector2;
+import rocketbubble.levels.LevelControl;
 import straightedge.geom.KPoint;
 import straightedge.geom.KPolygon;
 import straightedge.geom.PolygonBufferer;
@@ -47,10 +48,9 @@ public class PathControl {
     
     
     
-    public PathControl(GameObjects gameObjects){
+    public PathControl(LevelControl levelControl, GameObjects gameObjects){
         this.gameObjects = gameObjects;
-        
-        stationaryObstacles = gameObjects.getStationaryObstacles(); 
+        stationaryObstacles = levelControl.getStationaryObstacles(); 
         nodeConnector  = new NodeConnector();   
         nodeMap = new HashMap();
         obstaclesMap = new HashMap(); 

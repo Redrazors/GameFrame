@@ -15,18 +15,28 @@ import straightedge.geom.KPoint;
  * @author david
  */
 public class GameLevel {
-    
     private KPoint startPoint;
     private ArrayList<StationaryObject>stationaryObjectList;
+    private StationaryObject floor;
     
-    public GameLevel(KPoint startPoint, ArrayList<StationaryObject> stationaryObjectList){
-        this.stationaryObjectList = stationaryObjectList;
-        this.startPoint = startPoint;
+    public GameLevel(){
         
     }
     
     public KPoint getStartPoint(){
         return startPoint;
     }
+    
+    public StationaryObject getFloor(){
+        return floor;
+    }
+    
+    public void setLevel(){
+        
+    }
+    public ArrayList<StationaryObject> getStationaryObjectList(){
+        return stationaryObjectList;
+    }
+
     
 }

@@ -20,6 +20,7 @@ import rocketbubble.actions.ActionExecuteOrders;
 import rocketbubble.buttons.ButtonControl;
 import rocketbubble.buttons.GameButton;
 import rocketbubble.gameobjects.GameObjects;
+import rocketbubble.gameobjects.StationaryObject;
 import rocketbubble.levels.LevelControl;
 import straightedge.geom.KPoint;
 
@@ -53,7 +54,9 @@ public class MasterClass implements Runnable {
         world = new World();
         world.setGravity(new Vector2(0,10));
         
-        levelControl = new LevelControl(this);
+        levelControl = new LevelControl(world, this);
+        levelControl.setLevel(0);
+        
         gameObjects = new GameObjects(world, screenSize, this);
         orderControl = new OrderControl(gameObjects);
         orderControl.addOrder(4000, 60, 3);
@@ -67,10 +70,10 @@ public class MasterClass implements Runnable {
         mainThread = new Thread (this);
         soundControl = new SoundControl();
         
-        pathControl=new PathControl(gameObjects);
+        pathControl=new PathControl(levelControl, gameObjects);
 
         
-        renderer = new Renderer(bs, gameObjects, pathControl, screenSize, soundControl, drawPanel, orderControl, buttonControl);
+        renderer = new Renderer(bs, gameObjects, pathControl, screenSize, soundControl, drawPanel, orderControl, buttonControl, levelControl);
 
         renderer.rendererStart();
         
@@ -188,10 +191,17 @@ public class MasterClass implements Runnable {
         } else if (buttonControl.getAngleBoxClicked()){
                 // change angle based on position of mouse to the centre of the circle
                 buttonControl.adjustAngleWithMouse(mouseControl);
+        }       
+        
+    }
+    
+    private void detectCollisions(){
+        
+        for (StationaryObject stationaryObject: levelControl.getStationaryObjectsList()){
+            if (gameObjects.getHero().isInContact(stationaryObject)){
+                System.out.println("crashed");
+            }
         }
-        
-         
-        
         
     }
     
@@ -207,6 +217,7 @@ public class MasterClass implements Runnable {
             }
             
             moveObjects();
+            detectCollisions();
             updateWorld();
             
  

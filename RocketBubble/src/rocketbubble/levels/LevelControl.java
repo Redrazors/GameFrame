@@ -7,8 +7,11 @@
 package rocketbubble.levels;
 
 import java.util.ArrayList;
+import org.dyn4j.dynamics.World;
 import rocketbubble.MasterClass;
+import rocketbubble.gameobjects.StationaryObject;
 import straightedge.geom.KPoint;
+import straightedge.geom.path.PathBlockingObstacle;
 
 /**
  *
@@ -16,20 +19,45 @@ import straightedge.geom.KPoint;
  */
 public class LevelControl {
     private MasterClass masterClass;
+    private World world;
     
     private ArrayList<GameLevel> levelList;
     private int currentLevel=0;
     
-    public LevelControl(MasterClass masterClass){
+    private ArrayList<StationaryObject> stationaryObjectsList;//list of my stationary object 
+    private ArrayList<PathBlockingObstacle> stationaryObstacles;
+    
+    
+    public LevelControl(World world, MasterClass masterClass){
+        this.world = world;
         this.masterClass = masterClass;
         levelList = new ArrayList<>();
+        
+        stationaryObjectsList = new ArrayList<>();
+        stationaryObstacles = new ArrayList<>();
         
         addLevels();
     }
     
-    private void addLevels(){
-        GameLevel testLevel = new GameLevel(new KPoint(0, 280));
+    public ArrayList<StationaryObject> getStationaryObjectsList(){
+        return levelList.get(currentLevel).getStationaryObjectList();
+    }
+    
+    public ArrayList<PathBlockingObstacle> getStationaryObstacles(){
+        return stationaryObstacles;
+    }
+    
+    public void addLevels(){
+        TestLevel testLevel = new TestLevel(stationaryObstacles, world);
         levelList.add(testLevel);
+        
+    }
+    
+    public void setLevel(int level){
+        
+        levelList.get(level).setLevel();
+        currentLevel=level;
+        
     }
     
     public ArrayList<GameLevel> getGameLevels(){

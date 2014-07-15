@@ -30,6 +30,7 @@ import rocketbubble.buttons.GameButton;
 import rocketbubble.gameobjects.Bubble;
 import rocketbubble.gameobjects.BubbleTile;
 import rocketbubble.gameobjects.GameObjects;
+import rocketbubble.levels.LevelControl;
 import straightedge.geom.KPoint;
 
 /**
@@ -55,6 +56,7 @@ public class Renderer implements Runnable {
     private SoundControl soundControl;
     private OrderControl orderControl;
     private ButtonControl buttonControl;
+    private LevelControl levelControl;
     
     private boolean showOrders = true;
     
@@ -66,7 +68,7 @@ public class Renderer implements Runnable {
    
     
     public Renderer (BufferStrategy bs, GameObjects gameObjects, PathControl pathControl, Dimension screenSize, 
-            SoundControl soundControl, JComponent drawPanel, OrderControl orderControl, ButtonControl buttonControl){
+            SoundControl soundControl, JComponent drawPanel, OrderControl orderControl, ButtonControl buttonControl, LevelControl levelControl){
         this.bs = bs;
         renderLoop = new Thread(this);
         this.gameObjects = gameObjects;
@@ -75,6 +77,7 @@ public class Renderer implements Runnable {
         this.soundControl = soundControl;
         this.orderControl = orderControl;
         this.buttonControl = buttonControl;
+        this.levelControl = levelControl;
         
         fPSCounter = new FPSCounter();
         fPSCounter.start();
@@ -391,25 +394,39 @@ public class Renderer implements Runnable {
         }
         
         
+        // draw 0 damage floor
+        AffineTransform ot = g2d.getTransform();
+        AffineTransform lt = new AffineTransform();
+        double x = levelControl.getGameLevels().get(levelControl.getCurrentLevel()).getFloor().getTransform().getTranslationX();
+        double y = levelControl.getGameLevels().get(levelControl.getCurrentLevel()).getFloor().getTransform().getTranslationY();
+        lt.translate(x,y);
+        lt.rotate(levelControl.getGameLevels().get(levelControl.getCurrentLevel()).getFloor().getTransform().getRotation());
+        g2d.transform(lt);
+           
+        g2d.setColor(levelControl.getGameLevels().get(levelControl.getCurrentLevel()).getFloor().getPaintColor());
+            
+        int type = levelControl.getGameLevels().get(levelControl.getCurrentLevel()).getFloor().getPaintType();
+        ArrayList<Shape> shapeList = levelControl.getGameLevels().get(levelControl.getCurrentLevel()).getFloor().getObjectShapes();
+        paintShapeByType(g2d, type, shapeList);
+        g2d.setTransform(ot);
         
         
         // draw stationary objects
         
-        for (int i=0; i< gameObjects.getStationaryObjectsList().size(); i++){
+        for (int i=0; i< levelControl.getStationaryObjectsList().size(); i++){
             // grab original transform
-            AffineTransform ot = g2d.getTransform();
             
             //get object transform
-            AffineTransform lt = new AffineTransform();
-            lt.translate(gameObjects.getStationaryObjectsList().get(i).getTransform().getTranslationX(), 
-                     gameObjects.getStationaryObjectsList().get(i).getTransform().getTranslationY());
-            lt.rotate(gameObjects.getStationaryObjectsList().get(i).getTransform().getRotation());
+            lt = new AffineTransform();
+            lt.translate(levelControl.getStationaryObjectsList().get(i).getTransform().getTranslationX(), 
+                     levelControl.getStationaryObjectsList().get(i).getTransform().getTranslationY());
+            lt.rotate(levelControl.getStationaryObjectsList().get(i).getTransform().getRotation());
             g2d.transform(lt);
            
-            g2d.setColor(gameObjects.getStationaryObjectsList().get(i).getPaintColor());
+            g2d.setColor(levelControl.getStationaryObjectsList().get(i).getPaintColor());
             
-            int type = gameObjects.getStationaryObjectsList().get(i).getPaintType();
-            ArrayList<Shape> shapeList = gameObjects.getStationaryObjectsList().get(i).getObjectShapes();
+            type = levelControl.getStationaryObjectsList().get(i).getPaintType();
+            shapeList = levelControl.getStationaryObjectsList().get(i).getObjectShapes();
             paintShapeByType(g2d, type, shapeList);
             
                       
@@ -422,10 +439,9 @@ public class Renderer implements Runnable {
         
         for (int i =0; i<gameObjects.getMoveableObjectsList().size(); i++){
             // grab original transform
-            AffineTransform ot = g2d.getTransform();
             
             //get object transform
-            AffineTransform lt = new AffineTransform();
+            lt = new AffineTransform();
             lt.translate(gameObjects.getMoveableObjectsList().get(i).getTransform().getTranslationX(), 
                      gameObjects.getMoveableObjectsList().get(i).getTransform().getTranslationY());
             lt.rotate(gameObjects.getMoveableObjectsList().get(i).getTransform().getRotation());
@@ -433,8 +449,8 @@ public class Renderer implements Runnable {
            
             g2d.setColor(gameObjects.getMoveableObjectsList().get(i).getPaintColor());
             
-            int type = gameObjects.getMoveableObjectsList().get(i).getPaintType();
-            ArrayList<Shape> shapeList = gameObjects.getMoveableObjectsList().get(i).getObjectShapes();
+            type = gameObjects.getMoveableObjectsList().get(i).getPaintType();
+            shapeList = gameObjects.getMoveableObjectsList().get(i).getObjectShapes();
             paintShapeByType(g2d, type, shapeList);
          
             g2d.setTransform(ot);
