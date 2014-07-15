@@ -52,6 +52,17 @@ public class Order {
     public void setThrustMax(){
         thrust = orderControl.getMaxThrust();
     }
+    public void setAngleRadians(double angle){
+        angleRadians = angle;
+        angleDegrees = (int)Math.toDegrees(angle)+90;
+        if (angleDegrees<0){
+            angleDegrees+=360;
+        }
+        if (angleDegrees>360){
+            angleDegrees-=360;
+        }
+        
+    }
     public void adjustAngle(int adjustDegrees){
         angleDegrees+=adjustDegrees;
         if (angleDegrees<0){

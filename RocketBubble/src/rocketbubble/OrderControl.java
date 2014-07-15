@@ -24,15 +24,15 @@ public class OrderControl {
     private double orderTimer, thrustTimer, rotateTimer;
     private MoveableObject heroRocket;
     private AffineTransform ordersTransform;
-    private boolean finishedRotating=false;
     
-    private int maxThrust = 2000;
+    
+    private int maxThrust = 4000;
     
     public OrderControl(GameObjects gameObjects){
         heroRocket = gameObjects.getHero();
         orderList = new ArrayList<>();
         ordersTransform = new AffineTransform();
-        orderTimer=0; thrustTimer=1; rotateTimer=0.01;
+        orderTimer=0; thrustTimer=0.1; rotateTimer=0.01;
 
         ordersTransform.translate(300, 300);
         
@@ -56,22 +56,18 @@ public class OrderControl {
                 //System.out.println(angleRemaining);
             if (angleRemaining > 0.01){ 
                 heroRocket.rotateAboutCenter(-0.01);
-                finishedRotating=false;
             } else if (angleRemaining <-0.01){
                 heroRocket.rotateAboutCenter(0.01);
-                finishedRotating=false;
             } else if (angleRemaining>0){
                 heroRocket.rotateAboutCenter(-angleRemaining);
-                finishedRotating=true;
             } else if (angleRemaining<0){
                 heroRocket.rotateAboutCenter(angleRemaining);
-                finishedRotating=true;
             }
             //reset the rotate timer
             rotateTimer=0.01;
         }
         
-        if (thrustTimer<=0 && finishedRotating){
+        if (thrustTimer<=0){
             double angle = heroRocket.getTransform().getRotation();
 
             int thrust = orderList.get(currentExecuteOrder).getThrust();
@@ -80,9 +76,9 @@ public class OrderControl {
             //System.out.println("applying impulse : " + xAdjust +","+yAdjust);
             //System.out.println("hero at:" +heroRocket.getTransform().getTranslation());
             heroRocket.applyImpulse(new Vector2(xAdjust,yAdjust));
-            
+            //System.out.println(heroRocket.getLinearDamping());
             //reset the thrust timer
-            thrustTimer=1;
+            thrustTimer=0.1;
         }
         
         

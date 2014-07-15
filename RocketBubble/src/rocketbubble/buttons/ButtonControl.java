@@ -10,6 +10,7 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import javax.swing.AbstractAction;
 import rocketbubble.MasterClass;
+import rocketbubble.MouseControl;
 import rocketbubble.actions.ActionAngleChange;
 import rocketbubble.actions.ActionAngleDecrease;
 import rocketbubble.actions.ActionAngleIncrease;
@@ -48,6 +49,7 @@ public class ButtonControl {
     
     private AbstractAction holdDownAction;
     private boolean buttonHeld=false;
+    private boolean angleBoxClicked=false;
     
     
     public ButtonControl(MasterClass masterClass){
@@ -280,6 +282,30 @@ public class ButtonControl {
     
     public ArrayList<GameButton> getButtonList(){
         return buttonList;
+    }
+    
+    public void setAngleBoxClicked(boolean bool){
+        angleBoxClicked=bool;
+    }
+    
+    public boolean getAngleBoxClicked(){
+        return angleBoxClicked;
+    }
+    
+    public void adjustAngleWithMouse(MouseControl mouseControl){
+        
+        // find out relative position of centre of angle circle
+        int x1 = orderButtonList.get(8).getTopLeftX() + (int)masterClass.getOrderControl().getOrdersTransform().getTranslateX() + 35;
+        int y1 = orderButtonList.get(8).getTopLeftY() + (int)masterClass.getOrderControl().getOrdersTransform().getTranslateY() + 35;
+        
+        int x2 = (int) mouseControl.getMouseScreenPos().x;
+        int y2 = (int) mouseControl.getMouseScreenPos().y;
+        
+        double deltaY = y2 - y1;
+        double deltaX = x2 - x1;
+        double angleInRadians = Math.atan2(deltaY, deltaX);
+        masterClass.getOrderControl().getOrderList().get(masterClass.getOrderControl().getCurrentViewOrder()).setAngleRadians(angleInRadians);
+        
     }
     
 }

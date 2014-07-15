@@ -24,8 +24,8 @@ public class ActionAngleChange extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println("angle box pressed");
         
+        masterClass.getButtonControl().setAngleBoxClicked(true);
     }
     
 }

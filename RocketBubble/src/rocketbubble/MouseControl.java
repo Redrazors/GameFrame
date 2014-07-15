@@ -31,7 +31,7 @@ public class MouseControl implements MouseListener, MouseMotionListener{
     }
     
     
-    private KPoint mouseScreenPos(){
+    public KPoint getMouseScreenPos(){
        KPoint mouseScreenPos = new KPoint();
        Point mousePos = MouseInfo.getPointerInfo().getLocation();  
        Point panelPosition = drawPanel.getLocationOnScreen();
@@ -50,12 +50,13 @@ public class MouseControl implements MouseListener, MouseMotionListener{
 
     @Override
     public void mousePressed(MouseEvent e) {
-        buttonControl.checkButtons(mouseScreenPos());
+        buttonControl.checkButtons(getMouseScreenPos());
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         buttonControl.resetHoldDownTimer();
+        buttonControl.setAngleBoxClicked(false);
     }
 
     @Override

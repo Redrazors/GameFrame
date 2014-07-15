@@ -161,8 +161,8 @@ public final class GameObjects {
         
         //add to world and game object list
         this.world.addBody(heroRocket);
-        heroRocket.setAngularDamping(ANGULAR_DAMPING);
-        heroRocket.setLinearDamping(LINEAR_DAMPING);
+        heroRocket.setAngularDamping(1);
+        heroRocket.setLinearDamping(2);
         moveableObjectsList.add(heroRocket);
         
         // rotate to point up
